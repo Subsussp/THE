@@ -1,0 +1,4 @@
+/.history
+frontend/
+**/node_modules/
+test.html
