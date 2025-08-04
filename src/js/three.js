@@ -196,7 +196,7 @@ Song.add(audioSettings, 'loadAudio').name('Load Your Audio');
 export function loadwhat(){
 	window.localStorage.path = 'home'
 	if(window.localStorage.scene == 'sc1') return initThreeScene()
-	loadingpage()
+	// loadingpage()
 	if(window.localStorage.scene == 'sc2') return loadpart()
 }
 export function initThreeScene() {
@@ -658,7 +658,7 @@ function switchScene(createSceneFn) {
   if (currentSceneHandler && currentSceneHandler.dispose) {
     currentSceneHandler.dispose();
   }
-  if(createSceneFn !== initThreeScene)loadingpage()
+//   if(createSceneFn !== initThreeScene)loadingpage()
   // Setup new scene
   currentSceneHandler = createSceneFn();
 
