@@ -1,0 +1,48 @@
+select{
+  color: #222!important;
+}
+    .hidden {
+      opacity: 0;
+      pointer-events: none;
+      transform: translateX(-50%) translateY(-20px);
+    }
+     #suggestionContainer {
+      position: fixed;
+      top: 14px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      backdrop-filter: blur(2px);
+      -webkit-backdrop-filter: blur(2px);
+      transition: pointer-events 0.2s ease; 
+        z-index: 999;
+      background-color: black;
+      transition: opacity 0.3s ease, transform 0.3s ease;
+    }
+
+    #suggestionInput {
+      /* padding: 8px 14px; */
+      position: relative;
+      background-color: transparent;
+      border-radius: 6px;
+       text-align: center;
+      width: 100%;
+      outline: none;
+      border: none;
+      color: #ffffff; /* Tailwind text-gray-800 */
+      font-size: 1rem; /* text-base */
+      /* font-size: 16px; */
+    }
+    #suggestionInput::placeholder {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%,-50%);
+      font-family: 'NeueRegrade';
+      color: #ffffff;
+      font-size: 1.125rem; /* text-lg */
+      font-weight: 400; /* font-light */
+      letter-spacing: 0.05em; /* tracking-widest */
+      transition: color 0.2s ease;
+    }
+
