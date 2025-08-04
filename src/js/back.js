@@ -8,9 +8,11 @@ export function load2DPage(container) {
    removeAllStyles()
    document.getElementById('togglebar') && document.getElementById('togglebar').remove()
    
-   // Remove old script if it exists
-   const oldScript = document.querySelector('script[src="./src/js/2daudiofetching.js"]');
-   if (oldScript) oldScript.remove();
+  document.querySelectorAll('script').forEach((script) => {
+    if (script.src && script.src.includes('2daudiofetching.js')) {
+      script.remove();
+    }
+  });
    
    // Dynamically load the CSS for the new page (if not already loaded)
    if (!document.querySelector('link[href="./src/app.css"]')) {
@@ -20,10 +22,10 @@ export function load2DPage(container) {
      document.head.appendChild(link);
     }
 
-const script = document.createElement('script');
-script.src = './src/js/2daudiofetching.js?t=' + Date.now(); // forces reload
-script.type = 'module';
-document.body.appendChild(script);
+    const script = document.createElement('script');
+    script.src = './src/js/2daudiofetching.js?t=' + Date.now(); // forces reload
+    script.type = 'module';
+    document.body.appendChild(script);
   container.innerHTML =  `
 <div
 id='togglebar'

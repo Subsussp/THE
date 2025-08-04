@@ -12,7 +12,8 @@ import { audioCache } from './var/audiocache.js';
 import { GUI } from 'https://cdn.jsdelivr.net/npm/lil-gui@0.18/+esm';
 import { float, If, PI, color, cos, instanceIndex, Loop, mix, mod, sin, instancedArray, Fn, uint, uniform, uniformArray, hash, vec3, vec4 } from '../../build/three.tsl.js';
 import { listener, sound } from './var/threesound.js';
-let scene, camera, renderer, animationId, analyser, orbitControls ,gui,button1;
+let scene, camera, renderer, animationId, analyser, orbitControls ,gui;
+let button1 = document.createElement('button')
 const audioLoader = new THREE.AudioLoader();
 let main = document.getElementById('main')
 let currentSceneHandler = null;
@@ -52,10 +53,7 @@ const volume = {Volume: .5}
 const audioSettings = {
   loadAudio: () => fileInput.click()
 };
-const fileInput = document.createElement('input');
-fileInput.type = 'file';
-fileInput.accept = 'audio/*';
-fileInput.style.display = 'none';
+const fileInput = document.getElementById('audioUploadInput2');
 
 fileInput.addEventListener('change', (event) => {
   const file = event.target.files[0];
@@ -66,7 +64,6 @@ fileInput.addEventListener('change', (event) => {
   });
 });
 
-document.body.appendChild(fileInput);
 let button1txt = ['play']
 function initControllers(scene){
 // Scene Controller	
@@ -117,7 +114,6 @@ container.style.display = 'flex';
 container.style.gap = '10px';
 container.style.padding = '4px';
 
-button1 = document.createElement('button');
 button1.innerText = button1txt;
 button1.onclick = (e) =>{
     if(sound.buffer && e.target.innerText == 'play' && !sound.isPlaying){
@@ -195,22 +191,9 @@ Song.add(audioSettings, 'loadAudio').name('Load Your Audio');
 
 export function loadwhat(){
 	window.localStorage.path = 'home'
-
-  const runScene = () => {
-    if (window.localStorage.scene === 'sc1') {
-      initThreeScene();
-    } else if (window.localStorage.scene === 'sc2') {
-	  loadingpage();
-      loadpart();
-    }
-  };
-
-  if (document.readyState === 'complete') {
-    runScene();
-  } else {
-    window.addEventListener('load', runScene);
-  }
-
+	if(window.localStorage.scene == 'sc1') return initThreeScene()
+	loadingpage()
+	if(window.localStorage.scene == 'sc2') return loadpart()
 }
 export function initThreeScene() {
 window.localStorage.scene = 'sc1'
@@ -309,9 +292,6 @@ animate()
 }
 function loadpart(){
 	window.localStorage.scene = 'sc2'
-			let uniformm = {
-					u_frequency:  0.1
-			}
 			let controls, updateCompute, analyser, orbitControls ;
 			let velocityDamping,maxSpeed
 			let attractorsPositions = uniformArray( [

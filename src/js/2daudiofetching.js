@@ -21,14 +21,8 @@ const slider = document.getElementById('volumeSlider');
     updateTrackFill(slider.value);
   });
 // File input (hidden)
-const input = document.createElement('input');
-input.type = 'file';
-input.accept = 'audio/*';
-input.style.display = 'none';
-document.body.appendChild(input);
-
+const input = document.getElementById('audioUploadInput');
 uploadBtn.onclick = () => input.click();
-
 input.onchange =async (e) => {
  const file = e.target.files[0];
   if (!file) return;
@@ -37,8 +31,8 @@ input.onchange =async (e) => {
   const fileURL = URL.createObjectURL(file);
   audio.src = fileURL;
   audio.crossOrigin = "anonymous";
-
   try {
+    audio.pause()
     await audio.play();
 
     if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
@@ -51,25 +45,41 @@ input.onchange =async (e) => {
     analyser.fftSize = 256;
     const bufferLength = analyser.frequencyBinCount;
     dataArray = new Uint8Array(bufferLength);
-
-    function draw() {
-      requestAnimationFrame(draw);
-
-      analyser.getByteFrequencyData(dataArray);
-
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      const barWidth = (canvas.width / bufferLength) * 1.8;
-      let x = 0;
-
-      for (let i = 0; i < bufferLength; i++) {
-        const barHeight = dataArray[i];
-        ctx.fillStyle = `rgb(${barHeight + 100}, 50, 200)`;
-        ctx.fillRect(x, canvas.height - barHeight, barWidth, barHeight);
-        x += barWidth + 1;
+      function draw() {
+        requestAnimationFrame(draw);
+        analyser.getByteFrequencyData(dataArray);
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        const barCount = dataArray.length;
+        const barWidth = (canvas.width / barCount) * 1.8; // Adjust spacing
+        let x = 0;
+  for (let i = 0; i < barCount; i++) {
+    const value = dataArray[i];
+    const barHeight = (value / 255) * canvas.height;
+  function hexToRGB(hex) {
+    const bigint = parseInt(hex.slice(1), 16);
+    const r = (bigint >> 16) & 255;
+    const g = (bigint >> 8) & 255;
+    const b = bigint & 255;
+    return { r, g, b };
+  }
+    if(colorSlider.value == '#000000'){
+        const r = 25;
+        const g = 50;
+        const b = 200;
+        const hex = "#" +
+        r.toString(16).padStart(2, "0") +
+        g.toString(16).padStart(2, "0") +
+        b.toString(16).padStart(2, "0");
+        colorSlider.value = hex
       }
-    }
+    const { r, g, b } = hexToRGB(colorSlider.value);
+    ctx.fillStyle = `rgb(${value + r},${g},${b})`;
+    ctx.fillRect(x, canvas.height - barHeight, barWidth, barHeight);
+    x += barWidth + 1;
+  }
+}
 
-    draw();
+      draw();
 
   } catch (err) {
     console.error("Playback error:", err);
