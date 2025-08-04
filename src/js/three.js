@@ -200,9 +200,8 @@ export function loadwhat(){
     if (window.localStorage.scene === 'sc1') {
       initThreeScene();
     } else if (window.localStorage.scene === 'sc2') {
+	  loadingpage();
       loadpart();
-    } else {
-      loadingpage();
     }
   };
 
