@@ -42,8 +42,7 @@ app.post('/sugg', async (req, res) => {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        message: message,
-        _replyto: 'noreply@example.com', // optional: fake email for reply
+        message: sugg,
       }),
     });
     res.status(200).send('Received!');
