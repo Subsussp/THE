@@ -195,11 +195,15 @@ Song.add(audioSettings, 'loadAudio').name('Load Your Audio');
 
 export function loadwhat(){
 	window.localStorage.path = 'home'
-	window.onload((e)=>{
-		if(window.localStorage.scene == 'sc1') return initThreeScene()
-		loadingpage()
-		if(window.localStorage.scene == 'sc2') return loadpart()
-	})
+	window.addEventListener('load', () => {
+		if (window.localStorage.scene === 'sc1') {
+		initThreeScene();
+		} else if (window.localStorage.scene === 'sc2') {
+		loadpart();
+		} else {
+		loadingpage();
+		}
+	});
 
 }
 export function initThreeScene() {
