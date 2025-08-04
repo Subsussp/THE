@@ -87,11 +87,11 @@ camera.add(listener);
 const Song = gui.addFolder('Song');
 
 // audio url input
-const urltab = Song.add(settings, 'value').onChange(function (value) {
-    if(value){
-url[type] = value
-}
-}).name('url');
+// const urltab = Song.add(settings, 'value').onChange(function (value) {
+//     if(value){
+// url[type] = value
+// }
+// }).name('url');
 
 // samples tab
 const samples = Song.add(
