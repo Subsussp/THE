@@ -11,21 +11,22 @@ app.use(cors({
 }));
 app.use(express.json());
 app.get('/audio', async (req, res) => {
+ app.get('/audio', async (req, res) => {
   const videoUrl = req.query.url;
-  const type = req.query.type;
-  if (!videoUrl || !ytdl.validateURL(videoUrl)) {
-    return res.status(400).send('Invalid or missing URL');
-  }
+  if (!videoUrl) return res.status(400).send('Missing URL');
 
+  const proxyUrl = `https://youtube-audio.stream/api/audio?url=${encodeURIComponent(videoUrl)}`;
   try {
-    const info = await ytdl.getInfo(videoUrl);
-    const format = ytdl.chooseFormat(info.formats, { quality: 'highestaudio' });
+    const response = await fetch(proxyUrl);
+    if (!response.ok) throw new Error('Proxy failed');
     res.setHeader('Content-Type', 'audio/webm');
-    ytdl(videoUrl, { format }).pipe(res);
+    response.body.pipe(res);
   } catch (err) {
     console.error(err);
-    res.status(500).send('Error streaming audio');
+    res.status(500).send('Error fetching audio');
   }
+});
+
 });
 app.post('/sugg', async (req, res) => {
   const sugg = req.body.message;
