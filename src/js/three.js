@@ -195,9 +195,12 @@ Song.add(audioSettings, 'loadAudio').name('Load Your Audio');
 
 export function loadwhat(){
 	window.localStorage.path = 'home'
-	if(window.localStorage.scene == 'sc1') return initThreeScene()
-	// loadingpage()
-	if(window.localStorage.scene == 'sc2') return loadpart()
+	window.onload((e)=>{
+		if(window.localStorage.scene == 'sc1') return initThreeScene()
+		loadingpage()
+		if(window.localStorage.scene == 'sc2') return loadpart()
+	})
+
 }
 export function initThreeScene() {
 window.localStorage.scene = 'sc1'
@@ -653,15 +656,12 @@ if (analyser && analyser.analyser) {
 
 }
 function switchScene(createSceneFn) {
-  // Clean up previous scene
   destroyThreeScene()
   if (currentSceneHandler && currentSceneHandler.dispose) {
     currentSceneHandler.dispose();
   }
-//   if(createSceneFn !== initThreeScene)loadingpage()
-  // Setup new scene
+  if(createSceneFn !== initThreeScene)loadingpage()
   currentSceneHandler = createSceneFn();
-
 }
 
 const loadingpage = () => {
@@ -700,19 +700,12 @@ style.textContent = `
 `;
 document.head.appendChild(style);
 
-// Loader container
 const loader = document.createElement("div");
 loader.id = "loader";
-
-// Spinner
 const spinner = document.createElement("div");
 spinner.className = "spinner";
 loader.appendChild(spinner);
-
-// Append loader to body
 document.body.appendChild(loader);
-
-// Poll for currentScene
 const waitForScene = setInterval(() => {
   if (typeof renderer !== "undefined" && renderer.domElement && renderer.domElement.parentNode || renderer) {
     loader.style.opacity = "0";
@@ -721,6 +714,6 @@ const waitForScene = setInterval(() => {
     }, 500);
     clearInterval(waitForScene);
   }
-}, 1); // check every 100ms
+}, 1); 
 
 }
