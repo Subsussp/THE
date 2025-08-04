@@ -1,6 +1,7 @@
 import { destroyAudio } from './Destroyaudio.js';
 import { removeAllStyles } from './removeAllstyles.js';
 import { destroyThreeScene } from './three.js';
+import { ROOTURL } from './var/URL.js';
 
 export function load2DPage(container) {
    destroyThreeScene(); // stop animation loop, remove canvas, etc.
@@ -114,7 +115,7 @@ class="flex ml-2 absolute top-[2%] bg-black w-fit px-1.25 py-1.25 shadow-box-up 
     e.preventDefault();
     const message = input.value.trim();
     if (message) {
-      fetch('http://localhost:3000/sugg', {
+      fetch(`${ROOTURL}/sugg`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
