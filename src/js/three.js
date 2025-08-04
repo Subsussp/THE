@@ -714,7 +714,7 @@ document.body.appendChild(loader);
 
 // Poll for currentScene
 const waitForScene = setInterval(() => {
-  if (typeof renderer !== "undefined" && renderer.domElement && renderer.domElement.parentNode) {
+  if (typeof renderer !== "undefined" && renderer.domElement && renderer.domElement.parentNode || renderer) {
     loader.style.opacity = "0";
     setTimeout(() => {
       loader.remove();
