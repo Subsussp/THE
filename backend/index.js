@@ -34,20 +34,23 @@ app.post('/sugg', async (req, res) => {
   if (!sugg || typeof sugg !== 'string') {
     return res.status(400).send('Invalid suggestion');
   }
-  const date = new Date();
-  const dateStr = date.toISOString().split('T')[0]; // e.g. "2025-08-02"
-  const fileName = `sugg-${dateStr}.txt`;
-  const filePath = path.join(__dirname + '/docs', fileName);
-
-  const line = `[${new Date().toLocaleTimeString()}] ${sugg}\n`;
-
-  fs.appendFile(filePath, line, (err) => {
-    if (err) {
-      console.error('Failed to save suggestion:', err);
-      return res.status(500).send('Failed to save suggestion');
-    }
+  try {
+    const formspreeRes = await fetch('https://formspree.io/f/mldlwkwv', {
+      method: 'POST',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        message: message,
+        _replyto: 'noreply@example.com', // optional: fake email for reply
+      }),
+    });
     res.status(200).send('Received!');
-  });});
+  }catch(error){
+    console.log(error)
+    res.status(400).send('Error');
+  }});
 app.listen(3000, () => {
   console.log('Server running');
 });

@@ -1,12 +1,15 @@
 import { load2DPage } from './back.js';
 import { removeAllStyles } from './removeAllstyles.js';
 import { initThreeScene, destroyThreeScene, loadwhat } from './three.js';
-if(!window.localStorage.scene) {window.localStorage.scene = ''}
+if(!window.localStorage.scene) {window.localStorage.scene = 'sc1'}
 const main = document.getElementById('main');
 if(!window.localStorage.path || window.localStorage.path == null || window.localStorage.path == 'home'){
   window.localStorage.path = 'home'
-  const oldScript = document.querySelector('script[src="./src/js/2daudio.js"]');
-  if (oldScript) oldScript.remove();
+  document.querySelectorAll('script').forEach((script) => {
+    if (script.src && script.src.includes('2daudiofetching.js')) {
+      script.remove();
+    }
+  });
   document.getElementById('crd') && document.getElementById('crd').remove()
   loadwhat();
 }else if(window.localStorage.path == '2d'){

@@ -2,9 +2,10 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Three.js ES Modules</title>
+  <title>THE</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="src/style.css" rel="stylesheet">
+  <link rel="icon" href="favico.ico" type="image/x-icon">
 <style>
     .hidden {
       opacity: 0;
@@ -83,7 +84,18 @@ class="flex ml-2 absolute top-[2%] bg-white w-fit px-1.25 py-1.25 shadow-box-up 
   <div id="main">
   </div>
   
-
+<input
+  type="file"
+  id="audioUploadInput"
+  accept="audio/*"
+  style="display: none"
+/>
+<input
+  type="file"
+  id="audioUploadInput2"
+  accept="audio/*"
+  style="display: none"
+/>
       <!-- Vertex and Fragment Shaders -->
   <script id="vertexshader" type="vertex">
     vec3 mod289(vec3 x)
@@ -230,7 +242,5 @@ class="flex ml-2 absolute top-[2%] bg-white w-fit px-1.25 py-1.25 shadow-box-up 
       // 👇 You still need to expose the function globally
     window.init2d = init2d;
   </script>
-
-
 </body>
 </html>

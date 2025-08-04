@@ -12,7 +12,8 @@ import { audioCache } from './var/audiocache.js';
 import { GUI } from 'https://cdn.jsdelivr.net/npm/lil-gui@0.18/+esm';
 import { float, If, PI, color, cos, instanceIndex, Loop, mix, mod, sin, instancedArray, Fn, uint, uniform, uniformArray, hash, vec3, vec4 } from '../../build/three.tsl.js';
 import { listener, sound } from './var/threesound.js';
-let scene, camera, renderer, animationId, analyser, orbitControls ,gui,button1;
+let scene, camera, renderer, animationId, analyser, orbitControls ,gui;
+let button1 = document.createElement('button')
 const audioLoader = new THREE.AudioLoader();
 let main = document.getElementById('main')
 let currentSceneHandler = null;
@@ -52,10 +53,7 @@ const volume = {Volume: .5}
 const audioSettings = {
   loadAudio: () => fileInput.click()
 };
-const fileInput = document.createElement('input');
-fileInput.type = 'file';
-fileInput.accept = 'audio/*';
-fileInput.style.display = 'none';
+const fileInput = document.getElementById('audioUploadInput2');
 
 fileInput.addEventListener('change', (event) => {
   const file = event.target.files[0];
@@ -66,7 +64,6 @@ fileInput.addEventListener('change', (event) => {
   });
 });
 
-document.body.appendChild(fileInput);
 let button1txt = ['play']
 function initControllers(scene){
 // Scene Controller	
@@ -117,7 +114,6 @@ container.style.display = 'flex';
 container.style.gap = '10px';
 container.style.padding = '4px';
 
-button1 = document.createElement('button');
 button1.innerText = button1txt;
 button1.onclick = (e) =>{
     if(sound.buffer && e.target.innerText == 'play' && !sound.isPlaying){
@@ -296,9 +292,6 @@ animate()
 }
 function loadpart(){
 	window.localStorage.scene = 'sc2'
-			let uniformm = {
-					u_frequency:  0.1
-			}
 			let controls, updateCompute, analyser, orbitControls ;
 			let velocityDamping,maxSpeed
 			let attractorsPositions = uniformArray( [
@@ -653,15 +646,12 @@ if (analyser && analyser.analyser) {
 
 }
 function switchScene(createSceneFn) {
-  // Clean up previous scene
   destroyThreeScene()
   if (currentSceneHandler && currentSceneHandler.dispose) {
     currentSceneHandler.dispose();
   }
   if(createSceneFn !== initThreeScene)loadingpage()
-  // Setup new scene
   currentSceneHandler = createSceneFn();
-
 }
 
 const loadingpage = () => {
@@ -700,27 +690,20 @@ style.textContent = `
 `;
 document.head.appendChild(style);
 
-// Loader container
 const loader = document.createElement("div");
 loader.id = "loader";
-
-// Spinner
 const spinner = document.createElement("div");
 spinner.className = "spinner";
 loader.appendChild(spinner);
-
-// Append loader to body
 document.body.appendChild(loader);
-
-// Poll for currentScene
 const waitForScene = setInterval(() => {
-  if (typeof renderer !== "undefined" && renderer.domElement && renderer.domElement.parentNode) {
+  if (typeof renderer !== "undefined" && renderer.domElement && renderer.domElement.parentNode || renderer) {
     loader.style.opacity = "0";
     setTimeout(() => {
       loader.remove();
     }, 500);
     clearInterval(waitForScene);
   }
-}, 1); // check every 100ms
+}, 1); 
 
 }
