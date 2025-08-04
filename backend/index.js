@@ -10,7 +10,6 @@ app.use(cors({
   origin: process.env.FRONTEND_URL
 }));
 app.use(express.json());
-app.get('/audio', async (req, res) => {
  app.get('/audio', async (req, res) => {
   const videoUrl = req.query.url;
   if (!videoUrl) return res.status(400).send('Missing URL');
@@ -27,7 +26,7 @@ app.get('/audio', async (req, res) => {
   }
 });
 
-});
+
 app.post('/sugg', async (req, res) => {
   const sugg = req.body.message;
   if (!sugg || typeof sugg !== 'string') {
