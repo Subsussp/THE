@@ -195,15 +195,22 @@ Song.add(audioSettings, 'loadAudio').name('Load Your Audio');
 
 export function loadwhat(){
 	window.localStorage.path = 'home'
-	window.addEventListener('load', () => {
-		if (window.localStorage.scene === 'sc1') {
-		initThreeScene();
-		} else if (window.localStorage.scene === 'sc2') {
-		loadpart();
-		} else {
-		loadingpage();
-		}
-	});
+
+  const runScene = () => {
+    if (window.localStorage.scene === 'sc1') {
+      initThreeScene();
+    } else if (window.localStorage.scene === 'sc2') {
+      loadpart();
+    } else {
+      loadingpage();
+    }
+  };
+
+  if (document.readyState === 'complete') {
+    runScene();
+  } else {
+    window.addEventListener('load', runScene);
+  }
 
 }
 export function initThreeScene() {
