@@ -3,7 +3,7 @@ import { audioCache } from "./var/audiocache.js";
 import { audio,loadLocalAudio  } from './var/audioManager.js';
 let audioCtx, source, analyser, dataArray;
 const uploadBtn = document.getElementById("uploadBtn");
-// const loadBtn = document.getElementById("loadBtn");
+const loadBtn = document.getElementById("loadBtn");
 const playBtn = document.getElementById("playBtn");
 const pauseBtn = document.getElementById("pauseBtn");
 const stopBtn = document.getElementById("stopBtn");
@@ -93,81 +93,81 @@ input.onchange =async (e) => {
   canvas.height = 300;
 
 
-//   loadBtn.onclick = async () => {
+  loadBtn.onclick = async () => {
     
-//     const youtubeUrlInput = document.getElementById("youtubeUrl");
-//     const url = youtubeUrlInput.value.trim();
-//     if (!url) return alert("Please enter a YouTube URL");
-//     try {
-//       if (audioCache.has(url)) {
-//         audio.src = audioCache.get(url);
-//       } else {
-//         const objectUrl = await fetchaudio(url)
-//         audioCache.set(url, objectUrl);
-//         audio.src = objectUrl;
-//       }
-//       audio.crossOrigin = "anonymous";
-//       await new Promise((resolve) => {
-//         audio.addEventListener('canplaythrough', resolve, { once: true });
-//       });
+    const youtubeUrlInput = document.getElementById("youtubeUrl");
+    const url = youtubeUrlInput.value.trim();
+    if (!url) return alert("Please enter a YouTube URL");
+    try {
+      if (audioCache.has(url)) {
+        audio.src = audioCache.get(url);
+      } else {
+        const objectUrl = await fetchaudio(url)
+        audioCache.set(url, objectUrl);
+        audio.src = objectUrl;
+      }
+      audio.crossOrigin = "anonymous";
+      await new Promise((resolve) => {
+        audio.addEventListener('canplaythrough', resolve, { once: true });
+      });
 
-//       try {
-//         await audio.play();
-//         playBtn.innerText = '⏸ Pause';
-//       } catch (playError) {
-//         console.error("Error calling play():", playError);
-//         return;
-//       }
-//       audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-//       source = audioCtx.createMediaElementSource(audio);
-//       analyser = audioCtx.createAnalyser();
+      try {
+        await audio.play();
+        playBtn.innerText = '⏸ Pause';
+      } catch (playError) {
+        console.error("Error calling play():", playError);
+        return;
+      }
+      audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      source = audioCtx.createMediaElementSource(audio);
+      analyser = audioCtx.createAnalyser();
       
-//       source.connect(analyser);
-//       analyser.connect(audioCtx.destination);
+      source.connect(analyser);
+      analyser.connect(audioCtx.destination);
       
-//       analyser.fftSize = 256;
-//       const bufferLength = analyser.frequencyBinCount;
-//       dataArray = new Uint8Array(bufferLength);
+      analyser.fftSize = 256;
+      const bufferLength = analyser.frequencyBinCount;
+      dataArray = new Uint8Array(bufferLength);
 
-//       function draw() {
-//         requestAnimationFrame(draw);
-//         analyser.getByteFrequencyData(dataArray);
-//         ctx.clearRect(0, 0, canvas.width, canvas.height);
-//         const barCount = dataArray.length;
-//         const barWidth = (canvas.width / barCount) * 1.8; // Adjust spacing
-//         let x = 0;
-//   for (let i = 0; i < barCount; i++) {
-//     const value = dataArray[i];
-//     const barHeight = (value / 255) * canvas.height;
-//   function hexToRGB(hex) {
-//     const bigint = parseInt(hex.slice(1), 16);
-//     const r = (bigint >> 16) & 255;
-//     const g = (bigint >> 8) & 255;
-//     const b = bigint & 255;
-//     return { r, g, b };
-//   }
-//     if(colorSlider.value == '#000000'){
-//         const r = 25;
-//         const g = 50;
-//         const b = 200;
-//         const hex = "#" +
-//         r.toString(16).padStart(2, "0") +
-//         g.toString(16).padStart(2, "0") +
-//         b.toString(16).padStart(2, "0");
-//         colorSlider.value = hex
-//       }
-//     const { r, g, b } = hexToRGB(colorSlider.value);
-//     ctx.fillStyle = `rgb(${value + r},${g},${b})`;
-//     ctx.fillRect(x, canvas.height - barHeight, barWidth, barHeight);
-//     x += barWidth + 1;
-//   }
-// }
+      function draw() {
+        requestAnimationFrame(draw);
+        analyser.getByteFrequencyData(dataArray);
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        const barCount = dataArray.length;
+        const barWidth = (canvas.width / barCount) * 1.8; // Adjust spacing
+        let x = 0;
+  for (let i = 0; i < barCount; i++) {
+    const value = dataArray[i];
+    const barHeight = (value / 255) * canvas.height;
+  function hexToRGB(hex) {
+    const bigint = parseInt(hex.slice(1), 16);
+    const r = (bigint >> 16) & 255;
+    const g = (bigint >> 8) & 255;
+    const b = bigint & 255;
+    return { r, g, b };
+  }
+    if(colorSlider.value == '#000000'){
+        const r = 25;
+        const g = 50;
+        const b = 200;
+        const hex = "#" +
+        r.toString(16).padStart(2, "0") +
+        g.toString(16).padStart(2, "0") +
+        b.toString(16).padStart(2, "0");
+        colorSlider.value = hex
+      }
+    const { r, g, b } = hexToRGB(colorSlider.value);
+    ctx.fillStyle = `rgb(${value + r},${g},${b})`;
+    ctx.fillRect(x, canvas.height - barHeight, barWidth, barHeight);
+    x += barWidth + 1;
+  }
+}
 
-//       draw();
-//     } catch (err) {
-//       console.error(err);
-//     }
-//   };
+      draw();
+    } catch (err) {
+      console.error(err);
+    }
+  };
 
   playBtn.onclick = () => {
     if (audio && playBtn.innerText == '▶ Play') {
