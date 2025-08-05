@@ -83,7 +83,11 @@ class="flex ml-2 absolute top-[2%] bg-black w-fit px-1.25 py-1.25 shadow-box-up 
       <h1 id="youtubeUrlabel">Visualize Your Favorite Music</h1>
     </header>
 <div class="input-group">
-    <button class="btn" id="uploadBtn">Upload</button>
+  <input type="text" id="youtubeUrl" placeholder="Paste YouTube URL here" />
+  <div class="group">
+  <button  class="btn"  id="loadBtn">Load & Play</button>
+  <button class="btn" id="uploadBtn">Upload</button>
+  </div>
 </div>
 
 <canvas id="mcanvas"></canvas>
