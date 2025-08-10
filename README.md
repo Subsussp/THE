@@ -5,7 +5,13 @@
 **THE** is a WebGL-powered music visualizer that transforms audio tracks into dynamic, real-time visual experiences. Users can upload their own music, and the site will generate a unique audiovisual display using 3D graphics, shaders, and sound analysis.
 
 ---
+## ⚠ GPU Required
 
+This project requires a **dedicated or integrated GPU** to run properly.  
+If your system does not support **WebGL / WebGPU** or hardware acceleration,  
+some features may not work, or performance may be severely degraded.
+
+---
 ## ✨ Features
 
 - 🎵 **Audio Upload** — Upload local audio files (e.g., MP3, WAV)
