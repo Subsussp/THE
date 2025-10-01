@@ -1,1 +1,1 @@
-export let ROOTURL = 'https://sub1.hackclub.app/THE'
+export let ROOTURL = 'https://the-production.up.railway.app'
