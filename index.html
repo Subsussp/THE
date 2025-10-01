@@ -35,6 +35,7 @@ class="flex ml-2 absolute top-[2%] bg-white w-fit px-1.25 py-1.25 shadow-box-up 
 <div
   class="flex items-center justify-center gap-x-4 bg-white text-black shadow-buttons-box-dark rounded-2xl w-full px-1.5 py-1.5 md:px-3 md:py-3"
 >
+
   <button
     title="Go to 2d Visualizer page"
     onclick="init2d()"
@@ -76,6 +77,7 @@ class="flex ml-2 absolute top-[2%] bg-white w-fit px-1.25 py-1.25 shadow-box-up 
   </a>
 </div>
 </div>
+<img id="img1" src="./src/js/noise.jpg" style="display:none">
 
 <form id="suggestionContainer" class="hidden" autocomplete="off">
   <input type="text" id="suggestionInput" placeholder="What to add?" />
@@ -83,6 +85,8 @@ class="flex ml-2 absolute top-[2%] bg-white w-fit px-1.25 py-1.25 shadow-box-up 
   
   <div id="main">
   </div>
+  <canvas id="mai">
+  </canvas>
   
 <input
   type="file"
@@ -96,6 +100,8 @@ class="flex ml-2 absolute top-[2%] bg-white w-fit px-1.25 py-1.25 shadow-box-up 
   accept="audio/*"
   style="display: none"
 />
+<script src="https://cdn.jsdelivr.net/npm/three@0.169.0/examples/js/controls/PointerLockControls.js"></script>
+
       <!-- Vertex and Fragment Shaders -->
   <script id="vertexshader" type="vertex">
     vec3 mod289(vec3 x)
@@ -202,14 +208,71 @@ class="flex ml-2 absolute top-[2%] bg-white w-fit px-1.25 py-1.25 shadow-box-up 
   }
 
 </script>
+  <script id="vertexshader3" type="vertex">
+     varying float x;
+      varying float y;
+      varying float z;
+      varying vec3 vUv;
+
+      uniform float u_time;
+      uniform float u_amplitude;
+      uniform float[64] u_data_arr;
+
+      void main() {
+        vUv = position;
+
+        x = abs(position.x);
+	      y = abs(position.y);
+
+        float floor_x = round(x);
+	      float floor_y = round(y);
+
+        float x_multiplier = (32.0 - x) / 8.0;
+        float y_multiplier = (32.0 - y) / 8.0;
+
+        z = sin(u_data_arr[int(floor_x)] / 50.0 + u_data_arr[int(floor_y)] / 50.0) * u_amplitude;
+
+        gl_Position = projectionMatrix * modelViewMatrix * vec4(position.x, position.y, z, 1.0);
+      }
+</script>
+  <script id="toruvertexshader" type="vertex">
+
+
+</script>
 <script src="https://cdn.jsdelivr.net/npm/meyda/dist/web/meyda.min.js"></script>
   <script id="fragmentshader" type="fragment">
-    uniform float u_red;
-    uniform float u_blue;
-    uniform float u_green;
+  uniform float u_red;
+  uniform float u_blue;
+  uniform float u_green;
     void main() {
         gl_FragColor = vec4(vec3(u_red, u_green, u_blue), 1. );
     }
+
+  </script> 
+
+  <script id="fragmentshader3" type="fragment">
+varying float z;
+uniform float u_amplitude;
+
+vec3 hsv2rgb(vec3 c) {
+    vec3 rgb = clamp( abs(mod(c.x * 6.0 + vec3(0.0,4.0,2.0), 6.0)-3.0)-1.0, 0.0, 1.0 );
+    return c.z * mix(vec3(1.0), rgb, c.y);
+}
+
+void main() {
+    // Normalize z to 0..1
+    float normalizedZ = clamp((z + u_amplitude) / (2.0 * u_amplitude), 0.0, 1.0);
+
+    // Map normalized z to hue (0..1)
+    float hue = normalizedZ;  
+    float saturation = 1.0;
+    float value = 1.0;
+
+    vec3 rgb = hsv2rgb(vec3(hue, saturation, value));
+    gl_FragColor = vec4(rgb, 1.0);
+}
+ 
+
   </script> 
  <script type="module" src="./src/js/scripts.js"></script>
  <script type="module">

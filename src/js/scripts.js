@@ -1,7 +1,7 @@
 import { load2DPage } from './back.js';
 import { removeAllStyles } from './removeAllstyles.js';
 import { initThreeScene, destroyThreeScene, loadwhat } from './three.js';
-if(!window.localStorage.scene) {window.localStorage.scene = 'sc1'}
+if(!window.localStorage.scene) {window.localStorage.scene = 'sc5'}
 const main = document.getElementById('main');
 if(!window.localStorage.path || window.localStorage.path == null || window.localStorage.path == 'home'){
   window.localStorage.path = 'home'
@@ -11,6 +11,7 @@ if(!window.localStorage.path || window.localStorage.path == null || window.local
     }
   });
   document.getElementById('crd') && document.getElementById('crd').remove()
+  document.getElementsByClassName('notes').length > 0 && Array.from(document.getElementsByClassName('notes')).forEach(el => el.remove());
   loadwhat();
 }else if(window.localStorage.path == '2d'){
 Promise.resolve()
