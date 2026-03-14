@@ -1,1 +1,0 @@
-export let ROOTURL = 'the-production.up.railway.app'

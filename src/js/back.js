@@ -211,7 +211,7 @@ class="flex ml-2 absolute top-[2%] bg-black w-fit px-1.25 py-1.25 shadow-box-up 
   
   document.getElementById('backTo3D').onclick = () => {
     import('./three.js').then(module => {
-      if(!window.localStorage.scene.includes('sc'))window.localStorage.scene = 'sc5'
+      if(!window.localStorage.scene.includes('sc'))window.localStorage.scene = 'sc2'
       removeAllStyles()
          if (!document.querySelector('link[href="./src/style.css"]')) {
      const link = document.createElement('link');

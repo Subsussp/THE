@@ -1,0 +1,15 @@
+adjusting the vigentte effect 
+finshing the navbar 
+adding a raw wave visualizer
+adding that new font i downloaded
+thinking of a way to make the mouse interactive with the scene
+19
+75.5327255724013
+95.61752943615642
+95.61752943615642
+chatgpt prompt 
+`how to make something slowmotion?` (i want to apply it for the background visualizer)
+
+make the mouse drag down transform a scroll trigger animation 
+
+something wrong with the wrapper for the website scroll

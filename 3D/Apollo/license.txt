@@ -1,0 +1,11 @@
+Model Information:
+* title:	Apollo - Greek God Statue
+* source:	https://sketchfab.com/3d-models/apollo-greek-god-statue-6867e287acc8476ba348ac0d53a87099
+* author:	lovadahn (https://sketchfab.com/lovadahn)
+
+Model License:
+* license type:	CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
+* requirements:	Author must be credited. Commercial use is allowed.
+
+If you use this 3D model in your project be sure to copy paste this credit wherever you share it:
+This work is based on "Apollo - Greek God Statue" (https://sketchfab.com/3d-models/apollo-greek-god-statue-6867e287acc8476ba348ac0d53a87099) by lovadahn (https://sketchfab.com/lovadahn) licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
