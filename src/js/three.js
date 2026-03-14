@@ -35,6 +35,7 @@ function configaudio(buffer) {
 	sound.setVolume(.5)
 	sound.play()
 }
+// samples tab settings
 const sampleActions = {
     '1': () =>{		
 		audioLoader.load('./sample1.mp3', function (buffer) {
@@ -50,6 +51,7 @@ const sampleActions = {
 			configaudio(buffer)
 	})} 
   };
+
 let setfirst = false
 let type = 'Youtube';
 let url = {Youtube:'https://www.youtube.com/watch?v=mNEUkkoUoIA&list=RDmNEUkkoUoIA&start_radio=1',Spotify:'',Soundcloud:''}
@@ -57,6 +59,7 @@ const settings = {
 	platform: type,
 	value: url['Youtube']
 	};
+
 const volume = {Volume: .5}
 const audioSettings = {
   loadAudio: () => fileInput.click()
@@ -74,6 +77,7 @@ fileInput.addEventListener('change', (event) => {
 
 let button1txt = ['play']
 function initControllers(scene){
+
 // Scene Controller	
 const sceneController = {
   currentScene: scene,
@@ -702,7 +706,7 @@ export function SpectrumScene() {
     // ------------------------
     // Post-processing: Bloom
     // ------------------------
-// Create composer
+	// Create composer
 	const composer = new EffectComposer(renderer);
 	composer.addPass(new RenderPass(scene, camera));
 
@@ -1191,161 +1195,6 @@ window.addEventListener('resize', onWindowResize, false);
 	animate()
 }
 
-// export function PlaneScene(){
-// 	window.localStorage.scene = 'sc5'
-// 	let width = 20
-// 	let height = 20
-// 	gui = new GUI();
-// 	renderer = new THREE.WebGLRenderer()	
-// 	renderer.setSize(window.innerWidth, window.innerHeight);
-// 	main.appendChild(renderer.domElement);
-// 	scene = new THREE.Scene()
-// 	camera =  new THREE.PerspectiveCamera(60,window.innerWidth / window.innerHeight,0.1,1000)
-// 	const controls = new OrbitControls(camera, renderer.domElement);
-// 	// helpers
-// 	const gridHelper = new THREE.GridHelper( 10, 10 );
-// 	scene.add( gridHelper );	
-// 	let helpers = new THREE.AxesHelper(5)
-// 	camera.position.set(5,4,8)
-// 	scene.add(helpers)
-// 	// uniforms 
-// 		// uniforms 
-// 		const uniforms = {
-// 		time:{value:0.0},
-// 		reverse:{value:-1},
-// 		Boombase:{value:0.0},	
-// 		cameraPos: { value: new THREE.Vector3() },
-// 		audioStrength: { value: 1 },
-// 		speed: { value: 0.003 },
-// 		speedMultiplier: { value: 0.2 },
-// 	  	colorA: { value: new THREE.Color(0x5900ff) }, // use 24-bit color
-//   		colorB: { value: new THREE.Color(0xffa575) },
-// 		highmid:{value:1.0},
-// 		scaler:{value:1.0}
-// 	}
-// 	// grid
-// 	const points = [
-// 		new THREE.Vector3(-10,0,10),
-// 		new THREE.Vector3(5,5,5),
-// 		new THREE.Vector3(0,0,0),
-// 		new THREE.Vector3(5,-5,5),
-// 		new THREE.Vector3(10,0,10)
-// 	]
-// 	const path = new THREE.CatmullRomCurve3(points,true)
-
-// 	const pathGeo = new THREE.BufferGeometry().setFromPoints(path.getPoints(50));
-// 	const pathMat = new THREE.LineBasicMaterial({color: 0xff0000});
-// 	const pathObject = new THREE.Line(pathGeo,pathMat)
-
-// 	const geometry = new THREE.BoxGeometry( 1, 1, 1 ); 
-// 	const material = new THREE.MeshBasicMaterial( {color: 0x00ff00} ); 
-// 	const cube = new THREE.Mesh( geometry, material ); 
-// 	scene.add( cube );
-// 	scene.add(pathObject)
-// 	// Gui 
-		
-// 	gui.addColor({ color: '#' + uniforms.colorA.value.getHexString() }, 'color').name('colorA')
-// 	.onChange(value => {
-// 		uniforms.colorA.value.set(value); // convert string/hex to THREE.Color
-// 	});
-
-// 	gui.addColor({ color: '#' + uniforms.colorB.value.getHexString() }, 'color').name('colorB')
-// 	.onChange(value => {
-// 		uniforms.colorB.value.set(value); // convert string/hex to THREE.Color
-// 	});
-
-// 	// lights
-// 	const hemi = new THREE.HemisphereLight(0xffffff, 0x444444, 0.8);
-// 	scene.add(hemi);
-// 	const dir = new THREE.DirectionalLight(0xffffff, 0.8);
-// 	dir.position.set(5,10,7);
-// 	scene.add(dir);
-// 	const pgeometry = new THREE.BufferGeometry();
-// 	const vertices = new Float32Array((width + 1) * (height + 1) * 3);
-// 	const uvs = new Float32Array((width + 1) * (height + 1) * 2);
-
-// 	let idx = 0;
-// 	let idxUv = 0; // uv index
-
-// 	for (let i = 0; i <= width; i++) {
-// 	for (let j = 0; j <= height; j++) {
-// 		// position
-// 		const x = i - width / 2;
-// 		const y = 0;
-// 		const z = j - height / 2;
-
-// 		vertices[idx]     = x;
-// 		vertices[idx + 1] = y;
-// 		vertices[idx + 2] = z;
-// 		idx += 3;
-
-// 		// UV (normalized 0 → 1)
-// 		const u = i / width;
-// 		const v = j / height;
-
-// 		uvs[idxUv]     = u;
-// 		uvs[idxUv + 1] = v;
-// 		idxUv += 2;
-// 	}
-// 	}
-// 	const vertexShader = `precision mediump float;
-
-// varying vec2 vUv;
-
-// void main() {
-//     vUv = uv;                     // pass UVs to fragment
-//     gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
-//     gl_PointSize = 4.0;           // size of each point
-// }
-
-// 	`
-// 	const fragmentShader = `precision mediump float;
-
-// uniform vec3 colorA;
-// uniform vec3 colorB;
-
-// varying vec2 vUv;
-
-// void main() {
-//     vec3 blended = mix(colorA, colorB, 0.2);
-
-//     vec2 circ = gl_PointCoord - 0.5;
-//     float d = length(circ);
-//     if (d > 0.5) discard;
-
-//     float alpha = 1.0 - smoothstep(0.4, 0.5, 0.3);
-
-//     gl_FragColor = vec4(blended, alpha);
-// }
-
-
-// 	`;;
-// 	pgeometry.setAttribute('position', new THREE.BufferAttribute(vertices,3));
-// 	geometry.setAttribute("uv", new THREE.BufferAttribute(uvs, 2));
-	
-// 	const pmaterial = new THREE.ShaderMaterial({
-// 	uniforms: {
-// 		colorA: { value: new THREE.Color(0x00ffff) }, // cyan
-// 		colorB: { value: new THREE.Color(0xff00ff) }  // magenta
-// 	},
-// 	vertexShader: vertexShader,
-// 	fragmentShader: fragmentShader,
-// 	transparent: true,
-// 	blending: THREE.AdditiveBlending, // glowing overlap
-// 	depthWrite: false
-// 	});
-// 	const point = new THREE.Points( pgeometry, pmaterial );
-// 	scene.add(point)
-// 	function animate(time) {
-// 		const t = (time / 2000 % 6) / 6;
-// 		const position = path.getPoint(t)
-// 		cube.position.copy(position)
-// 		cube.lookAt(position.clone().add(path.getTangentAt(t).normalize()))
-// 		renderer.render(scene,camera)
-// 	}
-// 	renderer.setAnimationLoop(animate)
-// }
-
 var Sscene, orthoCamera, rtt,particles;
 function Fbo( width, height, renderer, simulationMaterial, renderMaterial ,fftSize){
 	function init(){
@@ -1822,6 +1671,9 @@ void main() {
 	let control1 = gui.add(settings , 'cameralock').name('Cameralock').onChange(()=>{
 		if(settings.cameralock){
 			j = 0
+		}else{
+			camera.position.set(233,182,120)
+			camera.lookAt(0,0,0)
 		}
 	})
 	let control = gui.add(settings, 'PointerLockControls').name('PointerLockControls:').onChange((enabled) => {
@@ -1845,18 +1697,18 @@ void main() {
 	});
 
 	let lastClickTime = 0;
+	// Double click 
+	// document.addEventListener('click', () => {
+	// 	const now = performance.now();
 
-	document.addEventListener('click', () => {
-		const now = performance.now();
+	// 	if (now - lastClickTime < 300) { // double click detected
+	// 		if (settings.PointerLockControls) {
+	// 		Pointercontrols.lock();
+	// 		}
+	// 	}
 
-		if (now - lastClickTime < 300) { // double click detected
-			if (settings.PointerLockControls) {
-			Pointercontrols.lock();
-			}
-		}
-
-		lastClickTime = now;
-	});
+	// 	lastClickTime = now;
+	// });
 	// Movement
 	const direction = new THREE.Vector3();
 	const move = { forward: false, backward: false, left: false, right: false };
@@ -1901,14 +1753,14 @@ void main() {
 	}
 	});
 	const note = document.createElement('div');
-	const secondnote = document.createElement('div');
+	// const secondnote = document.createElement('div');
 	const thnote = document.createElement('div');
-	secondnote.innerText = "Double click to lock";
+	// secondnote.innerText = "Double click to lock";
 	thnote.innerText = "ESC to unlock";
 	thnote.className = "notes";
 	note.className = "notes";
-	secondnote.className = "notes";
-	thnote.style.top = '25vh';
+	// secondnote.className = "notes";
+	thnote.style.top = '20vh';
 	thnote.style.position = 'absolute';
 	thnote.style.left = '10px';
 	thnote.style.padding = '6px 10px';
@@ -1917,15 +1769,15 @@ void main() {
 	thnote.style.fontFamily = 'sans-serif';
 	thnote.style.fontSize = '14px';
 	thnote.style.borderRadius = '4px';
-	secondnote.style.top = '20vh';
-	secondnote.style.position = 'absolute';
-	secondnote.style.left = '10px';
-	secondnote.style.padding = '6px 10px';
-	secondnote.style.background = 'rgba(0,0,0,0.6)';
-	secondnote.style.color = 'white';
-	secondnote.style.fontFamily = 'sans-serif';
-	secondnote.style.fontSize = '14px';
-	secondnote.style.borderRadius = '4px';
+	// secondnote.style.top = '20vh';
+	// secondnote.style.position = 'absolute';
+	// secondnote.style.left = '10px';
+	// secondnote.style.padding = '6px 10px';
+	// secondnote.style.background = 'rgba(0,0,0,0.6)';
+	// secondnote.style.color = 'white';
+	// secondnote.style.fontFamily = 'sans-serif';
+	// secondnote.style.fontSize = '14px';
+	// secondnote.style.borderRadius = '4px';
 	note.innerText = "Press Shift to toggle the ride";
 	note.style.position = 'absolute';
 	note.style.top = '15vh';
@@ -1937,7 +1789,7 @@ void main() {
 	note.style.fontSize = '14px';
 	note.style.borderRadius = '4px';
 	document.body.appendChild(note);
-	document.body.appendChild(secondnote);
+	// document.body.appendChild(secondnote);
 	document.body.appendChild(thnote);
 	// ------------------- Render Material -------------------
 	const material = new THREE.ShaderMaterial({
@@ -2017,6 +1869,7 @@ void main() {
 		FBO.update();	
 		analyser.analyser.getByteFrequencyData(freqArray); // fills with 0..255
 		analyser.analyser.getFloatFrequencyData(freqBuffer); // fills with 0..255
+		console.log(camera.position)
 		const tsec = time * 0.001;
 		let size = points.length + 1
 		let bass = 0 ; 
@@ -2123,18 +1976,3 @@ void main() {
 		renderer.render( scene, camera );
 	}
 }
-			// vec2 center = vec2(0.5, 0.5);          // center in UV space
-			// vec2 diff = vUv - center;              // vector from center
-			// float d = length(diff * uFieldSize);   // distance in world units
-			// float totalWave = 0.0;
-			// for(int i = 0; i < uNumWaves; i++){
-
-			// 	float t0 = uWaveTimes[i];
-			// 	float radius = (uTime - t0) * uWaveSpeed;
-			// 	float delta = d - radius;
-
-			// // only affect particles near the wavefront
-			// 	float fade = exp(-delta * delta * 0.05); // Gaussian fade
-			// 	totalWave += sin(uTime - delta) * fade;
-			// }
-			// pos.y += totalWave ;

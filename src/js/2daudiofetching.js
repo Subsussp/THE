@@ -20,7 +20,8 @@ const slider = document.getElementById('volumeSlider');
   slider.addEventListener('input', () => {
     updateTrackFill(slider.value);
   });
-// File input (hidden)
+
+// File Upload logic
 const input = document.getElementById('audioUploadInput');
 uploadBtn.onclick = () => input.click();
 input.onchange =async (e) => {
