@@ -20,7 +20,9 @@
     }
       body {
         margin: 0;      
-        /* overflow: hidden;  */
+  }
+  ::-webkit-scrollbar,::-webkit-scrollbar-track{
+    display: none;
   }
   #main{
     position: fixed;
@@ -47,6 +49,9 @@
   cursor: default;
   pointer-events: none;
 }
+    .smooth-wrapper{
+      height: 100%;
+    }
     svg {
       width: 100%;
       position: fixed;
@@ -370,9 +375,10 @@ void main() {
     uniform float u_blue;
     uniform float u_green;
     uniform float uOpacity;
+    uniform float fOpacity;
 
       void main() {
-          gl_FragColor = vec4(vec3(u_red, u_green, u_blue), uOpacity );
+          gl_FragColor = vec4(vec3(u_red, u_green, u_blue), uOpacity * fOpacity);
       }
 
   </script> 
@@ -498,20 +504,15 @@ void main() {
   </nav>
   <div class="smooth-wrapper">
     <div class="smooth-content">
-      <section style="height:180vh;"></section> 
+      <section class="smooth-visualzer" style="height:180vh;"></section> 
+      <section class="last-visualzer" style="height:180vh;"></section> 
     </div>
-        <div class="smooth-visualzer">
-      <section style="height:180vh;"></section> 
-  </div>
-           <div class="last-visualzer">
-      <section style="height:180vh;"></section> 
-  </div>
   </div>
   <div id="main">
   </div>
     <audio id="audio" src="music/Far_From_Any_Road_-_Handsome_Family_(mp3.pm).mp3" style="display:none"></audio>
   <h1 id="statue"></h1>
-<svg viewBox="0 0 500 250"  id="twisty">
+<svg viewBox="0 0 500 250" class="is" id="twisty">
   <path id="sad-arc" d="M 50 150 C 150 150, 250 100, 450 150" fill="transparent"/>
 
   <text>
@@ -520,7 +521,7 @@ void main() {
     </textPath>
   </text>
 </svg>
-<svg viewBox="0 0 500 250"  id="twisty">
+<svg viewBox="0 0 500 250"  class="os" id="twisty">
   <path id="sad-arc" d="M 50 150 C 150 150, 250 100, 450 150" fill="transparent"/>
 
   <text>
@@ -560,7 +561,7 @@ void main() {
         document.head.appendChild(link);
         load2DPage(main);
     }
-      // 👇 You still need to expose the function globally
+
     window.init2d = init2d;
   </script> -->
 </body>

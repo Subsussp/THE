@@ -4,7 +4,7 @@ import { OrbitControls } from 'https://cdn.jsdelivr.net/npm/three@0.158.0/exampl
 
 const audio = document.getElementById('audio');
 document.addEventListener('DOMContentLoaded',async ()=>{
-    // await audio.play()
+    await audio.play()
 })
 let audioCtx, analyser, dataArray;
 // let audioCtx2 = new AudioContext();

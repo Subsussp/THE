@@ -13,3 +13,6 @@ chatgpt prompt
 make the mouse drag down transform a scroll trigger animation 
 
 something wrong with the wrapper for the website scroll
+
+
+Audio config with the scroll trigger so it sounds far away

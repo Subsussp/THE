@@ -60,17 +60,42 @@ config.SpotLightHelper = config.SpotLight
 
 // Navbar audio animation
 const audio = document.getElementById('audio');
-let audioCtx, analyser, dataArray;
+let audioCtx, analyser, dataArray,gain;
 let speed = 1
 audio.addEventListener('play', async () => {
   if (!audioCtx) {
     audioCtx = new AudioContext();
     const source = audioCtx.createMediaElementSource(audio)
+    gain = audioCtx.createGain()
+    const filter = audioCtx.createBiquadFilter()
     analyser = audioCtx.createAnalyser();
     analyser.fftSize = 2048
     source.connect(analyser);
-    analyser.connect(audioCtx.destination)
+    analyser.connect(gain).connect(filter).connect(audioCtx.destination)
+    
     const bufferLength = analyser.frequencyBinCount;
+    filter.type = "lowpass"
+    console.log(filter.frequency.value)
+    gsap.fromTo(filter.frequency,{value:20000}, {
+        value: 200,
+        ease: "power1.out",  
+        scrollTrigger: {
+          trigger: '.smooth-content',
+          start: 'top top',
+          end: '50% top',
+          scrub: 3,
+        },
+  })
+      gsap.to(gain.gain, {
+        value: .4,
+        ease: "power1.out",  
+        scrollTrigger: {
+          trigger: '.smooth-content',
+          start: 'top top',
+          end: '50% top',
+          scrub: 3,
+        },
+  })
     dataArray = new Uint8Array(bufferLength)
   }
 });
@@ -225,6 +250,7 @@ const uniforms = {
   u_green: { value: params.green },
   u_blue: { value: params.blue },
   uOpacity: { value: 0.0 },
+  fOpacity: { value: 1.0 },
 };
 const extrageo = new THREE.IcosahedronGeometry(4,30);
 const planeMaterial = new THREE.ShaderMaterial({
@@ -1030,33 +1056,17 @@ cameraB.position.x = 50
 cameraB.position.z = 500
 cameraB.lookAt(new THREE.Vector3(0,0,0))
 let activecamera = camera
-let orbit = new OrbitControls(activecamera, renderer.domElement);
-orbit.enableDamping = true;
-orbit.enablePan = false;
-orbit.enableZoom = false;
-orbit.minAzimuthAngle = 0;  
-orbit.maxAzimuthAngle = 0;  
-// orbit.target.copy(statue.position);
+// let orbit = new OrbitControls(activecamera, renderer.domElement);
+// orbit.enableDamping = true;
+// orbit.enablePan = false;
+// orbit.enableZoom = false;
+// orbit.minAzimuthAngle = 0;  
+// orbit.maxAzimuthAngle = 0;  
 let Camerapos = gui.addFolder('Camera')
 Camerapos.add(activecamera.position, 'x',-1000,1000,1)
 Camerapos.add(activecamera.position, 'y',-1000,1000,1)
 Camerapos.add(activecamera.position, 'z',-1000,1000,1)
 window.addEventListener('keydown',(e)=>{
-    if(e.key == 's'){
-      orbit.dispose();
-      activecamera = activecamera == cameraB ? camera: cameraB
-      
-      orbit = new OrbitControls(activecamera, renderer.domElement);
-      orbit.enableDamping = true;
-      
-      orbit.target.copy(statue.position);
-      orbit.update();
-      scene.traverse((obj) => {
-        if (obj instanceof TransformControls) {
-          obj.camera = activecamera;
-        }
-      });
-  }
   if(e.key == 't'){
     activecamera.position.x = activecamera.position.x + 400
     camera.lookAt(new THREE.Vector3(400,50,0))
@@ -1207,29 +1217,6 @@ config.SpotLight && scene.add(light2) &
 config.AmbientLight && scene.add(light3)  & scene.add(Transform4)
 config.RectAreaLight && scene.add(light4) & scene.add(helper4)  & scene.add(Transform5)
 
-Transform.addEventListener('dragging-changed', (event) => {
-    orbit.enabled = !event.value;
-});
-
-Transform1.addEventListener('dragging-changed', (event) => {
-    orbit.enabled = !event.value; 
-});
-
-Transform2.addEventListener('dragging-changed', (event) => {
-    orbit.enabled = !event.value; 
-});
-
-Transform3.addEventListener('dragging-changed', (event) => {
-    orbit.enabled = !event.value; 
-});
-
-Transform4.addEventListener('dragging-changed', (event) => {
-    orbit.enabled = !event.value; 
-});
-
-Transform5.addEventListener('dragging-changed', (event) => {
-    orbit.enabled = !event.value; 
-});
 
 let ongoing;
 
@@ -1310,7 +1297,32 @@ function origin(direction){
   ongoing = false
   }).start()
 }
-let scrollProgress = 0;
+let scrollProgress = {progress: 0};
+gsap.to(scrollProgress, {
+  progress:1,
+  ease: "power1.out",  
+  scrollTrigger: {
+    trigger: '.last-visualzer',
+    start: '5% top',
+    end: 'bottom bottom',
+    scrub: 3,
+    snap: {
+      snapTo: [0,1],
+    },
+    onUpdate: (e)=>{
+      if(e.progress == 0){
+        extramesh.material.uniforms.fOpacity.value = 1
+        if(extramesh.material.uniforms.UOpacity?.value)extramesh.material.uniforms.UOpacity.value = 1
+      }else{ 
+        document.getElementsByClassName('os')[0].style.opacity = (1- e.progress)
+        document.getElementsByClassName('is')[0].style.opacity = (1- e.progress)
+        if(gain?.gain)gain.gain.value = (1- e.progress) * Math.random() 
+        extramesh.material.uniforms.fOpacity.value = (1- e.progress) * Math.random() 
+      }
+    },
+
+  },
+})
 
 gsap.to(activecamera.position, {
   z: 5.57642003011228, 
@@ -1319,34 +1331,18 @@ gsap.to(activecamera.position, {
   scrollTrigger: {
     trigger: '.smooth-content',
     start: 'top top',
-    end: 'bottom bottom',
+    end: '50% top',
     scrub: 3,
     snap: {
       snapTo: [0,1],
-    }
-  },
-
+    },}
 });
-gsap.to(activecamera.position, {
-  z: 1.57642003011228, 
-  y:292.335393361824,
-  ease: "power1.out",  
-  scrollTrigger: {
-    trigger: '.smooth-visualzer',
-    start: 'top top',
-    end: 'bottom bottom',
-    scrub: 3,
-    snap: {
-      snapTo: [0,1],
-    }
-  },
 
-});
 const tl = gsap.timeline({
   scrollTrigger: {
     trigger: ".smooth-content",
     start: "top top",
-    end: "bottom bottom",
+    end: "50% top",
     scrub: 0.3
   }
 });
@@ -1359,7 +1355,7 @@ tl.to("#description", {
   opacity: 0,
   duration: 2
 }, "<.1")
-.to("#twisty",{
+.fromTo("#twisty",{  opacity: 0},{
   opacity: 1,
   duration: 3
 },'>16')
@@ -1369,7 +1365,7 @@ gsap.to(extramesh.position, {
   scrollTrigger: {
     trigger: '.smooth-content',
     start: 'top top',
-    end: 'bottom bottom',
+    end: '50% top',
     scrub: 3
   }
 });
@@ -1380,10 +1376,10 @@ gsap.to(extramesh.material.uniforms.uOpacity, {
   scrollTrigger: {
     trigger: '.smooth-content',
     start: 'top top',
-    end: 'bottom bottom',
+    end: '50% top',
     scrub: 3
   }
-})
+},'<')
 
 let cursor = {x:0,y:0}
 const clock = new THREE.Clock()
@@ -1400,7 +1396,7 @@ function getAverageFrequency() {
 function updateAudio() {
   if(analyser){
     analyser.getByteFrequencyData(dataArray) 
-    uniforms.u_frequency.value = (getAverageFrequency()) * uniforms.uOpacity.value;
+    uniforms.u_frequency.value = (getAverageFrequency()) * uniforms.uOpacity.value * uniforms.fOpacity.value;
     for (let i = 0; i < dataArray.length; i++) {
       mat.uniforms.uAudio.value[i] = dataArray[i] / 255;
       mat2.uniforms.uAudio.value[i] = dataArray[i] / 255;
@@ -1415,8 +1411,6 @@ function animate(time){
   helper.update()
   helper1.update()
   helper2.update()
-  orbit.update();
-
   TWEEN.update(time);
   if(firstRender){
     firstRender = false    
@@ -1439,7 +1433,7 @@ function animate(time){
 
   updateAudio();
   previousTime = elapsedTime
-  camera.lookAt(new THREE.Vector3(0,activecamera.position.y ,0))
+  // camera.lookAt(new THREE.Vector3(0,activecamera.position.y ,0))
 
   if(config.transition){
     if(statue.position.x < -space){
@@ -1476,13 +1470,9 @@ window.addEventListener('mousemove',(e)=>{
   e.preventDefault()
   let cursorX = (e.clientX / window.innerWidth) * 2 -1
   let cursorY =  (e.clientY / window.innerHeight) * 2 - 1
-  if(dragging){
-    console.log("Y: "+activecamera.position.y)
-    console.log("Z: " +activecamera.position.z)
-  }
   let Mouse = new THREE.Vector2(cursorX,cursorY)
   raycast.setFromCamera(Mouse,activecamera)
-  let intersections = raycast.intersectObjects([right,left],true)
+  let intersections = raycast.intersectObjects([right,left,statue2],true)
   if(intersections.length > 0){
     renderer.domElement.style.cursor = 'pointer';
   }else{
@@ -1504,17 +1494,27 @@ window.addEventListener('click',(e)=>{
   let cursorY =  (e.clientY / window.innerHeight) * 2 - 1
   let Mouse = new THREE.Vector2(cursorX,cursorY)
   raycast.setFromCamera(Mouse,activecamera)
-  let intersections = raycast.intersectObjects([right,left],true)
+  let intersections = raycast.intersectObjects([right,left,statue2],true)
+  if(intersections.filter((object)=>object.name == "Object_4")&& !ongoing&& intersections.length > 0 && intersections[0]){
+          ongoing = true
+
+    gsap.to(window, {
+          duration: 3,
+          scrollTo: { y: document.body.scrollHeight * 0.52969565217 },
+          ease: "power2.inOut",
+          onComplete:()=>{
+             ongoing = false
+
+          }
+        });
+    return
+  }
   if(intersections.length > 0 && intersections[0] && !ongoing){
       ongoing = true
       next(intersections[0].object.name)  
   }
 })
-    // gsap.to(window, {
-    //   duration: 3,
-    //   scrollTo: { y: document.body.scrollHeight },
-    //   ease: "power2.inOut"
-    // },"+=4");
+
 // resizing 
 window.addEventListener('resize',()=> {
   camera.aspect = window.innerWidth/ window.innerHeight;
