@@ -7,7 +7,14 @@
   <!-- <link href="src/style.css" rel="stylesheet"> -->
   <link rel="icon" href="favico.ico" type="image/x-icon">
     <link href="src/style.css" rel="stylesheet">
+  <!-- <link href="src/style.css" rel="stylesheet"> -->
   <link rel="icon" href="favico.ico" type="image/x-icon">
+    <link href="src/style.css" rel="stylesheet">
+  <link rel="icon" href="favico.ico" type="image/x-icon">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,100&display=swap" rel="stylesheet">
+
   <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,100&display=swap" rel="stylesheet">
@@ -119,6 +126,13 @@
 
 </style>
 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/ScrollSmoother.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/ScrollToPlugin.min.js"></script>
+
+</style>
+
 
 </head>
 <body>
@@ -172,10 +186,17 @@ class="flex ml-2 absolute top-[2%] bg-white w-fit px-1.25 py-1.25 shadow-box-up 
 </div> </div>
 
 <!-- <img id="img1" src="./src/js/noise.jpg" style="display:none">
+</div> </div>
+
+<!-- <img id="img1" src="./src/js/noise.jpg" style="display:none">
 
 <form id="suggestionContainer" class="hidden" autocomplete="off">
   <input type="text" id="suggestionInput" placeholder="What to add?" />
 </form>
+   -->
+  <!-- <div id="main">
+  </div> -->
+  <!-- <canvas id="mai">
    -->
   <!-- <div id="main">
   </div> -->
@@ -195,8 +216,10 @@ class="flex ml-2 absolute top-[2%] bg-white w-fit px-1.25 py-1.25 shadow-box-up 
   style="display: none"
 />
 <script src="https://cdn.jsdelivr.net/npm/three@0.169.0/examples/js/controls/PointerLockControls.js"></script> -->
+<script src="https://cdn.jsdelivr.net/npm/three@0.169.0/examples/js/controls/PointerLockControls.js"></script> -->
 
       <!-- Vertex and Fragment Shaders -->
+  <!-- <script id="vertexshader" type="vertex">
   <!-- <script id="vertexshader" type="vertex">
     vec3 mod289(vec3 x)
     {
@@ -301,6 +324,7 @@ class="flex ml-2 absolute top-[2%] bg-white w-fit px-1.25 py-1.25 shadow-box-up 
     gl_Position = projectionMatrix * modelViewMatrix * vec4(newPosition, 1.0);
   }
 
+</script> -->
 </script> -->
   <script id="vertexshader3" type="vertex">
      varying float x;
@@ -548,6 +572,7 @@ void main() {
         }
         try {
           sound.disconnect(); 
+          sound.disconnect(); 
         } catch (e) {
           console.warn("Audio disconnect failed", e);
         }
@@ -563,6 +588,7 @@ void main() {
     }
 
     window.init2d = init2d;
+  </script> -->
   </script> -->
 </body>
 </html>
