@@ -2,6 +2,7 @@ import * as THREE from 'three';
 import { STLLoader } from 'three/addons/loaders/STLLoader.js';
 import { Reflector } from 'three/addons/objects/Reflector.js';
 import { TransformControls } from 'https://cdn.jsdelivr.net/npm/three@0.158.0/examples/jsm/controls/TransformControls.js';
+import { DRACOLoader } from 'https://cdn.jsdelivr.net/npm/three@0.158.0/examples/jsm/loaders/DRACOLoader.js';
 import { OrbitControls } from 'https://cdn.jsdelivr.net/npm/three@0.158.0/examples/jsm/controls/OrbitControls.js';
 import { GUI } from 'https://cdn.jsdelivr.net/npm/lil-gui@0.18/+esm';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
@@ -70,6 +71,10 @@ let enteredfromstatue = false;
 let firstRender = true;
 const gui = new GUI()
 const loaderg = new GLTFLoader();
+const dracoLoader = new DRACOLoader();
+dracoLoader.setDecoderPath('https://www.gstatic.com/draco/v1/decoders/'); 
+loaderg.setDRACOLoader(dracoLoader);
+
 let main = document.getElementById('main')
 let scene = new THREE.Scene()
 let space = 288
