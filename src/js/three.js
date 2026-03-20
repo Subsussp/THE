@@ -847,7 +847,7 @@ export function SparticleScene(){
 	const width = 80, height = 70;
 	let angle = 0;
 	// Settings 
-	    let settings = { pov: 36.0, bloom: true ,Y:{value:0.0},X:{value:0.0},cameralock: true,
+	    let settings = { pov: 36.0, bloom: true ,Y:{value:0.0},X:{value:0.0},cameralock: false,
 
 };
 
@@ -860,7 +860,7 @@ export function SparticleScene(){
 		audioStrength: { value: 1 },
 		speed: { value: 0.003 },
 		speedMultiplier: { value: 0.2 },
-	  	colorA: { value: new THREE.Color(0x5900ff) }, // use 24-bit color
+	  	colorA: { value: new THREE.Color(0x5900ff) },
   		colorB: { value: new THREE.Color(0xffa575) },
 		highmid:{value:1.0},
 		scaler:{value:1.0}
@@ -875,7 +875,7 @@ export function SparticleScene(){
     // ------------------------
     // Post-processing: Bloom
     // ------------------------
-// Create composer
+	// Create composer
 	const composer = new EffectComposer(renderer);
 	composer.addPass(new RenderPass(scene, camera));
 
@@ -886,13 +886,12 @@ export function SparticleScene(){
 		0.35 // threshold
 	);
 
-	// Only white glow
+
 	bloomPass.strength = 1.5;
 	bloomPass.radius = 1;
-	bloomPass.threshold = 0; // low threshold makes all bright areas glow white
+	bloomPass.threshold = 0;
 
 	composer.addPass(bloomPass);
-    // GUI controls for bloom
     const bloomFolder = gui.addFolder("Bloom");
 	bloomFolder.add(settings, "bloom").name("Enable Bloom");
     bloomFolder.add(bloomPass, "strength", 0.0, 3.0, 0.01).name("Strength");
@@ -912,12 +911,12 @@ export function SparticleScene(){
 	gui.add(settings , 'cameralock').name('Cameralock')
 	gui.addColor({ color: '#' + uniforms.colorA.value.getHexString() }, 'color').name('colorA')
 	.onChange(value => {
-		uniforms.colorA.value.set(value); // convert string/hex to THREE.Color
+		uniforms.colorA.value.set(value); 
 	});
 
 	gui.addColor({ color: '#' + uniforms.colorB.value.getHexString() }, 'color').name('colorB')
 	.onChange(value => {
-		uniforms.colorB.value.set(value); // convert string/hex to THREE.Color
+		uniforms.colorB.value.set(value); 
 	});
 
 
@@ -933,136 +932,136 @@ export function SparticleScene(){
 	const initialSpeed = 0.1;
 
 
-let idx = 0;
-for(let i=0; i<=width; i++){
-    for(let j=0; j<=height; j++){
-        const u = (i/width)*2*Math.PI;
-        const v = (j/height)*2*Math.PI;
+	let idx = 0;
+	for(let i=0; i<=width; i++){
+		for(let j=0; j<=height; j++){
+			const u = (i/width)*2*Math.PI;
+			const v = (j/height)*2*Math.PI;
 
-        const x = (R + r*Math.cos(v)) * Math.cos(u);
-        const y = r * Math.sin(v);
-        const z = (R + r*Math.cos(v)) * Math.sin(u);
+			const x = (R + r*Math.cos(v)) * Math.cos(u);
+			const y = r * Math.sin(v);
+			const z = (R + r*Math.cos(v)) * Math.sin(u);
 
-        vertices[idx] = x;
-        vertices[idx+1] = y;
-        vertices[idx+2] = z;
+			vertices[idx] = x;
+			vertices[idx+1] = y;
+			vertices[idx+2] = z;
 
-        // velocity pointing **toward center along torus path**
-        const dirX = -Math.sin(u) * initialSpeed;
-        const dirZ = Math.cos(u) * initialSpeed;
+			// velocity pointing **toward center along torus path**
+			const dirX = -Math.sin(u) * initialSpeed;
+			const dirZ = Math.cos(u) * initialSpeed;
 
-        velocities[idx] = dirX * Math.random();
-        velocities[idx+1] = 0;
-        velocities[idx+2] = dirZ * Math.random();
+			velocities[idx] = dirX * Math.random();
+			velocities[idx+1] = 0;
+			velocities[idx+2] = dirZ * Math.random();
 
-        idx += 3;
-    }
-}
-
-geometry.setAttribute('position', new THREE.BufferAttribute(vertices,3));
-geometry.setAttribute('velocity', new THREE.BufferAttribute(velocities,3));
-
-// --- vertex shader ---
-const LvertexShader = `precision mediump float;
-varying float vMix;
-attribute float randomFactor; // pass a random number per particle
-
-attribute vec3 velocity;
-uniform float time;
-uniform float Boombase;
-uniform float speed;
-uniform float strength;
-uniform float speedMultiplier;
-uniform float highmid;
-uniform vec3 cameraPos;
-
-void main() {
-    vec3 newPos = position;
-
-    // move along torus path toward camera
-    newPos += velocity ;
-
-    // optional: slight radial breathing for effect
-    float radial = highmid * 0.03 * sin(time*2.0  + length(newPos.xz));
-    vec2 xz = newPos.xz;
-    float len = length(xz);
-    newPos.xz += normalize(xz) * radial;
-    vMix = randomFactor; // each particle gets its own value
-
-    gl_Position = projectionMatrix * modelViewMatrix * vec4(newPos,1.0);
-    gl_PointSize = 3.0 + .1* Boombase; // points get bigger with speed
-}
-
-`;
-// --- vertex shader ---
-const vertexShader = `precision mediump float;
-
-varying float vMix;
-attribute float randomFactor; // per-particle control
-attribute vec3 velocity;
-
-uniform float time;
-uniform float scaler;
-uniform float Boombase;
-uniform float highmid;
-
-void main() {
-    vec3 newPos = position;
-
-    // move along torus path only for dynamic particles
-    if (randomFactor > 0.5) {
-        newPos += velocity;
-
-        // distance from tunnel center (XZ plane)
-        float radius = length(newPos.xz);
-
-        // circular pulse: wave moving outward along radius
-        float pulse = sin(radius * 10.0 - time * 1.06) * 0.05;
-
-        // optional: combine with per-particle breathing
-        float radial = highmid * 0.03 + pulse;
-        vec2 xz = newPos.xz;
-        newPos.xz += normalize(xz) * radial;
-
-        // make point size react to pulse
-		if(+(2.0 + pulse * 20.0 + 0.5 * highmid + Boombase * 0.5) > 100.0){
-			gl_PointSize = (2.0 + pulse * 20.0 + 0.5 * highmid + Boombase * 0.5 ) * .5 * scaler ;
-		}else{
-			gl_PointSize =  scaler * (2.0 + pulse * 20.0 + 0.5 * highmid + Boombase * 0.5) ;
+			idx += 3;
 		}
-    } else {
-        // static particle
-        gl_PointSize = 3.0 * scaler ;
-    }
+	}
 
-    vMix = randomFactor;
+	geometry.setAttribute('position', new THREE.BufferAttribute(vertices,3));
+	geometry.setAttribute('velocity', new THREE.BufferAttribute(velocities,3));
 
-    gl_Position = projectionMatrix * modelViewMatrix * vec4(newPos, 1.0);
-}
+	// --- vertex shader ---
+	const LvertexShader = `precision mediump float;
+	varying float vMix;
+	attribute float randomFactor; // pass a random number per particle
+
+	attribute vec3 velocity;
+	uniform float time;
+	uniform float Boombase;
+	uniform float speed;
+	uniform float strength;
+	uniform float speedMultiplier;
+	uniform float highmid;
+	uniform vec3 cameraPos;
+
+	void main() {
+		vec3 newPos = position;
+
+		// move along torus path toward camera
+		newPos += velocity ;
+
+		// optional: slight radial breathing for effect
+		float radial = highmid * 0.03 * sin(time*2.0  + length(newPos.xz));
+		vec2 xz = newPos.xz;
+		float len = length(xz);
+		newPos.xz += normalize(xz) * radial;
+		vMix = randomFactor; // each particle gets its own value
+
+		gl_Position = projectionMatrix * modelViewMatrix * vec4(newPos,1.0);
+		gl_PointSize = 3.0 + .1* Boombase; // points get bigger with speed
+	}
+
+	`;
+	// --- vertex shader ---
+	const vertexShader = `precision mediump float;
+
+	varying float vMix;
+	attribute float randomFactor; // per-particle control
+	attribute vec3 velocity;
+
+	uniform float time;
+	uniform float scaler;
+	uniform float Boombase;
+	uniform float highmid;
+
+	void main() {
+		vec3 newPos = position;
+
+		// move along torus path only for dynamic particles
+		if (randomFactor > 0.5) {
+			newPos += velocity;
+
+			// distance from tunnel center (XZ plane)
+			float radius = length(newPos.xz);
+
+			// circular pulse: wave moving outward along radius
+			float pulse = sin(radius * 10.0 - time * 1.06) * 0.05;
+
+			// optional: combine with per-particle breathing
+			float radial = highmid * 0.03 + pulse;
+			vec2 xz = newPos.xz;
+			newPos.xz += normalize(xz) * radial;
+
+			// make point size react to pulse
+			if(+(2.0 + pulse * 20.0 + 0.5 * highmid + Boombase * 0.5) > 100.0){
+				gl_PointSize = (2.0 + pulse * 20.0 + 0.5 * highmid + Boombase * 0.5 ) * .5 * scaler ;
+			}else{
+				gl_PointSize =  scaler * (2.0 + pulse * 20.0 + 0.5 * highmid + Boombase * 0.5) ;
+			}
+		} else {
+			// static particle
+			gl_PointSize = 3.0 * scaler ;
+		}
+
+		vMix = randomFactor;
+
+		gl_Position = projectionMatrix * modelViewMatrix * vec4(newPos, 1.0);
+	}
 
 
-`;
+	`;
 
-// --- fragment shader ---
-const fragmentShader = `
-precision mediump float;
+		// --- fragment shader ---
+		const fragmentShader = `
+		precision mediump float;
 
-uniform vec3 colorA;
-uniform vec3 colorB;
+		uniform vec3 colorA;
+		uniform vec3 colorB;
 
-varying float vMix;
+		varying float vMix;
 
-void main() {
-    vec2 uv = gl_PointCoord - 0.5;
-    if(length(uv) > 0.5) discard;
+		void main() {
+			vec2 uv = gl_PointCoord - 0.5;
+			if(length(uv) > 0.5) discard;
 
-    // electron glow: additive effect along color gradient
-    vec3 blended = mix(colorA, colorB, vMix) * 1.2;
-    gl_FragColor = vec4(blended, 1.0);
-}
+			// electron glow: additive effect along color gradient
+			vec3 blended = mix(colorA, colorB, vMix) * 1.2;
+			gl_FragColor = vec4(blended, 1.0);
+		}
 
 
-`;
+		`;
 
 
 	// --- material & points ---
@@ -1084,28 +1083,28 @@ void main() {
 		pointsV.push(  new THREE.Vector3(vertices[i + (height + 1) * 3],vertices[i + (height + 1) * 3 + 1],vertices[i + (height + 1) * 3 + 2])  );
 		i += 3
 	}
-const count = (width + 1) * height; // number of horizontal lines
-const lineStarts = [];
-const lineEnds = [];
-const progress = new Float32Array(count);
-const randomFactors = new Float32Array(count);
+	const count = (width + 1) * height; // number of horizontal lines
+	const lineStarts = [];
+	const lineEnds = [];
+	const progress = new Float32Array(count);
+	const randomFactors = new Float32Array(count);
 
-for (let row = 0; row < height; row++) {
-    for (let col = 0; col <= width; col++) {
-        const idx = row * (width + 1) + col;
-        const nextCol = (col + 1) % (width + 1); // wrap for torus
-        const startIdx = idx * 3;
-        const endIdx = row * (width + 1) * 3 + nextCol * 3;
+	for (let row = 0; row < height; row++) {
+		for (let col = 0; col <= width; col++) {
+			const idx = row * (width + 1) + col;
+			const nextCol = (col + 1) % (width + 1); // wrap for torus
+			const startIdx = idx * 3;
+			const endIdx = row * (width + 1) * 3 + nextCol * 3;
 
-        // start vertex
-        lineStarts.push(vertices[startIdx], vertices[startIdx + 1], vertices[startIdx + 2]);
-        // end vertex
-        lineEnds.push(vertices[endIdx], vertices[endIdx + 1], vertices[endIdx + 2]);
+			// start vertex
+			lineStarts.push(vertices[startIdx], vertices[startIdx + 1], vertices[startIdx + 2]);
+			// end vertex
+			lineEnds.push(vertices[endIdx], vertices[endIdx + 1], vertices[endIdx + 2]);
 
-        progress[idx] = Math.random(); // random start along line
-        randomFactors[idx] = Math.random(); // per-particle color mix
-    }
-}
+			progress[idx] = Math.random(); // random start along line
+			randomFactors[idx] = Math.random(); // per-particle color mix
+		}
+	}
 
 geometry.setAttribute('randomFactor', new THREE.Float32BufferAttribute(randomFactors, 1));
 
@@ -1259,7 +1258,7 @@ function Fbo( width, height, renderer, simulationMaterial, renderMaterial ,fftSi
 			particles.material.uniforms.positions.value = rtt.texture;
     };
 }
-
+let firstrender = true;
 export function PlaneScene(){
 	window.localStorage.scene = 'sc5'
 	var w = window.innerWidth;
@@ -1313,7 +1312,6 @@ void main() {
 	audioTexture.minFilter = audioTexture.magFilter = THREE.NearestFilter;
 	audioTexture.needsUpdate = true;
 	// waves texture 
-	// how many simultaneous waves we allow
 	const MAX_WAVES = 128;
 
 	// wave map storage: RGBA float per wave: [ startTime, strength, speed, duration ]
@@ -1337,7 +1335,7 @@ void main() {
 
 	// ring buffer pointers
 	let waveWriteIndex = 0;
-	let activeWaveCount = 0; // up to MAX_WAVES
+	let activeWaveCount = 0; 
 	function addWave(startTimeSec, strength = 1.0, speed = 20.0, duration = 5.0) {
 		const i = waveWriteIndex % MAX_WAVES;
 		const base = i * 4;
@@ -1346,7 +1344,7 @@ void main() {
 		waveData[base + 2] = speed;
 		waveData[base + 3] = duration;
 
-		waveTexture.image.data.set(waveData); // copy back into DataTexture backing buffer
+		waveTexture.image.data.set(waveData); 
 		waveTexture.needsUpdate = true;
 
 		waveWriteIndex = (waveWriteIndex + 1) % MAX_WAVES;
@@ -1400,10 +1398,10 @@ void main() {
 	const dataRGBA = new Float32Array(width * height * 4);
 
 	for (let i = 0; i < width * height; i++) {
-		dataRGBA[i*4] = data[i*3];     // R
-		dataRGBA[i*4 + 1] = data[i*3 + 1]; // G
-		dataRGBA[i*4 + 2] = data[i*3 + 2]; // B
-		dataRGBA[i*4 + 3] = 1.0;           // A = fully opaque
+		dataRGBA[i*4] = data[i*3];     
+		dataRGBA[i*4 + 1] = data[i*3 + 1];
+		dataRGBA[i*4 + 2] = data[i*3 + 2]; 
+		dataRGBA[i*4 + 3] = 1.0;         
 	}
 	const floatTexture = new THREE.DataTexture(dataRGBA, width, height, THREE.RGBAFormat, THREE.FloatType);
 	floatTexture.needsUpdate = true;
@@ -1411,17 +1409,17 @@ void main() {
 
 	// uniforms 
 	const uniform = {
-    positions: { value: floatTexture }, // initial positions DataTexture
-    uAudio:    { value: audioTexture }, // your 1D audio DataTexture
-    uFFTSize:  { value: fftSize },      // fft bin count (float)
+    positions: { value: floatTexture }, 
+    uAudio:    { value: audioTexture }, 
+    uFFTSize:  { value: fftSize },    
     uTime:     { value: 0.0 },
-    uOrigin:   { value: new THREE.Vector3(0, 0, 0) }, // origin for wave
-    uWaveSpeed:{ value: 60.0}, // how fast wave moves (tune)
-    uWaveFreq: { value: 0.5 },  // spatial frequency of wave (tune)
-    uAmp:      { value: 1.0 },  // overall amplitude (tune)
-    avg:      { value: 0.0 },  // overall amplitude (tune)
-    baseboom:      { value: 1.0 },  // overall amplitude (tune)
-    uAtten:    { value: 0.5 },   // attenuation per distance (tune)
+    uOrigin:   { value: new THREE.Vector3(0, 0, 0) }, 
+    uWaveSpeed:{ value: 60.0}, 
+    uWaveFreq: { value: 0.5 },  
+    uAmp:      { value: 1.0 },  
+    avg:      { value: 0.0 }, 
+    baseboom:      { value: 1.0 }, 
+    uAtten:    { value: 0.5 },  
     uWaveMap: { value: waveTexture },
 	uWaveTimes:{value:waveTimesArray},
 	uWaveK: { value: 6.0 },
@@ -1447,8 +1445,8 @@ void main() {
 	});
 	// settings
 	let settings = {
-		PointerLockControls: true,
-		cameralock: true,
+		PointerLockControls: false,
+		cameralock: false,
 		mode: 'Blackhole'
 		,swapmodes: (Mode)=>{
 			console.log(Mode)
@@ -1696,20 +1694,6 @@ void main() {
 		}
 	});
 
-	let lastClickTime = 0;
-	// Double click 
-	// document.addEventListener('click', () => {
-	// 	const now = performance.now();
-
-	// 	if (now - lastClickTime < 300) { // double click detected
-	// 		if (settings.PointerLockControls) {
-	// 		Pointercontrols.lock();
-	// 		}
-	// 	}
-
-	// 	lastClickTime = now;
-	// });
-	// Movement
 	const direction = new THREE.Vector3();
 	const move = { forward: false, backward: false, left: false, right: false };
 
@@ -1832,13 +1816,13 @@ void main() {
 	renderer.setAnimationLoop(update)
 	let lastwave = 0 ;
 	let lastping = 0 ;
-	function getRandomData( width, height, size ){
+	// function getRandomData( width, height, size ){
 		
-			var len = width * height * 3;
-			var data = new Float32Array( len );
-			while( len-- )data[len] = ( Math.random() * 2 - 1 ) * size ;
-			return data;
-	}
+	// 		var len = width * height * 3;
+	// 		var data = new Float32Array( len );
+	// 		while( len-- )data[len] = ( Math.random() * 2 - 1 ) * size ;
+	// 		return data;
+	// }
 	function getImage( img, width, height, elevation ){
 		const canvas = document.createElement("canvas");
 		canvas.width = width;
@@ -1867,9 +1851,8 @@ void main() {
     }
 	function update(time){
 		FBO.update();	
-		analyser.analyser.getByteFrequencyData(freqArray); // fills with 0..255
-		analyser.analyser.getFloatFrequencyData(freqBuffer); // fills with 0..255
-		console.log(camera.position)
+		analyser.analyser.getByteFrequencyData(freqArray); 
+		analyser.analyser.getFloatFrequencyData(freqBuffer); 
 		const tsec = time * 0.001;
 		let size = points.length + 1
 		let bass = 0 ; 
@@ -1908,20 +1891,9 @@ void main() {
 		lastwave = tsec;
 		const strength = Math.max(0.2, value * .06 * valueh); // tune mapping
 		console.log(1/(avgfq * 3.0) * 60.0)
-		addWave(tsec, strength, avgfq * 6.0 /*speed*/,1/(avgfq * 6.0) * 200.0 /*duration*/);
+		addWave(tsec, strength, avgfq * 6.0 ,1/(avgfq * 6.0) * 200.0 );
 		}
 
-		// const waveLifetime = 11; // seconds, how long a wave affects particles
-		// if(avgfq > 4 && tsec - lastwave > 1){
-		// 	lastwave = tsec
-		// 	waveTimes.push(tsec)
-		// } 
-		// for (let i = 0; i < waveTimes.length; i++) {
-		// 		waveTimesArray[i] = waveTimes[i] || 0.0;
-		// }
-		// waveTimes = waveTimes.filter(t0 => tsec - t0 < waveLifetime);
-		// simulationShader.uniforms.uNumWaves.value = waveTimes.length;
-		// simulationShader.uniforms.uWaveTimes.value = waveTimesArray;
 		if(settings.PointerLockControls && activeControls === Pointercontrols){
 			const speed = 0.5;
 			direction.set(0, 0, 0);
@@ -1934,7 +1906,7 @@ void main() {
 			activeControls.moveForward(direction.z * speed);
 		}
 		// Curve
-		const pathLength = path.getLength(); // dynamic total length
+		const pathLength = path.getLength(); 
 		// const t = (time / 3000 % size) / size;
 		const loopTime = 25.0; // seconds
 		const distance = (tsec % loopTime) / loopTime * pathLength;
@@ -1960,6 +1932,11 @@ void main() {
 			points[points.length - 1] = new THREE.Vector3(x,y,z)
 			path.points = points; 
     		path.updateArcLengths(); 
+		}
+		if(firstrender){
+			camera.position.set(0,103.81922609019864,0)
+			camera.lookAt(0,0,0) 
+			firstrender = false
 		}
 		if(settings.cameralock){
 			camera.position.copy(position)

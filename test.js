@@ -331,14 +331,14 @@ statue2.position.set(0,-100,0);
 let lineprogress={progress:0}
 const canvas3 = document.createElement("canvas");
 canvas3.width = 512;
-canvas3.height = 85.3333333333;
+canvas3.height =102.4;
 
 const ctx3 = canvas3.getContext("2d");
 ctx3.fillRect(0, 0, canvas3.width, canvas3.height);
 
 ctx3.fillStyle = "white";
-document.fonts.load("25px MyCustomFontpanel").then(() => {
-  ctx3.font = "25px MyCustomFontpanel";
+document.fonts.load("bold 50px Inter").then(() => {
+  ctx3.font = "bold 50px Inter";
   ctx3.letterSpacing = "-2px";
   ctx3.textBaseline = "middle";
   ctx3.textAlign= "center";
@@ -348,7 +348,7 @@ document.fonts.load("25px MyCustomFontpanel").then(() => {
 const textTexture = new THREE.CanvasTexture(canvas3);
 
 let group = new THREE.Group()
-let panelgeo = new THREE.PlaneGeometry(50,10,1,1)
+let panelgeo = new THREE.PlaneGeometry(50,12,1,1)
 let panelmat = new THREE.ShaderMaterial({
   uniforms: {
     uProgress: { value: 0 },
@@ -1437,6 +1437,9 @@ gsap.to(scrollProgress, {
         if(gain?.gain)gain.gain.value = (1- e.progress) * Math.random() 
         extramesh.material.uniforms.fOpacity.value = (1- e.progress) * Math.random() 
         if(e.progress == 1){
+            window.addEventListener("wheel", (e) => {
+              e.preventDefault();
+            }, { passive: false });
           if(scene){
             setTimeout(()=>{
               scene = null;
