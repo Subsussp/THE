@@ -2,7 +2,7 @@
 
 [Live Demo](https://subsussp.github.io/THE)
 
-**THE** is a WebGL-powered music visualizer that transforms audio tracks into dynamic, real-time visual experiences. Users can upload their own music, and the site will generate a unique audiovisual display using 3D graphics, shaders, and sound analysis.
+**THE** is an artwork made by me and it's also a WebGL-powered music visualizer that transforms audio tracks into dynamic. Users can upload their own music, and the site will generate a unique audiovisual display using 3D graphics, shaders, and sound analysis.
 
 ---
 ## GPU Required
@@ -42,6 +42,8 @@ some features may not work, or performance may be severely degraded.
 ## Credits
 
 Thanks to [three.js WebGPU attractors example](https://github.com/mrdoob/three.js/blob/master/examples/webgpu_tsl_compute_attractors_particles.html) by [@mrdoob](https://github.com/mrdoob) I was able to create the great particles scene I integrated my own audio interactivity to the particles :).
+
+and also for [threejs-graces](https://github.com/ektogamat/threejs-graces) because that's where i got my inspiration from and kinda mimiced his mouse interactivity 
 
 ---
 
