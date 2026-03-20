@@ -12,11 +12,43 @@ import { RenderPass } from 'https://cdn.jsdelivr.net/npm/three@0.158.0/examples/
 import { ShaderPass } from "https://cdn.jsdelivr.net/npm/three@0.158.0/examples/jsm/postprocessing/ShaderPass.js";
 import { VignetteShader } from "./src/jsm/shaders/VignetteShader.js";
 import { AfterimagePass } from './src/jsm/postprocessing/AfterimagePass.js';
-import {MaskPass,ClearMaskPass}  from './src/jsm/postprocessing/MaskPass.js';
-import { UnrealBloomPass } from 'https://cdn.jsdelivr.net/npm/three@0.158.0/examples/jsm/postprocessing/UnrealBloomPass.js';
-import { OutputPass } from 'https://cdn.jsdelivr.net/npm/three@0.158.0/examples/jsm/postprocessing/OutputPass.js';
 gsap.registerPlugin(ScrollTrigger,ScrollSmoother,(gsap.plugins.ScrollToPlugin || ScrollToPlugin));
+const sfx = new (window.AudioContext || window.webkitAudioContext)();
+let buffer;
+let buffer2;
+let gain2 = sfx.createGain();
+let animationId;
+window.addEventListener('DOMContentLoaded',()=>{
+  window.scrollTo(0,0)
+})
+gain2.gain.value = .3
+let Shouldplaysfx = true
+fetch('./music/sfx.ogg')
+  .then(r => r.arrayBuffer())
+  .then(data => sfx.decodeAudioData(data))
+  .then(decoded => buffer = decoded);
+fetch('./music/mainsfx.ogg')
+  .then(r => r.arrayBuffer())
+  .then(data => sfx.decodeAudioData(data))
+  .then(decoded => buffer2 = decoded);
+const buttons = document.querySelectorAll('.sfxbtn');
+if(buttons){
+  buttons.forEach((button)=>{
+    button.addEventListener('mouseenter', () => {
+    if(!Shouldplaysfx)return;
+    const source = sfx.createBufferSource();
+    source.buffer = buffer;
+    source.connect(gain2).connect(sfx.destination);
+    Shouldplaysfx = false
+    source.start();
+  })
+    button.addEventListener('mouseleave', () => {
+    Shouldplaysfx = true
 
+  })
+
+});
+}
 const smoother = ScrollSmoother.create({
   wrapper: '.smooth-wrapper',
   content: '.smooth-content',
@@ -24,6 +56,7 @@ const smoother = ScrollSmoother.create({
   effects: true
 });
 
+let enteredfromstatue = false;
 let firstRender = true;
 const gui = new GUI()
 const loaderg = new GLTFLoader();
@@ -116,7 +149,7 @@ audio.addEventListener('playing', () => {
     const normalized = average / 160;
     speed =  normalized.toFixed(3)
 
-    requestAnimationFrame(analyze);
+     requestAnimationFrame(analyze);
   }
 
   analyze();
@@ -222,6 +255,7 @@ let gmaterial = new THREE.MeshStandardMaterial({color: 0xffffff,
 
 
 let statue = new THREE.Mesh( geometry,gmaterial )
+statue.name = "Object_19"
 // let screengeo = new THREE.PlaneGeometry(width ,height)
 // const renderTarget = new THREE.WebGLRenderTarget(width ,height)
 // let smaterial = new THREE.MeshBasicMaterial({
@@ -275,38 +309,17 @@ colorsFolder.add(params, 'blue', 0, 1).onChange(function (value) {
   uniforms.u_blue.value = Number(value);
 });
 
-const bloomFolder = gui.addFolder('Bloom');
-bloomFolder.add(params, 'threshold', 0, 1).onChange(function (value) {
-  bloomPass.threshold = Number(value);
-});
-bloomFolder.add(params, 'strength', 0, 3).onChange(function (value) {
-  bloomPass.strength = Number(value);
-});
-bloomFolder.add(params, 'radius', 0, 1).onChange(function (value) {
-  bloomPass.radius = Number(value);
-});
 
-const renderScene = new RenderPass(scene, camera);
-const bloomPass = new UnrealBloomPass(
-  new THREE.Vector2(window.innerWidth, window.innerHeight)
-);
-bloomPass.threshold = params.threshold;
-bloomPass.strength = params.strength;
-bloomPass.radius = params.radius;
-
-const outputPass = new OutputPass();
-const bloomComposer = new EffectComposer(renderer);
-bloomComposer.addPass(renderScene);
-bloomComposer.addPass(bloomPass);
-bloomComposer.addPass(outputPass);
 renderer.outputColorSpace = THREE.SRGBColorSpace;
 
 // #######################
+
+
 let statue2 = gltf.scene; 
 statue2.traverse(child => {
   if (child.isMesh) {
     if (child.geometry) {
-      child.geometry.computeVertexNormals(); 
+      child.geometry.computeVertexNormals();    
     }
   }
 });
@@ -314,17 +327,114 @@ statue.position.set(space,50,0)
 statue.rotation.set(-Math.PI / 2,0,0)
 statue2.scale.set(100,100,100);
 statue2.position.set(0,-100,0);
- 
+// Line Panel
+let lineprogress={progress:0}
+const canvas3 = document.createElement("canvas");
+canvas3.width = 512;
+canvas3.height = 85.3333333333;
+
+const ctx3 = canvas3.getContext("2d");
+ctx3.fillRect(0, 0, canvas3.width, canvas3.height);
+
+ctx3.fillStyle = "white";
+document.fonts.load("25px MyCustomFontpanel").then(() => {
+  ctx3.font = "25px MyCustomFontpanel";
+  ctx3.letterSpacing = "-2px";
+  ctx3.textBaseline = "middle";
+  ctx3.textAlign= "center";
+  ctx3.fillText("Click  on  the  Statue",canvas3.width / 2, canvas3.height / 2);
+});
+
+const textTexture = new THREE.CanvasTexture(canvas3);
+
+let group = new THREE.Group()
+let panelgeo = new THREE.PlaneGeometry(50,10,1,1)
+let panelmat = new THREE.ShaderMaterial({
+  uniforms: {
+    uProgress: { value: 0 },
+    uTexture: { value: textTexture }
+  },
+  vertexShader: `
+    varying vec2 vUv;
+    void main() {
+      vUv = uv;
+      gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+    }
+  `,
+  fragmentShader: `
+    uniform sampler2D uTexture;
+    uniform float uProgress;
+    varying vec2 vUv;
+    void main() {
+      if(vUv.x > uProgress) discard; // reveal only left part
+      vec4 tex = texture2D(uTexture, vUv);
+      gl_FragColor = tex;
+    }
+  `,
+})
+let panel1 = new THREE.Mesh(panelgeo,panelmat)
+panel1.position.set(27.47949611050889 + 10 + 25,63.99423323544384 + 30, 42)
+const Panelpoints = [
+  new THREE.Vector3(-10, 0, -20),
+  new THREE.Vector3(0, 30, 40),
+  new THREE.Vector3(10, 30, 40)
+];
+
+const curve = new THREE.CatmullRomCurve3(Panelpoints);
+const smoothPoints = curve.getPoints(400);
+const Panelgeometry = new THREE.BufferGeometry().setFromPoints(smoothPoints);
+const Panelmaterial = new THREE.LineBasicMaterial({ color: 0xffffff });
+const line = new THREE.Line( Panelgeometry, Panelmaterial );
+line.computeLineDistances();
+line.position.set(28.47949611050889,63.99423323544384,0)
+group.add(panel1)
+group.add(line)
+scene.add(group)
+const edges = new THREE.EdgesGeometry(panelgeo);
+
+const line4 = new THREE.LineSegments(
+  edges,
+  new THREE.ShaderMaterial({
+  transparent: true,
+  uniforms: {
+    uMinX: { value: -25 },
+    uMaxX: { value: 25 },
+    progress:{value: 1.0},
+    Fade:{value: 0.0}
+  },
+  vertexShader: `
+    varying float vFade;
+    uniform float Fade;
+
+    uniform float uMinX;
+    uniform float uMaxX;
+    uniform float progress;
+    void main() {
+      float t = (position.x - uMinX) / (uMaxX - uMinX);
+
+      vFade = Fade - t * progress;
+
+      gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+    }
+  `,
+  fragmentShader: `
+    varying float vFade;
+    void main() {
+      gl_FragColor = vec4(0.6, 0.6, 0.6, vFade );
+    }
+  `
+})
+);
 
 
-
+panel1.add(line4);
 let statues = [statue2,statue,]
 let names = [`Apollo`,'Dionysus',]
 let description = [`God Of Music`,'God Of Wine',]
 
 // TESTING
 let light = new THREE.DirectionalLight(0xfafafa,1)
-const light1 = new THREE.PointLight(0xfafafa, 3,0,1.0)
+const light1 = new THREE.PointLight(0xfafafa,100,90,0.7)
 let light2 = new THREE.SpotLight(0xffffff, 100.0,20000.0)
 let light3 = new THREE.AmbientLight(0xfafafa,1)
 let light4 = new THREE.RectAreaLight(0xfafafa,1,20,20)
@@ -734,7 +844,7 @@ vec3 fbm_vec3(vec3 p, float frequency, float offset)
     cnoise((p+vec3(offset-30.0))*frequency)
   );
 }
-
+  uniform 
   void main(){
     vUv = uv;
     gl_PointSize = .2;
@@ -748,6 +858,7 @@ vec3 fbm_vec3(vec3 p, float frequency, float offset)
     // vposistion.x += .4 - audioValue * 0.2 * time ;
     // pos.x += audioValue * 0.2;
     gl_Position = projectionMatrix * modelViewMatrix * vec4(finalposition, 1.0);
+
    }
   `,fragmentShader:`
     varying vec3 vposistion;
@@ -764,7 +875,9 @@ let mat2 = new THREE.ShaderMaterial({
     distortion:{value:config.distortion},
     viewport:{value:window.innerHeight},
     uAudio: { value: new Float32Array(1024) },
+    pMouse: { value: new THREE.Vector2() },
     time: {value: 1.0},
+    etime: {value: 1.0},
     maxY: {value: 66.0027},
     maxX: {value: 206.6101}
   },
@@ -977,7 +1090,8 @@ vec3 fbm_vec3(vec3 p, float frequency, float offset)
     cnoise((p+vec3(offset-30.0))*frequency)
   );
 }
-
+  uniform float etime;
+  uniform vec2 pMouse;
   void main(){
     vUv = uv;
     gl_PointSize = .2;
@@ -987,8 +1101,15 @@ vec3 fbm_vec3(vec3 p, float frequency, float offset)
     float audioValue = uAudio[index];
     vec3 distortion = curl_noise(vec3(pos.x + 20.0 *time  ,pos.y ,0.0));
     // vec3 distortion = curl_noise(vec3(pos.x + time * 50.0 ,pos.y ,0.0));
+
     vec3 finalposition = pos * distortion;
     vposistion.y -= 63.0 - audioValue * 20.0;
+    vec4 clipos = projectionMatrix * modelViewMatrix * vec4(finalposition, 1.0);
+    vec2 ndcpos = clipos.xy / clipos.w;
+    float influnce = smoothstep(0.05,0.0,distance(ndcpos,pMouse));
+    finalposition.y += influnce * (pMouse.y * 900.0- finalposition.y)* etime;
+    finalposition.x += influnce * (pMouse.x * 800.0- finalposition.x)* etime;
+
     gl_Position = projectionMatrix * modelViewMatrix * vec4(finalposition, 1.0);
    }
   `,fragmentShader:`
@@ -1209,8 +1330,8 @@ config.DirectionalLight && scene.add(light)
 // & scene.add(helper) 
 // & scene.add(Transform1)
 config.PointLight && scene.add(light1) &
+// scene.add(Transform2)
 //  scene.add(helper1)
-  // & scene.add(Transform2)
 config.SpotLight && scene.add(light2) & 
 // scene.add(helper2) 
 // & scene.add(Transform3)
@@ -1245,13 +1366,10 @@ scene.add(part)
 const composer = new EffectComposer(renderer);
 
 composer.addPass(new RenderPass(scene, activecamera));
-// const maskPass = new MaskPass(scene, activecamera);
-// composer.addPass(maskPass);
 
 const afterimagePass = new AfterimagePass();
 afterimagePass.uniforms['damp'].value = 0.65;  
 composer.addPass(afterimagePass);
-// composer.addPass(new ClearMaskPass());
 
 
 
@@ -1281,7 +1399,6 @@ function next(direction){
     turn++
     }
   statues[turn].position.x = direction == 'right'? -space : space
-
   origin(direction)
 }
 
@@ -1310,6 +1427,7 @@ gsap.to(scrollProgress, {
       snapTo: [0,1],
     },
     onUpdate: (e)=>{
+
       if(e.progress == 0){
         extramesh.material.uniforms.fOpacity.value = 1
         if(extramesh.material.uniforms.UOpacity?.value)extramesh.material.uniforms.UOpacity.value = 1
@@ -1318,10 +1436,27 @@ gsap.to(scrollProgress, {
         document.getElementsByClassName('is')[0].style.opacity = (1- e.progress)
         if(gain?.gain)gain.gain.value = (1- e.progress) * Math.random() 
         extramesh.material.uniforms.fOpacity.value = (1- e.progress) * Math.random() 
+        if(e.progress == 1){
+          if(scene){
+            setTimeout(()=>{
+              scene = null;
+              renderer.dispose();
+              renderer.domElement.remove(); 
+              cancelAnimationFrame(animationId);
+              document.body.querySelectorAll('.disposable').forEach((node)=>node.remove())
+              ScrollTrigger.getAll().forEach(trigger => trigger.kill());
+              let script = document.createElement('script')
+              script.src = "./src/js/scripts.js"
+              script.type = "module"  
+              audioCtx.close();
+              document.body.appendChild(script)
+            },2000)
+          }
+          }
       }
     },
-
   },
+
 })
 
 gsap.to(activecamera.position, {
@@ -1335,7 +1470,14 @@ gsap.to(activecamera.position, {
     scrub: 3,
     snap: {
       snapTo: [0,1],
-    },}
+    },
+    onUpdate: (e)=>{
+      if(document.getElementById('scrollinst').style.opacity != '0'){
+        document.getElementById('scrollinst').style.opacity = 1 - e.progress 
+      }
+
+    }
+  }
 });
 
 const tl = gsap.timeline({
@@ -1380,7 +1522,6 @@ gsap.to(extramesh.material.uniforms.uOpacity, {
     scrub: 3
   }
 },'<')
-
 let cursor = {x:0,y:0}
 const clock = new THREE.Clock()
 let previousTime = 0
@@ -1402,12 +1543,20 @@ function updateAudio() {
       mat2.uniforms.uAudio.value[i] = dataArray[i] / 255;
   }};
 }
+let Mouse = new THREE.Vector2(0,0)
+let dis = activecamera.position.z - light1.position.z
+let pointPlaneHeight = dis * Math.tan(activecamera.fov / 2 *  Math.PI /180) * 2
+let pointPlaneWidth = pointPlaneHeight * camera.aspect
+let raycast = new THREE.Raycaster()
+raycast.layers.enableAll()
 
 function animate(time){
   const elapsedTime = clock.getElapsedTime()
   const deltaTime = elapsedTime - previousTime
+  
   extramesh.rotation.y +=  Math.PI / 360   
-  bloomComposer.render()
+  light1.position.x +=( (((Mouse.x)) * pointPlaneWidth / 2  ) -  light1.position.x  ) * deltaTime * 2.6
+  light1.position.y += (((1- (Mouse.y + 1 )/2) * pointPlaneHeight + 2)  -  (light1.position.y + 1 /2)) * deltaTime * 3.3
   helper.update()
   helper1.update()
   helper2.update()
@@ -1428,7 +1577,7 @@ function animate(time){
   mat.uniforms.time.value = config.distortion * elapsedTime
   // mat.uniforms.opacity.value =- Math.random() * elapsedTime  
   mat2.uniforms.time.value = config.distortion * elapsedTime
-  // mat2.uniforms.time.value = time * deltaTime / 100
+  mat2.uniforms.etime.value =  deltaTime 
   uniforms.u_time.value = clock.getElapsedTime();
 
   updateAudio();
@@ -1454,33 +1603,64 @@ function animate(time){
     statue2.rotation.y += directionro * Math.PI / 360 
   }
   composer.render()
-  requestAnimationFrame(animate)
+  animationId = requestAnimationFrame(animate)
 
 }
+line.geometry.setDrawRange(0, 0);
+const totalVertices =Panelgeometry.attributes.position.count;
 animate()
-let raycast = new THREE.Raycaster()
-raycast.layers.enableAll()
+let firstline = {progress:0}
+let panelp = {progress:0}
 let dragging = false;
-let lastz = 0;
-let lasty = 0;
-let mouse = { x: 0, y: 0 };
+setTimeout(() => {
 
+  const tl2 = gsap.timeline({
+    ease: "power1.out",
+  });
+
+  tl2.to(firstline,{
+    progress:1,
+    duration:2,
+    onUpdate:()=>{
+      const count = Math.floor(totalVertices * firstline.progress);
+
+       line.geometry.setDrawRange(0, count);
+    }
+  }).to(panelp,{
+      progress:1,
+      duration: 4 ,
+      ease: "power2.inOut",
+      onUpdate:()=>{
+        panelmat.uniforms.uProgress.value = panelp.progress
+      }
+  },'-=.5').to(lineprogress,{
+    progress:1,
+    duration: 6 ,
+    ease: "power3.out",
+
+    onUpdate:()=>{
+      line4.material.uniforms.progress.value = 1- lineprogress.progress
+      line4.material.uniforms.Fade.value =  lineprogress.progress
+      textTexture.needsUpdate = true;
+    }
+  },'-=2.4')
+}, 4000);
 // Mouse tracking 
 window.addEventListener('mousemove',(e)=>{
   e.preventDefault()
   let cursorX = (e.clientX / window.innerWidth) * 2 -1
   let cursorY =  (e.clientY / window.innerHeight) * 2 - 1
-  let Mouse = new THREE.Vector2(cursorX,cursorY)
-  raycast.setFromCamera(Mouse,activecamera)
-  let intersections = raycast.intersectObjects([right,left,statue2],true)
+  mat2.uniforms.pMouse.value.x = cursorX 
+  mat2.uniforms.pMouse.value.y = -cursorY 
+  raycast.setFromCamera(Mouse, camera);
+  let intersections = raycast.intersectObjects([right,left])
   if(intersections.length > 0){
-    renderer.domElement.style.cursor = 'pointer';
+    document.body.style.cursor = 'pointer';
   }else{
-    renderer.domElement.style.cursor = 'default';
+    document.body.style.cursor = 'default';
   }
-
-  cursor.x = cursorX
-  cursor.y = cursorY
+  Mouse.x = cursorX
+  Mouse.y = cursorY
 })
 window.addEventListener('mousedown',(e)=>{
  
@@ -1492,24 +1672,30 @@ window.addEventListener("mouseup",(e)=>{
 window.addEventListener('click',(e)=>{
   let cursorX = (e.clientX / window.innerWidth) * 2 -1
   let cursorY =  (e.clientY / window.innerHeight) * 2 - 1
-  let Mouse = new THREE.Vector2(cursorX,cursorY)
+  Mouse.x = cursorX
+  Mouse.y = cursorY
   raycast.setFromCamera(Mouse,activecamera)
-  let intersections = raycast.intersectObjects([right,left,statue2],true)
-  if(intersections.filter((object)=>object.name == "Object_4")&& !ongoing&& intersections.length > 0 && intersections[0]){
-          ongoing = true
-
+  let intersections = raycast.intersectObjects([right,left,statue2,statue],true)
+  if(intersections.filter((object)=>object.object.name == "Object_4" || object.object.name == "Object_19").length > 0 && !ongoing&& intersections.length > 0 && intersections[0]){
+    ongoing = true
     gsap.to(window, {
           duration: 3,
           scrollTo: { y: document.body.scrollHeight * 0.52969565217 },
           ease: "power2.inOut",
           onComplete:()=>{
-             ongoing = false
-
+            ongoing = false
+            setTimeout(()=>{
+              const source = sfx.createBufferSource();
+              source.buffer = buffer2;
+              source.connect(gain2).connect(sfx.destination);
+              source.start();
+            }
+            ,400)
           }
         });
     return
   }
-  if(intersections.length > 0 && intersections[0] && !ongoing){
+  if(intersections.length > 0 && intersections[0] && !ongoing && intersections.filter((object)=>object.object.name == "left" || object.object.name == "right").length > 0){
       ongoing = true
       next(intersections[0].object.name)  
   }

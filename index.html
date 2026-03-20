@@ -5,12 +5,12 @@
   <title>THE</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <!-- <link href="src/style.css" rel="stylesheet"> -->
-  <link rel="icon" href="favico.ico" type="image/x-icon">
+  <!-- <link rel="icon" href="favico.ico" type="image/x-icon"> -->
     <link href="src/style.css" rel="stylesheet">
   <!-- <link href="src/style.css" rel="stylesheet"> -->
-  <link rel="icon" href="favico.ico" type="image/x-icon">
+  <!-- <link rel="icon" href="favico.ico" type="image/x-icon"> -->
     <link href="src/style.css" rel="stylesheet">
-  <link rel="icon" href="favico.ico" type="image/x-icon">
+  <!-- <link rel="icon" href="favico.ico" type="image/x-icon"> -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,100&display=swap" rel="stylesheet">
@@ -19,7 +19,17 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,100&display=swap" rel="stylesheet">
 
-<style>
+<style> 
+ .scrollinst{
+    font-family: "MyCustomFont1";
+    text-anchor: start;
+    text-align: left;
+    font-weight: 300;
+    line-height: 15px;
+    font-size: 10px;
+    opacity: .8;
+    letter-spacing: 1.4px;
+  }
     .hidden {
       opacity: 0;
       pointer-events: none;
@@ -27,6 +37,7 @@
     }
       body {
         margin: 0;      
+        background-color: black;
   }
   ::-webkit-scrollbar,::-webkit-scrollbar-track{
     display: none;
@@ -107,6 +118,18 @@
   src: url('fonts/DisplayNarrowExtraLight.ttf') format('truetype');
   font-style: normal;
 }
+@font-face {
+  font-family: 'MyCustomFont1';
+  src: url('fonts/VintageMachine.otf') format('opentype');
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'MyCustomFontpanel';
+  src: url('fonts/TrajanusBricks.ttf') format('truetype');
+  font-style: normal;
+}
+
 </style>
  		<script type="importmap">
 			{
@@ -136,71 +159,71 @@
 
 </head>
 <body>
-<div
-id='togglebar'
-class="flex ml-2 absolute top-[2%] bg-white w-fit px-1.25 py-1.25 shadow-box-up rounded-2xl dark:bg-box-dark dark:shadow-box-dark-out"
->
-<div
-  class="flex items-center justify-center gap-x-4 bg-white text-black shadow-buttons-box-dark rounded-2xl w-full px-1.5 py-1.5 md:px-3 md:py-3"
->
-
-  <button
-    title="Go to 2d Visualizer page"
-    onclick="init2d()"
-    class="w-12 h-12 flex items-center justify-center border-2 border-transparent shadow-button-flat-nopressed focus:opacity-100 focus:outline-none active:shadow-button-flat-pressed font-medium rounded-full text-sm bg-white text-black"
+  <!-- 
+  <div
+  id='togglebar'
+  class="flex ml-2 absolute top-[2%] bg-white w-fit px-1.25 py-1.25 shadow-box-up rounded-2xl dark:bg-box-dark dark:shadow-box-dark-out"
   >
-    <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <g clip-path="url(#clip0_429_10997)">
-        <path d="M8 8C8 6.97631 8.39052 5.95262 9.17157 5.17157C10.7337 3.60947 13.2663 3.60947 14.8284 5.17157C16.3905 6.73366 16.3905 9.26632 14.8284 10.8284L9.17157 16.4853C8.42143 17.2354 8 18.2528 8 19.3137L8 20L16 20" stroke="#292929" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
-      </g>
-      <defs>
-        <clipPath id="clip0_429_10997">
-          <rect width="24" height="24" fill="white"/>
-        </clipPath>
-      </defs>
-    </svg>
-    <span class="text-lg font-semibold scale-[1.1]">D</span>
-  </button>
-
-  <!-- Separator -->
-  <div class="w-px h-6 bg-gray-500"></div>
-
-  <a    
-  href="https://mail.google.com/mail/u/0/?fs=1&to=sofaomda738@gmail.com&tf=cm"
-    title="Contact me"
-    class="w-12 h-12 flex items-center justify-center border-2 border-transparent shadow-button-flat-nopressed focus:opacity-100 focus:outline-none active:shadow-button-flat-pressed font-medium rounded-full text-sm bg-white text-black"
+  <div
+    class="flex items-center justify-center gap-x-4 bg-white text-black shadow-buttons-box-dark rounded-2xl w-full px-1.5 py-1.5 md:px-3 md:py-3"
   >
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      class="w-5 h-5"
-      viewBox="0 0 20 20"
-      fill="currentColor"
+
+    <button
+      title="Go to 2d Visualizer page"
+      onclick="init2d()"
+      class="w-12 h-12 flex items-center justify-center border-2 border-transparent shadow-button-flat-nopressed focus:opacity-100 focus:outline-none active:shadow-button-flat-pressed font-medium rounded-full text-sm bg-white text-black"
     >
-      <path
-        fill-rule="evenodd"
-        d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z"
-        clip-rule="evenodd"
-      ></path>
-    </svg>
-  </a>
+      <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <g clip-path="url(#clip0_429_10997)">
+          <path d="M8 8C8 6.97631 8.39052 5.95262 9.17157 5.17157C10.7337 3.60947 13.2663 3.60947 14.8284 5.17157C16.3905 6.73366 16.3905 9.26632 14.8284 10.8284L9.17157 16.4853C8.42143 17.2354 8 18.2528 8 19.3137L8 20L16 20" stroke="#292929" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </g>
+        <defs>
+          <clipPath id="clip0_429_10997">
+            <rect width="24" height="24" fill="white"/>
+          </clipPath>
+        </defs>
+      </svg>
+      <span class="text-lg font-semibold scale-[1.1]">D</span>
+    </button>
+
+    <div class="w-px h-6 bg-gray-500"></div>
+
+    <a    
+    href="https://mail.google.com/mail/u/0/?fs=1&to=sofaomda738@gmail.com&tf=cm"
+      title="Contact me"
+      class="w-12 h-12 flex items-center justify-center border-2 border-transparent shadow-button-flat-nopressed focus:opacity-100 focus:outline-none active:shadow-button-flat-pressed font-medium rounded-full text-sm bg-white text-black"
+    >
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        class="w-5 h-5"
+        viewBox="0 0 20 20"
+        fill="currentColor"
+      >
+        <path
+          fill-rule="evenodd"
+          d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z"
+          clip-rule="evenodd"
+        ></path>
+      </svg>
+    </a>
+  </div> </div>
+    -->
+<div id="scrollinst" class="fixed disposable bottom-0 w-full opacity-1 scrollinst transition-all duration-300 ease-in-out  text-white z-50 text-center py-[60px]
+" ><span class="cursor-default sfxbtn p-[12px]"> Scroll down to discover</span></div>
+
+<img id="img1" src="./src/js/noise.jpg" style="display:none">
 </div> </div>
 
-<!-- <img id="img1" src="./src/js/noise.jpg" style="display:none">
-</div> </div>
-
-<!-- <img id="img1" src="./src/js/noise.jpg" style="display:none">
+ <img id="img1" src="./src/js/noise.jpg" style="display:none">
 
 <form id="suggestionContainer" class="hidden" autocomplete="off">
   <input type="text" id="suggestionInput" placeholder="What to add?" />
 </form>
    -->
-  <!-- <div id="main">
-  </div> -->
-  <!-- <canvas id="mai">
-   -->
-  <!-- <div id="main">
-  </div> -->
-  <!-- <canvas id="mai">
+
+  <canvas id="mai">
+    <!-- <div id="main">
+    </div> -->
   </canvas>
   
 <input
@@ -215,117 +238,9 @@ class="flex ml-2 absolute top-[2%] bg-white w-fit px-1.25 py-1.25 shadow-box-up 
   accept="audio/*"
   style="display: none"
 />
-<script src="https://cdn.jsdelivr.net/npm/three@0.169.0/examples/js/controls/PointerLockControls.js"></script> -->
-<script src="https://cdn.jsdelivr.net/npm/three@0.169.0/examples/js/controls/PointerLockControls.js"></script> -->
+<script src="https://cdn.jsdelivr.net/npm/three@0.169.0/examples/js/controls/PointerLockControls.js"></script> 
 
       <!-- Vertex and Fragment Shaders -->
-  <!-- <script id="vertexshader" type="vertex">
-  <!-- <script id="vertexshader" type="vertex">
-    vec3 mod289(vec3 x)
-    {
-      return x - floor(x * (1.0 / 289.0)) * 289.0;
-    }
-
-    vec4 mod289(vec4 x)
-    {
-      return x - floor(x * (1.0 / 289.0)) * 289.0;
-    }
-
-    vec4 permute(vec4 x)
-    {
-      return mod289(((x*34.0)+10.0)*x);
-    }
-
-    vec4 taylorInvSqrt(vec4 r)
-    {
-      return 1.79284291400159 - 0.85373472095314 * r;
-    }
-
-    vec3 fade(vec3 t) {
-      return t*t*t*(t*(t*6.0-15.0)+10.0);
-    }
-
-    float pnoise(vec3 P, vec3 rep)
-    {
-      vec3 Pi0 = mod(floor(P), rep); // Integer part, modulo period
-      vec3 Pi1 = mod(Pi0 + vec3(1.0), rep); // Integer part + 1, mod period
-      Pi0 = mod289(Pi0);
-      Pi1 = mod289(Pi1);
-      vec3 Pf0 = fract(P); // Fractional part for interpolation
-      vec3 Pf1 = Pf0 - vec3(1.0); // Fractional part - 1.0
-      vec4 ix = vec4(Pi0.x, Pi1.x, Pi0.x, Pi1.x);
-      vec4 iy = vec4(Pi0.yy, Pi1.yy);
-      vec4 iz0 = Pi0.zzzz;
-      vec4 iz1 = Pi1.zzzz;
-
-      vec4 ixy = permute(permute(ix) + iy);
-      vec4 ixy0 = permute(ixy + iz0);
-      vec4 ixy1 = permute(ixy + iz1);
-
-      vec4 gx0 = ixy0 * (1.0 / 7.0);
-      vec4 gy0 = fract(floor(gx0) * (1.0 / 7.0)) - 0.5;
-      gx0 = fract(gx0);
-      vec4 gz0 = vec4(0.5) - abs(gx0) - abs(gy0);
-      vec4 sz0 = step(gz0, vec4(0.0));
-      gx0 -= sz0 * (step(0.0, gx0) - 0.5);
-      gy0 -= sz0 * (step(0.0, gy0) - 0.5);
-
-      vec4 gx1 = ixy1 * (1.0 / 7.0);
-      vec4 gy1 = fract(floor(gx1) * (1.0 / 7.0)) - 0.5;
-      gx1 = fract(gx1);
-      vec4 gz1 = vec4(0.5) - abs(gx1) - abs(gy1);
-      vec4 sz1 = step(gz1, vec4(0.0));
-      gx1 -= sz1 * (step(0.0, gx1) - 0.5);
-      gy1 -= sz1 * (step(0.0, gy1) - 0.5);
-
-      vec3 g000 = vec3(gx0.x,gy0.x,gz0.x);
-      vec3 g100 = vec3(gx0.y,gy0.y,gz0.y);
-      vec3 g010 = vec3(gx0.z,gy0.z,gz0.z);
-      vec3 g110 = vec3(gx0.w,gy0.w,gz0.w);
-      vec3 g001 = vec3(gx1.x,gy1.x,gz1.x);
-      vec3 g101 = vec3(gx1.y,gy1.y,gz1.y);
-      vec3 g011 = vec3(gx1.z,gy1.z,gz1.z);
-      vec3 g111 = vec3(gx1.w,gy1.w,gz1.w);
-
-      vec4 norm0 = taylorInvSqrt(vec4(dot(g000, g000), dot(g010, g010), dot(g100, g100), dot(g110, g110)));
-      g000 *= norm0.x;
-      g010 *= norm0.y;
-      g100 *= norm0.z;
-      g110 *= norm0.w;
-      vec4 norm1 = taylorInvSqrt(vec4(dot(g001, g001), dot(g011, g011), dot(g101, g101), dot(g111, g111)));
-      g001 *= norm1.x;
-      g011 *= norm1.y;
-      g101 *= norm1.z;
-      g111 *= norm1.w;
-
-      float n000 = dot(g000, Pf0);
-      float n100 = dot(g100, vec3(Pf1.x, Pf0.yz));
-      float n010 = dot(g010, vec3(Pf0.x, Pf1.y, Pf0.z));
-      float n110 = dot(g110, vec3(Pf1.xy, Pf0.z));
-      float n001 = dot(g001, vec3(Pf0.xy, Pf1.z));
-      float n101 = dot(g101, vec3(Pf1.x, Pf0.y, Pf1.z));
-      float n011 = dot(g011, vec3(Pf0.x, Pf1.yz));
-      float n111 = dot(g111, Pf1);
-
-      vec3 fade_xyz = fade(Pf0);
-      vec4 n_z = mix(vec4(n000, n100, n010, n110), vec4(n001, n101, n011, n111), fade_xyz.z);
-      vec2 n_yz = mix(n_z.xy, n_z.zw, fade_xyz.y);
-      float n_xyz = mix(n_yz.x, n_yz.y, fade_xyz.x); 
-      return 2.2 * n_xyz;
-    }
-  uniform float u_frequency;
-
-  uniform float u_time;
-
-  void main() {
-    float noise = 5. * pnoise(position + u_time, vec3(10.));
-    float displacement = (u_frequency / 30.) * (noise / 10.);
-    vec3 newPosition = position + normal * displacement;
-    gl_Position = projectionMatrix * modelViewMatrix * vec4(newPosition, 1.0);
-  }
-
-</script> -->
-</script> -->
   <script id="vertexshader3" type="vertex">
      varying float x;
       varying float y;
@@ -513,20 +428,20 @@ void main() {
 
 </script>
      <nav class="nav" style="flex-direction: row;display: flex;position: relative;justify-content: space-between;width:100%;align-items: center;position: absolute;padding:40px;">
-    <a href="https://labs.lusion.co/" id="head" target="_blank" data-has-parsed="true">
-        <div id="htext" style="color: white;width: 100%;">
+    <a href="https://subsussp.github.io/THE/" id="head" target="_blank" data-has-parsed="true">
+        <div id="htext" class="sfxbtn" style="color: white;width: 100%;">
           THE
       </div> 
     </a>
     <ul>
       <li>
-        <div>
-          <canvas id="wave" style="cursor: pointer;height: 100%;"></canvas>
+        <div class="disposable">
+          <canvas id="wave" style="cursor: pointer;height: 100%;" class="sfxbtn"></canvas>
         </div>
       </li>
     </ul>
   </nav>
-  <div class="smooth-wrapper">
+  <div class="smooth-wrapper disposable">
     <div class="smooth-content">
       <section class="smooth-visualzer" style="height:180vh;"></section> 
       <section class="last-visualzer" style="height:180vh;"></section> 
@@ -535,8 +450,8 @@ void main() {
   <div id="main">
   </div>
     <audio id="audio" src="music/Far_From_Any_Road_-_Handsome_Family_(mp3.pm).mp3" style="display:none"></audio>
-  <h1 id="statue"></h1>
-<svg viewBox="0 0 500 250" class="is" id="twisty">
+
+<svg viewBox="0 0 500 250" class="is disposable" id="twisty">
   <path id="sad-arc" d="M 50 150 C 150 150, 250 100, 450 150" fill="transparent"/>
 
   <text>
@@ -545,7 +460,7 @@ void main() {
     </textPath>
   </text>
 </svg>
-<svg viewBox="0 0 500 250"  class="os" id="twisty">
+<svg viewBox="0 0 500 250"  class="os disposable" id="twisty">
   <path id="sad-arc" d="M 50 150 C 150 150, 250 100, 450 150" fill="transparent"/>
 
   <text>
@@ -554,7 +469,8 @@ void main() {
     </textPath>
   </text>
 </svg>
-  <h2 id="description"></h2>
+  <h2 id="description" class="disposable"></h2>
+    <h1 id="statue" class="disposable"></h1>
   <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.1/dist/gsap.min.js"></script>
  <!-- <script type="module" src="./src/js/scripts.js"></script> -->
  <script type="module" src="./test.js"></script>
@@ -588,7 +504,6 @@ void main() {
     }
 
     window.init2d = init2d;
-  </script> -->
-  </script> -->
+  </script> -->  
 </body>
 </html>

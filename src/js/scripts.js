@@ -5,23 +5,5 @@ if(!window.localStorage.scene) {window.localStorage.scene = 'sc2'}
 const main = document.getElementById('main');
 if(!window.localStorage.path || window.localStorage.path == null || window.localStorage.path == 'home'){
   window.localStorage.path = 'home'
-  document.querySelectorAll('script').forEach((script) => {
-    if (script.src && script.src.includes('2daudiofetching.js')) {
-      script.remove();
-    }
-  });
-  document.getElementById('crd') && document.getElementById('crd').remove()
-  document.getElementsByClassName('notes').length > 0 && Array.from(document.getElementsByClassName('notes')).forEach(el => el.remove());
   loadwhat();
-}else if(window.localStorage.path == '2d'){
-Promise.resolve()
-  .then(() => load2DPage(main)) // populate main content
-  .then(() => {
-    const script = document.createElement('script');
-    script.type = 'module';
-    script.src = './src/js/2daudiofetching.js';
-    document.body.appendChild(script);
-  });
-
 }
-
