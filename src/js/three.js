@@ -38,16 +38,20 @@ function configaudio(buffer) {
 // samples tab settings
 const sampleActions = {
     '1': () =>{		
-		audioLoader.load('./sample1.mp3', function (buffer) {
+		audioLoader.load('./music/sample1.mp3', function (buffer) {
 				configaudio(buffer)
 				});} ,
     '2': () => {
-				audioLoader.load('./sample2.mp3', function (buffer) {
+				audioLoader.load('./music/sample2.mp3', function (buffer) {
 					configaudio(buffer)
 				});
 	},
 	'3':() => {	
-	audioLoader.load('./sample3.mp3', function (buffer) {
+	audioLoader.load('./music/sample3.mp3', function (buffer) {
+			configaudio(buffer)
+	})} ,
+	'4':() => {	
+	audioLoader.load('./music/Farfromanyroad.mp3', function (buffer) {
 			configaudio(buffer)
 	})} 
   };
@@ -115,7 +119,8 @@ const samples = Song.add(
   {
     'Sample 1': '1',
     'Sample 2': '2',
-    'Sample 3': '3'
+    'Sample 3': '3',
+    'Sample 4': '4'
   }
 ).name('Samples').onChange(function (value) {
   if (sampleActions[value]) {
@@ -847,7 +852,7 @@ export function SparticleScene(){
 	const width = 80, height = 70;
 	let angle = 0;
 	// Settings 
-	    let settings = { pov: 36.0, bloom: true ,Y:{value:0.0},X:{value:0.0},cameralock: false,
+	    let settings = { pov: 36.0, bloom: true ,Y:{value:0.0},X:{value:0.0},cameralock: true,
 
 };
 

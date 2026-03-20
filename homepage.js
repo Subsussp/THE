@@ -1450,7 +1450,8 @@ gsap.to(scrollProgress, {
             window.addEventListener("wheel", (e) => {
               e.preventDefault();
             }, { passive: false });
-          if(scene){
+          if(scene && enteredfromstatue){
+            enteredfromstatue = false
             setTimeout(()=>{
               scene = null;
               renderer.dispose();
@@ -1690,6 +1691,7 @@ window.addEventListener('click',(e)=>{
   let intersections = raycast.intersectObjects([right,left,statue2,statue],true)
   if(intersections.filter((object)=>object.object.name == "Object_4" || object.object.name == "Object_19").length > 0 && !ongoing&& intersections.length > 0 && intersections[0]){
     ongoing = true
+    enteredfromstatue = true
     gsap.to(window, {
           duration: 3,
           scrollTo: { y: document.body.scrollHeight * 0.52969565217 },
