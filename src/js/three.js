@@ -87,11 +87,12 @@ const sceneController = {
     else if (name === 'Specturm') switchScene(SpectrumScene);
     else if (name === 'V4') switchScene(SparticleScene);
     else if (name === 'Vlow') switchScene(PlaneScene);
+    else if (name === 'Oscilloscope') switchScene(RawVisual);
   }}
   
 
 
-gui.add(sceneController, 'currentScene', ['Sphere', 'Particles','Specturm','V4','Vlow'])
+gui.add(sceneController, 'currentScene', ['Sphere', 'Particles','Specturm','V4','Vlow','Oscilloscope'])
   .name('Scene')
   .onChange(sceneController.swapScene);
 camera.position.set(6, 8, 14);
@@ -213,6 +214,8 @@ export function loadwhat(){
 	if(window.localStorage.scene == 'sc3') return SpectrumScene()
 	if(window.localStorage.scene == 'sc4') return SparticleScene()
 	if(window.localStorage.scene == 'sc5') return PlaneScene()
+	if(window.localStorage.scene == 'sc6') return RawVisual()
+
 }
 export function initThreeScene() {
 window.localStorage.scene = 'sc1'
@@ -597,7 +600,7 @@ function loadpart(){
 }
 
 export function destroyThreeScene() {
-	cancelAnimationFrame(animationId);
+  cancelAnimationFrame(animationId);
   // 1. Stop animation loop
   if(gui){
     gui.destroy();
@@ -618,9 +621,7 @@ export function destroyThreeScene() {
      
     });
   }
-    
-    // 5. Optionally dispose audio
-
+  document.body.querySelectorAll('.disposable').forEach((node)=>node.remove())
   // 6. Optional: dispose renderer
   renderer?.dispose();
 // 7. Dispose audio and analyser
@@ -662,7 +663,6 @@ export function SpectrumScene() {
     scene = new THREE.Scene();
     gui = new GUI();
     analyser = new THREE.AudioAnalyser(sound, 64);
-    analyser.fftSize = 1024;
 
     let settings = { pov: 36.0, bloom: true };
     camera = new THREE.PerspectiveCamera(settings.pov, aspect, 1, 1000);
@@ -1741,8 +1741,8 @@ void main() {
 	const thnote = document.createElement('div');
 	// secondnote.innerText = "Double click to lock";
 	thnote.innerText = "ESC to unlock";
-	thnote.className = "notes";
-	note.className = "notes";
+	thnote.className = "notes disposable";
+	note.className = "notes disposable";
 	// secondnote.className = "notes";
 	thnote.style.top = '20vh';
 	thnote.style.position = 'absolute';
@@ -1952,4 +1952,106 @@ void main() {
 		cube.lookAt(position.clone().add(path.getTangentAt(u).normalize()))
 		renderer.render( scene, camera );
 	}
+}
+
+export function RawVisual(){
+	window.localStorage.scene = 'sc6'
+	scene = new THREE.Scene()
+    camera = new THREE.PerspectiveCamera(60,window.innerWidth/ window.innerHeight ,0.1,1000)
+
+	analyser = new THREE.AudioAnalyser(sound, 256);  
+	const bufferLength = analyser.analyser.frequencyBinCount;
+	let dataArray = new Float32Array(bufferLength)
+	
+	gui = new GUI();
+	renderer = new THREE.WebGLRenderer({antialias:true})
+	renderer.setSize(window.innerWidth,window.innerHeight)
+	main.appendChild(renderer.domElement)
+	
+	initControllers('Oscilloscope')
+
+
+	camera.position.z = 15
+
+	let buffer = new THREE.BufferGeometry()
+	buffer.setAttribute("position", new THREE.BufferAttribute(new Float32Array([   
+		1.0,   1.0,  0.0, 
+		1.0,  -1.0,  0.0,  
+		-1.0, -1.0,  0.0, 
+		-1.0,  1.0,  0.0  ]
+	),3))
+	buffer.setIndex(  new THREE.BufferAttribute(
+		new Uint16Array([
+			0, 1, 3,
+			1, 2, 3
+		]),
+		1
+	)
+	)
+
+	let mat = new THREE.ShaderMaterial({
+		uniforms:{
+			resolution: {value: new THREE.Vector2(window.innerWidth, window.innerHeight)},
+			uAudio: {value: new Float32Array(128)}
+		},
+		side: THREE.DoubleSide,
+		vertexShader: `
+		varying vec3 pos;
+		void main() {
+			pos = position;  
+			gl_Position = vec4(position,1);
+			}
+			`,
+			fragmentShader: `
+			uniform vec2 resolution;
+			varying vec3 pos;
+			uniform float uAudio[128];
+
+			float getSample(float x){
+
+				float index = x * 127.0 / resolution.x;
+
+				int i0 = int(floor(index));
+				int i1 = int(ceil(index));
+
+				float t = fract(index);
+
+				return mix(uAudio[i0], uAudio[i1], t);
+			}
+		void main(){
+
+				float x = gl_FragCoord.x;
+				float y = gl_FragCoord.y / resolution.y;
+
+				float amp = getSample(x);
+
+				amp = 0.5 - amp * 0.5;
+
+				float thickness = 0.0004;
+
+				float line = abs(thickness / (amp - y));
+
+				gl_FragColor = vec4(vec3(line),1.0);
+			}
+				`
+			})
+	scene.add(new THREE.Mesh(buffer,mat))
+	let frame = 0
+	function animate(time){
+		frame++
+		if(analyser && frame % 4 == 0){
+			analyser.analyser.getFloatTimeDomainData(dataArray)
+			mat.uniforms.uAudio.value = dataArray
+		}
+		renderer.render(scene,camera)
+		requestAnimationFrame(animate)
+	}
+	animate()
+window.addEventListener('resize',()=> {
+  camera.aspect = window.innerWidth/ window.innerHeight;
+  camera.updateProjectionMatrix();
+  renderer.setSize(window.innerWidth, window.innerHeight);
+  renderer.setPixelRatio(window.devicePixelRatio);
+  mat.uniforms.resolution.value= new THREE.Vector2(window.innerWidth, window.innerHeight);
+})
 }

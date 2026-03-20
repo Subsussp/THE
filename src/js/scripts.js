@@ -7,3 +7,4 @@ if(!window.localStorage.path || window.localStorage.path == null || window.local
   window.localStorage.path = 'home'
   loadwhat();
 }
+

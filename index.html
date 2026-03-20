@@ -222,10 +222,6 @@
 </form>
    -->
 
-  <canvas id="mai">
-    <!-- <div id="main">
-    </div> -->
-  </canvas>
   
 <input
   type="file"
@@ -428,13 +424,15 @@ void main() {
   }
 
 </script>
-     <nav class="nav" style="flex-direction: row;display: flex;position: relative;justify-content: space-between;width:100%;align-items: center;position: absolute;padding:40px;">
+     <nav class="nav" style="flex-direction: row;display: flex;justify-content: space-between;width:100%;position: absolute;padding:40px;">
     <a href="https://subsussp.github.io/THE/" id="head" target="_blank" data-has-parsed="true">
         <div id="htext" class="sfxbtn" style="color: white;width: 100%;">
           THE
       </div> 
     </a>
-    <ul>
+    <ul style="
+    align-self: center;
+">
       <li>
         <div class="disposable">
           <canvas id="wave" style="cursor: pointer;height: 100%;" class="sfxbtn"></canvas>
@@ -442,12 +440,7 @@ void main() {
       </li>
     </ul>
   </nav>
-  <div class="smooth-wrapper disposable">
-    <div class="smooth-content">
-      <section class="smooth-visualzer" style="height:180vh;"></section> 
-      <section class="last-visualzer" style="height:180vh;"></section> 
-    </div>
-  </div>
+
   <div id="main">
   </div>
     <audio id="audio" src="music/Far_From_Any_Road_-_Handsome_Family_(mp3.pm).mp3" style="display:none"></audio>
@@ -470,11 +463,8 @@ void main() {
     </textPath>
   </text>
 </svg>
-  <h2 id="description" class="disposable"></h2>
-    <h1 id="statue" class="disposable"></h1>
   <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.1/dist/gsap.min.js"></script>
- <!-- <script type="module" src="./src/js/scripts.js"></script> -->
- <script type="module" src="./test.js"></script>
+ <script type="module" src="./homepage.js"></script>
  <!-- <script type="module">
     import { initThreeScene, destroyThreeScene } from './src/js/three.js';
     import { load2DPage } from './src/js/back.js';

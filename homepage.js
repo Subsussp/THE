@@ -18,6 +18,16 @@ let buffer;
 let buffer2;
 let gain2 = sfx.createGain();
 let animationId;
+  document.body.insertAdjacentHTML("beforeend", `
+    <div class="smooth-wrapper disposable">
+      <div class="smooth-content">
+        <section class="smooth-visualzer" style="height:180vh;"></section> 
+        <section class="last-visualzer" style="height:180vh;"></section> 
+      </div>
+    </div>
+    <h2 id="description" class="disposable"></h2>
+    <h1 id="statue" class="disposable"></h1>
+  `);
 window.addEventListener('DOMContentLoaded',()=>{
   window.scrollTo(0,0)
 })
@@ -1461,7 +1471,6 @@ gsap.to(scrollProgress, {
   },
 
 })
-
 gsap.to(activecamera.position, {
   z: 5.57642003011228, 
   y:192.335393361824,
