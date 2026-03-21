@@ -12,7 +12,7 @@
 
 <style> 
 html{
-      line-height: 1.5;
+  line-height: 1.5;
 }
   h1,h2{
     margin: 0;
@@ -44,7 +44,7 @@ html{
     border-width: 0;
     border-style: solid;
     border-color: #e5e7eb;
-}
+  }
   #main{
     position: fixed;
     top: 0;
@@ -56,20 +56,21 @@ html{
   width: 100%;
   transition: opacity 0.5s ease-in-out;
   pointer-events: none;
-}
-#statue {
-  color: white;
-  position: fixed;
-  font-size: 6em;
-  top: 0.5em;
-}
-#twisty{
-  user-select: none;
-  cursor: default;
-  pointer-events: none;
-}
+  }
+    #statue {
+      color: white;
+      position: fixed;
+      font-size: 6em;
+      top: 0.5em;
+    }
+    #twisty{
+      user-select: none;
+      cursor: default;
+      pointer-events: none;
+    }
     .smooth-wrapper{
       height: 100%;
+      pointer-events: none;
     }
     svg {
       width: 100%;
@@ -149,7 +150,7 @@ a{
 
 </head>
 <body>
-  <div style="position: absolute;top: 50%;left: 50%;transform: translate(-50%,-50%);width: 140px;height: 180px;cursor: pointer;z-index: 500;" class="disposable sfxbtn "></div>
+  <div style="position: absolute;top: 50%;left: 50%;transform: translate(-50%,-50%);width: 140px;height: 180px;cursor: pointer;z-index: 500;pointer-events: none;user-select: none;" class="disposable sfxbtn "></div>
 <div id="scrollinst" class="disposable scrollinst" style="position: fixed; 
 bottom: 0; 
 z-index: 50; 
