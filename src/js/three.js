@@ -1,4 +1,4 @@
-import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.158.0/build/three.module.js';
+import * as THREE from 'three';
 import { PointerLockControls } from 'https://cdn.jsdelivr.net/npm/three@0.158.0/examples/jsm/controls/PointerLockControls.js';
 
 import * as MyThree from '../../build/three.webgpu.js';
@@ -51,7 +51,7 @@ const sampleActions = {
 			configaudio(buffer)
 	})} ,
 	'4':() => {	
-	audioLoader.load('./music/Farfromanyroad.mp3', function (buffer) {
+	audioLoader.load('./music/Farfromanyroad.ogg', function (buffer) {
 			configaudio(buffer)
 	})} 
   };
@@ -104,11 +104,11 @@ camera.add(listener);
 const Song = gui.addFolder('Song');
 
 // audio url input
-// const urltab = Song.add(settings, 'value').onChange(function (value) {
-//     if(value){
-// url[type] = value
-// }
-// }).name('url');
+const urltab = Song.add(settings, 'value').onChange(function (value) {
+    if(value){
+url[type] = value
+}
+}).name('url');
 
 // samples tab
 const samples = Song.add(
@@ -157,49 +157,49 @@ button1.onclick = (e) =>{
         }
     };
     
-// 	const button3 = document.createElement('button');
-//     button3.innerText = 'load';
-//     button3.onclick =async () =>{
-//    // Create a CSS spinner
-//         const spinner = document.createElement('div');
-//         spinner.classList.add('spinner');
-//         // Add CSS styling for the spinner
-//         const style = document.createElement('style');
-//         style.textContent = `
-//         .spinner {
-//             margin:4px;
-//             width: 28px;
-//             height: 15px;
-//             border: 2px solid #999;
-//             border-top-color: #222;
-//             border-radius: 50%;
-//             animation: spin 0.8s linear infinite;
-//             }
+	const button3 = document.createElement('button');
+    button3.innerText = 'load';
+    button3.onclick =async () =>{
+   // Create a CSS spinner
+        const spinner = document.createElement('div');
+        spinner.classList.add('spinner');
+        // Add CSS styling for the spinner
+        const style = document.createElement('style');
+        style.textContent = `
+        .spinner {
+            margin:4px;
+            width: 28px;
+            height: 15px;
+            border: 2px solid #999;
+            border-top-color: #222;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            }
             
-//             @keyframes spin {
-//                 to { transform: rotate(360deg); }
-//                 }
-//                 `;
-// document.head.appendChild(style);
-// const controllerDom = Song.domElement;
-// controllerDom.querySelector('.controller').appendChild(spinner);
-// let load ;
-// if (audioCache.has(url[type])) {
-//   load = audioCache.get(url[type]);
-// } else {
-//     const objectUrl =await fetchaudio(url[type],type)
-//     audioCache.set(url[type], objectUrl);
-//     load = objectUrl;
-// }
-// audioLoader.load(load, function (buffer) {
-//     spinner.remove();
-// 	configaudio(buffer)
-// });
-//     }
+            @keyframes spin {
+                to { transform: rotate(360deg); }
+                }
+                `;
+document.head.appendChild(style);
+const controllerDom = Song.domElement;
+controllerDom.querySelector('.controller').appendChild(spinner);
+let load ;
+if (audioCache.has(url[type])) {
+  load = audioCache.get(url[type]);
+} else {
+    const objectUrl =await fetchaudio(url[type],type)
+    audioCache.set(url[type], objectUrl);
+    load = objectUrl;
+}
+audioLoader.load(load, function (buffer) {
+    spinner.remove();
+	configaudio(buffer)
+});
+    }
 
 container.appendChild(button1);
 container.appendChild(button2);              
-// container.appendChild(button3);
+container.appendChild(button3);
 
 
 Song.domElement.appendChild(container);

@@ -1,16 +1,12 @@
 import * as THREE from 'three';
-import { STLLoader } from 'three/addons/loaders/STLLoader.js';
-import { Reflector } from 'three/addons/objects/Reflector.js';
-import { TransformControls } from 'https://cdn.jsdelivr.net/npm/three@0.158.0/examples/jsm/controls/TransformControls.js';
-import { OrbitControls } from 'https://cdn.jsdelivr.net/npm/three@0.158.0/examples/jsm/controls/OrbitControls.js';
-import { GUI } from 'https://cdn.jsdelivr.net/npm/lil-gui@0.18/+esm';
+// import { Reflector } from 'three/addons/objects/Reflector.js';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
-import { RectAreaLightHelper } from 'three/addons/helpers/RectAreaLightHelper.js';
 import TWEEN from 'https://unpkg.com/@tweenjs/tween.js@18.6.4/dist/tween.esm.js';
 import { EffectComposer } from 'https://cdn.jsdelivr.net/npm/three@0.158.0/examples/jsm/postprocessing/EffectComposer.js';
 import { RenderPass } from 'https://cdn.jsdelivr.net/npm/three@0.158.0/examples/jsm/postprocessing/RenderPass.js';
 import { ShaderPass } from "https://cdn.jsdelivr.net/npm/three@0.158.0/examples/jsm/postprocessing/ShaderPass.js";
 import { VignetteShader } from "./src/jsm/shaders/VignetteShader.js";
+import { DRACOLoader } from 'https://cdn.jsdelivr.net/npm/three@0.158.0/examples/jsm/loaders/DRACOLoader.js';
 import { AfterimagePass } from './src/jsm/postprocessing/AfterimagePass.js';
 gsap.registerPlugin(ScrollTrigger,ScrollSmoother,(gsap.plugins.ScrollToPlugin || ScrollToPlugin));
 const sfx = new (window.AudioContext || window.webkitAudioContext)();
@@ -68,7 +64,6 @@ const smoother = ScrollSmoother.create({
 
 let enteredfromstatue = false;
 let firstRender = true;
-const gui = new GUI()
 const loaderg = new GLTFLoader();
 let main = document.getElementById('main')
 let scene = new THREE.Scene()
@@ -208,8 +203,8 @@ function drawlines(pheta,startingH = canvas.height,off = 0){
   }if(opacity == 0){
     allow = true
   }
-  ctx.strokeStyle = "#ffffff"; // pure white
-  ctx.lineWidth = 1;           // thick enough to avoid anti-aliasing
+  ctx.strokeStyle = "#ffffff"; 
+  ctx.lineWidth = 1;    
   ctx.stroke()
 }
 
@@ -246,26 +241,39 @@ const width = height * camera.aspect;
 
 
 // Object setup 
-let box = new THREE.BoxGeometry(30,30,30)
-let material = new THREE.MeshNormalMaterial({color:0x44aa88})
-let mesh = new THREE.Mesh(box,material)
-// scene.add(mesh)
-const gltf = await loaderg.loadAsync('./3D/Apollo/scene.gltf');
+const dracoLoader2 = new DRACOLoader();
+dracoLoader2.setDecoderPath('https://www.gstatic.com/draco/v1/decoders/'); 
+loaderg.setDRACOLoader(dracoLoader2);
 
-const loader = new STLLoader();
-const geometry = await loader.loadAsync( './3D/Statue.stl' )
-geometry.center();
-geometry.computeVertexNormals();
+const gltf = await loaderg.loadAsync('./3D/Apollo/Statue.glb');
+
+const loader = new GLTFLoader();
+const dracoLoader = new DRACOLoader();
+dracoLoader.setDecoderPath('https://www.gstatic.com/draco/v1/decoders/'); 
+loader.setDRACOLoader(dracoLoader);
+const glb = await loader.loadAsync( './3D/Statue.glb' )
+
+
 let gmaterial = new THREE.MeshStandardMaterial({color: 0xffffff, 
-  roughness: 0.5, 
+  roughness: 0.2, 
   metalness: 0,
   side: THREE.DoubleSide
 });
 
 
 
-let statue = new THREE.Mesh( geometry,gmaterial )
-statue.name = "Object_19"
+let statue = glb.scene
+statue.traverse(child => {
+  if (child.isMesh) {
+    if (child.geometry) {
+      child.geometry.computeVertexNormals();    
+      child.geometry.center();;    
+    }
+    child.material = gmaterial
+
+  }
+});
+// let statue = new THREE.Mesh( geometry,gmaterial )
 // let screengeo = new THREE.PlaneGeometry(width ,height)
 // const renderTarget = new THREE.WebGLRenderTarget(width ,height)
 // let smaterial = new THREE.MeshBasicMaterial({
@@ -308,17 +316,6 @@ const planeMaterial = new THREE.ShaderMaterial({
 let extramesh = new THREE.Mesh(extrageo,planeMaterial)
 
 extramesh.position.set(0,0,-0.7)
-const colorsFolder = gui.addFolder('Colors');
-colorsFolder.add(params, 'red', 0, 1).onChange(function (value) {
-  uniforms.u_red.value = Number(value);
-});
-colorsFolder.add(params, 'green', 0, 1).onChange(function (value) {
-  uniforms.u_green.value = Number(value);
-});
-colorsFolder.add(params, 'blue', 0, 1).onChange(function (value) {
-  uniforms.u_blue.value = Number(value);
-});
-
 
 renderer.outputColorSpace = THREE.SRGBColorSpace;
 
@@ -334,7 +331,7 @@ statue2.traverse(child => {
   }
 });
 statue.position.set(space,50,0)
-statue.rotation.set(-Math.PI / 2,0,0)
+// statue.rotation.set(-Math.PI / 2,0,0)
 statue2.scale.set(100,100,100);
 statue2.position.set(0,-100,0);
 // Line Panel
@@ -442,199 +439,11 @@ let statues = [statue2,statue,]
 let names = [`Apollo`,'Dionysus',]
 let description = [`God Of Music`,'God Of Wine',]
 
-// TESTING
+// Light
+
 let light = new THREE.DirectionalLight(0xfafafa,1)
 const light1 = new THREE.PointLight(0xfafafa,100,90,0.7)
-let light2 = new THREE.SpotLight(0xffffff, 100.0,20000.0)
-let light3 = new THREE.AmbientLight(0xfafafa,1)
-let light4 = new THREE.RectAreaLight(0xfafafa,1,20,20)
-let helper = new THREE.DirectionalLightHelper(light)
-let helper1 = new THREE.PointLightHelper(light1)
-let helper2 = new THREE.SpotLightHelper(light2)
-let helper4 = new RectAreaLightHelper(light4)
-// light2.target = statue;  // MUST add the target to scene
-light2.decay = 1;  // MUST add the target to scene
-let Lights = gui.addFolder('Lights')
-Lights.add(config,'DirectionalLight').onChange((value)=>{
-  config.DirectionalLight = value
-  if(value){
-      scene.add(light)
-      scene.add(helper)
-      scene.add(Transform1)
-  }
-  else{
-    scene.remove(light)
-    scene.remove(helper)
-    scene.remove(Transform1)
-  }
-})
 
-Lights.add(config,'PointLight').onChange((value)=>{
-  config.PointLight = value
-  if(value){
-    scene.add(light1)
-    scene.add(helper1)
-    scene.add(Transform2)
-  }
-  else{
-    scene.remove(light1)
-    scene.remove(helper1)
-    scene.remove(Transform2)
-  }
-})
-Lights.add(config,'SpotLight').onChange((value)=>{
-  config.SpotLight = value
-   if(value){
-      scene.add(light2)
-      scene.add(helper2)
-      scene.add(Transform3)
-  }
-  else{
-    scene.remove(light2)
-    scene.remove(helper2)
-    scene.remove(Transform3)
-  }
-})
-Lights.add(config,'AmbientLight').onChange((value)=>{
-  config.AmbientLight = value
-  if(value){
-      scene.add(light3)
-      scene.add(Transform4)
-  }
-  else{
-    scene.remove(light3)
-    scene.remove(Transform4)
-  }
-})
-Lights.add(config,'RectAreaLight').onChange((value)=>{
-  config.HemisphereLight = value
-  if(value){
-      scene.add(light4)
-      scene.add(helper4)
-      scene.add(Transform5)
-  }
-  else{
-    scene.remove(light4)
-    scene.remove(helper4)
-    scene.remove(Transform5)
-  }
-})
-Lights.add(config,'Reset')
-Lights.add(config,'rotation').onChange((value)=>{
-  config.rotation = value
-})
-Lights.add(config,'transition').onChange((value)=>{
-  config.tranistion= value
-})
-let sunlight = gui.addFolder('Directional light')
-sunlight.add(light,'intensity', 0,300,1)
-const colorParams = { color: light.color.getHex() };
-sunlight.addColor(colorParams, 'color').onChange((value) => {
-    light.color.set(value);
-});
-sunlight.add(light.position, 'x',-1000,1000,1)
-sunlight.add(light.position, 'y',-1000,1000,1)
-sunlight.add(light.position, 'z',-1000,1000,1)
-sunlight.close()
-
-
-let pointlight = gui.addFolder('Point light')
-pointlight.add(light1,'intensity', 0,300,1)
-const colorParam = { color: light1.color.getHex() };
-pointlight.addColor(colorParam, 'color').onChange((value) => {
-    light1.color.set(value);
-});
-pointlight.add(light1.position, 'x',-1000,1000,1)
-pointlight.add(light1.position, 'y',-1000,1000,1)
-pointlight.add(light1.position, 'z',-1000,1000,1)
-pointlight.close()
-
-
-let spotlight = gui.addFolder('Spot light')
-spotlight.add(light2,'angle', Math.PI / 50 , Math.PI  ,Math.PI / 50)
-spotlight.add(light2,'penumbra', 0,20,0.1)
-spotlight.add(light2,'decay', 1,4,1)
-spotlight.add(light2,'intensity', 0,300,1)
-
-const colorPara = { color: light2.color.getHex() };
-spotlight.addColor(colorPara, 'color').onChange((value) => {
-    light2.color.set(value);
-});
-spotlight.add(light2.position, 'x',-1000,1000,1)
-spotlight.add(light2.position, 'y',-1000,1000,1)
-spotlight.add(light2.position, 'z',-1000,1000,1)
-spotlight.close()
-
-let AmbientLight = gui.addFolder('Ambient Light')
-AmbientLight.add(light3,'intensity', 0,300,1)
-const colorParam2 = { color: light3.color.getHex() };
-AmbientLight.addColor(colorParam2, 'color').onChange((value) => {
-    light3.color.set(value);
-});
-AmbientLight.add(light3.position, 'x',-1000,1000,1)
-AmbientLight.add(light3.position, 'y',-1000,1000,1)
-AmbientLight.add(light3.position, 'z',-1000,1000,1)
-AmbientLight.close()
-
-
-let RectAreaLight = gui.addFolder('RectArea Light')
-RectAreaLight.add(light4,'intensity', 0,300,1)
-const colorParam3 = { color: light4.color.getHex() };
-RectAreaLight.addColor(colorParam3, 'color').onChange((value) => {
-    light4.color.set(value);
-});
-RectAreaLight.add(light4.position, 'x',-1000,1000,1)
-RectAreaLight.add(light4.position, 'y',-1000,1000,1)
-RectAreaLight.add(light4.position, 'z',-1000,1000,1)
-RectAreaLight.close()
-let distortion = gui.addFolder('distortion')
-distortion.add(config,'distortion', -10.0,10.0,0.01)
-
-gui.close()
-
-
-// END OF TESTING
-
-
-// const spotlight = new THREE.SpotLight(0xffffff, 7); // color, intensity
-// spotlight.position.set(0, 250, 100);
-// spotlight.angle = Math.PI / 12;
-// spotlight.penumbra = 1.5;      // edge softness
-// spotlight.decay = 1; 
-// spotlight.target = statue;  // MUST add the target to scene
-// scene.add(spotlight);
-// const spotLightHelper = new THREE.SpotLightHelper( spotlight );
-// scene.add( spotLightHelper );
-
-// const sunLight = new THREE.DirectionalLight(0xfafafa, 3.08)
-// sunLight.position.set(-100,3,-100)
-// scene.add(sunLight)
-
-// const fillLight = new THREE.PointLight(0xfafafa)
-// fillLight.position.set(0,0,0)
-// scene.add(fillLight)
-//##################################################
-// const sunLight = new THREE.DirectionalLight(0xE3E3E3, 2.08)
-// sunLight.position.set(-100,0,-100)
-// scene.add(sunLight)
-
-// const fillLight = new THREE.PointLight(0xfafafa, 10)
-// fillLight.position.set(0,45,60.8)
-// scene.add(fillLight)
-
-//##################################################
-// const light = new THREE.DirectionalLight(0xffffff, 1);
-// light.position.set(10, 10, 10);
-// scene.add(light);
-
-// const ambient = new THREE.AmbientLight(0x404040, 1); // soft light
-// scene.add(ambient);
-
-
-// camera.position.x = 0
-// camera.position.y = 0
-// camera.position.z = 0.6507093902939213
-// camera.position.x = 150
 let mat = new THREE.ShaderMaterial({
   uniforms:{
     distortion2:{value:1.0},
@@ -1134,15 +943,11 @@ vec3 fbm_vec3(vec3 p, float frequency, float offset)
     }
   `})
 const count = 500000;
-// const count = 750000;
 let plane2 = new THREE.PlaneGeometry(1.5,.4,window.innerWidth,480)
 let geo = new THREE.BufferGeometry()
 let points = new Float32Array(count * 3)
 let particlesPerRow = 2500
 let s = 0
-
-
-console.log("Visible width:", width, "Visible height:", height);
 
 let offset = width / particlesPerRow  ;
 for(let i =0; i < count;i++){
@@ -1162,7 +967,7 @@ let plane = new THREE.PlaneGeometry(.4 ,1,480,innerHeight)
 const pos = plane.attributes.position;
 const pos2 = plane2.attributes.position;
 for (let i = 0; i < pos.count; i++) {
-  pos.setX(i, pos.getX(i) + .4  / 2); // shift right by half width
+  pos.setX(i, pos.getX(i) + .4  / 2); 
 }
 for (let i = 0; i < pos2.count; i++) {
   pos2.setY(i, pos2.getY(i) - .4 / 2);
@@ -1193,115 +998,22 @@ let activecamera = camera
 // orbit.enableZoom = false;
 // orbit.minAzimuthAngle = 0;  
 // orbit.maxAzimuthAngle = 0;  
-let Camerapos = gui.addFolder('Camera')
-Camerapos.add(activecamera.position, 'x',-1000,1000,1)
-Camerapos.add(activecamera.position, 'y',-1000,1000,1)
-Camerapos.add(activecamera.position, 'z',-1000,1000,1)
-window.addEventListener('keydown',(e)=>{
-  if(e.key == 't'){
-    activecamera.position.x = activecamera.position.x + 400
-    camera.lookAt(new THREE.Vector3(400,50,0))
-    orbit.target.copy(statue2.position);
 
-  }
-  if(e.key == 'Enter'){
-    config.Preview = !config.Preview 
-    if(config.Preview){
-      scene.traverse((obj) => {
-        if (obj instanceof TransformControls) {
-          obj.visible = false;
-          obj.enabled = false;
-        }
-        if (obj.isHelper) {
-          obj.visible = false;
-        }
-      });
-    }else{
-      scene.traverse((obj) => {
-        if (obj instanceof TransformControls) {
-          obj.visible = true;
-          obj.enabled = true;
-        }
-        if (obj.isHelper) {
-          obj.visible = true;
-        }
-      });
-    }
-  }
-  if(e.key == '1'){
-    if(config.DirectionalLight){
-      config.DirectionalLightHelper = !config.DirectionalLightHelper 
-      if (config.DirectionalLightHelper) {
-        scene.add(helper)
-        scene.add(Transform1) 
-        Transform1.enabled = true;
-      } else {
-        scene.remove(helper)
-        scene.remove(Transform1)
-        Transform1.enabled = false;
-      }
-    }
-  }
-  if(e.key == '2'){
-    if(config.PointLight){
-      config.PointLightHelper = !config.PointLightHelper 
-      if (config.PointLightHelper) {
-        scene.add(helper1)
-        scene.add(Transform2)
-        Transform2.enabled = true;
-      } else {
-        scene.remove(helper1)
-        scene.remove(Transform2)
-        Transform2.enabled = false;
-      }
-    } 
-  }
-  if(e.key == '3'){
-    if(config.SpotLight){
-      config.SpotLightHelper = !config.SpotLightHelper
-      if(config.SpotLightHelper){
-        scene.add(helper2)
-        scene.add(Transform3)
-      }else{
-        scene.remove(helper2)
-        scene.remove(Transform3)
-      }
-    }
-  }
-  })
 
 // addons 
-const gridHelper = new THREE.GridHelper(500, 20);
-gridHelper.scale.setScalar(4);
-const axesHelper = new THREE.AxesHelper(50);
-axesHelper.scale.setScalar(4);
-let Transform = new TransformControls(activecamera,renderer.domElement)
-let Transform1 = new TransformControls(activecamera,renderer.domElement)
-let Transform2 = new TransformControls(activecamera,renderer.domElement)
-let Transform3 = new TransformControls(activecamera,renderer.domElement)
-let Transform4 = new TransformControls(activecamera,renderer.domElement)
-let Transform5 = new TransformControls(activecamera,renderer.domElement)
-let mirror = new Reflector(new THREE.PlaneGeometry( 500, 500 ), {	
-  textureWidth: window.innerWidth * window.devicePixelRatio,
-	textureHeight: window.innerHeight * window.devicePixelRatio
-  ,	
-  color: 0x4c4c4c
 
-})
+// let mirror = new Reflector(new THREE.PlaneGeometry( 500, 500 ), {	
+//   textureWidth: window.innerWidth * window.devicePixelRatio,
+// 	textureHeight: window.innerHeight * window.devicePixelRatio
+//   ,	
+//   color: 0x4c4c4c
 
-mirror.rotateX(-Math.PI / 2)
-mirror.position.y = -1
+// })
+
+// mirror.rotateX(-Math.PI / 2)
+// mirror.position.y = -1
 // scene.add(mirror)  
   
-Transform.attach(statue)
-Transform1.attach(light)
-Transform2.attach(light1)
-Transform3.attach(light2)
-Transform4.attach(light3)
-Transform5.attach(light4)
-Transform.setSize(.4)
-Transform.setMode('rotate')
-
 // Arrows 
 let textureloder = new THREE.TextureLoader()
 let Ltexture = await textureloder.loadAsync('./textures/left.png')
@@ -1321,35 +1033,15 @@ right.name = 'right'
 left.name = 'left'
 
 
-// scene.add(Transform)
-// scene.add(axesHelper);
-// scene.add(gridHelper);
 light.position.set(-1000,0,-1000)
 light1.position.set(19,75.5327255724013,95.61752943615642)
 // light1.position.set(-100,0,40)
-light2.position.set(0,0,100)
-light3.position.set(0,-100,0)
-gridHelper.isHelper = true
-axesHelper.isHelper = true
-helper.isHelper = true
-helper1.isHelper = true
-helper2.isHelper = true
-helper4.isHelper = true
 
-config.DirectionalLight && scene.add(light) 
-// & scene.add(helper) 
-// & scene.add(Transform1)
-config.PointLight && scene.add(light1) &
-// scene.add(Transform2)
-//  scene.add(helper1)
-config.SpotLight && scene.add(light2) & 
-// scene.add(helper2) 
-// & scene.add(Transform3)
-config.AmbientLight && scene.add(light3)  & scene.add(Transform4)
-config.RectAreaLight && scene.add(light4) & scene.add(helper4)  & scene.add(Transform5)
-
+scene.add(light) 
+scene.add(light1) 
 
 let ongoing;
+
 
 statue.layers.set(1);
 statue2.layers.set(1);
@@ -1412,7 +1104,7 @@ function next(direction){
   origin(direction)
 }
 
-function origin(direction){  
+function origin(){  
   new TWEEN.Tween(statues[turn].position).to({
   x: 0}
 ).easing(TWEEN.Easing.Quadratic.InOut).onComplete(() => {
@@ -1535,7 +1227,6 @@ gsap.to(extramesh.material.uniforms.uOpacity, {
     scrub: 3
   }
 },'<')
-let cursor = {x:0,y:0}
 const clock = new THREE.Clock()
 let previousTime = 0
 function getAverageFrequency() {
@@ -1570,9 +1261,6 @@ function animate(time){
   extramesh.rotation.y +=  Math.PI / 360   
   light1.position.x +=( (((Mouse.x)) * pointPlaneWidth / 2  ) -  light1.position.x  ) * deltaTime * 2.6
   light1.position.y += (((1- (Mouse.y + 1 )/2) * pointPlaneHeight + 2)  -  (light1.position.y + 1 /2)) * deltaTime * 3.3
-  helper.update()
-  helper1.update()
-  helper2.update()
   TWEEN.update(time);
   if(firstRender){
     firstRender = false    
@@ -1612,7 +1300,7 @@ function animate(time){
     }
   }
   if(config.rotation){ 
-    statue.rotation.z += directionro * Math.PI / 360   
+    statue.rotation.y += directionro * Math.PI / 360   
     statue2.rotation.y += directionro * Math.PI / 360 
   }
   composer.render()
@@ -1624,7 +1312,6 @@ const totalVertices =Panelgeometry.attributes.position.count;
 animate()
 let firstline = {progress:0}
 let panelp = {progress:0}
-let dragging = false;
 setTimeout(() => {
 
   const tl2 = gsap.timeline({
@@ -1675,13 +1362,7 @@ window.addEventListener('mousemove',(e)=>{
   Mouse.x = cursorX
   Mouse.y = cursorY
 })
-window.addEventListener('mousedown',(e)=>{
- 
-  dragging = true
-})
-window.addEventListener("mouseup",(e)=>{
-  dragging = false
-})
+
 window.addEventListener('click',(e)=>{
   let cursorX = (e.clientX / window.innerWidth) * 2 -1
   let cursorY =  (e.clientY / window.innerHeight) * 2 - 1
@@ -1689,7 +1370,7 @@ window.addEventListener('click',(e)=>{
   Mouse.y = cursorY
   raycast.setFromCamera(Mouse,activecamera)
   let intersections = raycast.intersectObjects([right,left,statue2,statue],true)
-  if(intersections.filter((object)=>object.object.name == "Object_4" || object.object.name == "Object_19").length > 0 && !ongoing&& intersections.length > 0 && intersections[0]){
+  if(intersections.filter((object)=>object.object.name == "Object_4" || object.object.name == "Statue").length > 0 && !ongoing&& intersections.length > 0 && intersections[0]){
     ongoing = true
     enteredfromstatue = true
     gsap.to(window, {

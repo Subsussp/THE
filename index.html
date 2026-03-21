@@ -3,7 +3,6 @@
 <head>
   <meta charset="UTF-8" />
   <title>THE</title>
-  <script src="https://cdn.tailwindcss.com"></script>
     <link href="src/style.css" rel="stylesheet">
   <link rel="icon" type="image/png" sizes="32x32" href="./fav32.png">
   <link rel="icon" type="image/png" sizes="16x16" href="./fav16.png">
@@ -12,6 +11,12 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,100&display=swap" rel="stylesheet">
 
 <style> 
+html{
+      line-height: 1.5;
+}
+  h1,h2{
+    margin: 0;
+  }
  .scrollinst{
     font-family: "MyCustomFont1";
     text-anchor: start;
@@ -34,6 +39,12 @@
   ::-webkit-scrollbar,::-webkit-scrollbar-track{
     display: none;
   }
+  *, ::after, ::before {
+    box-sizing: border-box;
+    border-width: 0;
+    border-style: solid;
+    border-color: #e5e7eb;
+}
   #main{
     position: fixed;
     top: 0;
@@ -90,6 +101,9 @@
   top: 0;
   z-index: 100;
 }
+a{
+  color: transparent;
+}
 #description {
   position: fixed;
   font-size: 2em;
@@ -114,11 +128,6 @@
   font-style: normal;
   font-display: swap;
 }
-@font-face {
-  font-family: 'MyCustomFontpanel';
-  src: url('fonts/monograph-Regular.ttf') format('truetype');
-  font-style: normal;
-}
 
 </style>
  		<script type="importmap">
@@ -132,75 +141,28 @@
 				}
 			}
 		</script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/ScrollSmoother.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/ScrollToPlugin.min.js"></script>
-
-</style>
-
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/ScrollSmoother.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/ScrollToPlugin.min.js"></script>
-
-</style>
 
 
 </head>
 <body>
-  <div class="disposable sfxbtn absolute top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%] z-[500] cursor-pointer h-[180px] w-[140px]"></div>
-  <!-- 
-  <div
-  id='togglebar'
-  class="flex ml-2 absolute top-[2%] bg-white w-fit px-1.25 py-1.25 shadow-box-up rounded-2xl dark:bg-box-dark dark:shadow-box-dark-out"
-  >
-  <div
-    class="flex items-center justify-center gap-x-4 bg-white text-black shadow-buttons-box-dark rounded-2xl w-full px-1.5 py-1.5 md:px-3 md:py-3"
-  >
-
-    <button
-      title="Go to 2d Visualizer page"
-      onclick="init2d()"
-      class="w-12 h-12 flex items-center justify-center border-2 border-transparent shadow-button-flat-nopressed focus:opacity-100 focus:outline-none active:shadow-button-flat-pressed font-medium rounded-full text-sm bg-white text-black"
-    >
-      <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <g clip-path="url(#clip0_429_10997)">
-          <path d="M8 8C8 6.97631 8.39052 5.95262 9.17157 5.17157C10.7337 3.60947 13.2663 3.60947 14.8284 5.17157C16.3905 6.73366 16.3905 9.26632 14.8284 10.8284L9.17157 16.4853C8.42143 17.2354 8 18.2528 8 19.3137L8 20L16 20" stroke="#292929" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
-        </g>
-        <defs>
-          <clipPath id="clip0_429_10997">
-            <rect width="24" height="24" fill="white"/>
-          </clipPath>
-        </defs>
-      </svg>
-      <span class="text-lg font-semibold scale-[1.1]">D</span>
-    </button>
-
-    <div class="w-px h-6 bg-gray-500"></div>
-
-    <a    
-    href="https://mail.google.com/mail/u/0/?fs=1&to=sofaomda738@gmail.com&tf=cm"
-      title="Contact me"
-      class="w-12 h-12 flex items-center justify-center border-2 border-transparent shadow-button-flat-nopressed focus:opacity-100 focus:outline-none active:shadow-button-flat-pressed font-medium rounded-full text-sm bg-white text-black"
-    >
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        class="w-5 h-5"
-        viewBox="0 0 20 20"
-        fill="currentColor"
-      >
-        <path
-          fill-rule="evenodd"
-          d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z"
-          clip-rule="evenodd"
-        ></path>
-      </svg>
-    </a>
-  </div> </div>
-    -->
-<div id="scrollinst" class="fixed disposable bottom-0 w-full opacity-1 scrollinst transition-all duration-300 ease-in-out  text-white z-50 text-center py-[60px]
-" ><span class="cursor-default sfxbtn p-[12px]"> Scroll down to discover</span></div>
+  <div style="position: absolute;top: 50%;left: 50%;transform: translate(-50%,-50%);width: 140px;height: 180px;cursor: pointer;z-index: 500;" class="disposable sfxbtn "></div>
+<div id="scrollinst" class="disposable scrollinst" style="position: fixed; 
+bottom: 0; 
+z-index: 50; 
+padding: 60px 0 ;
+width: 100%; 
+text-align: center; 
+color: #ffffff; 
+transition-property: all;
+transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+transition-duration: 300ms; 
+transition-duration: 300ms; 
+transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1); 
+" ><span style="padding: 12px;cursor: default;" class="sfxbtn"> Scroll down to discover</span></div>
 
 <img id="img1" src="./src/js/noise.jpg" style="display:none">
 </div> </div>
@@ -210,7 +172,6 @@
 <form id="suggestionContainer" class="hidden" autocomplete="off">
   <input type="text" id="suggestionInput" placeholder="What to add?" />
 </form>
-   -->
 
   
 <input
@@ -225,7 +186,6 @@
   accept="audio/*"
   style="display: none"
 />
-<script src="https://cdn.jsdelivr.net/npm/three@0.169.0/examples/js/controls/PointerLockControls.js"></script> 
 
       <!-- Vertex and Fragment Shaders -->
   <script id="vertexshader3" type="vertex">
@@ -433,7 +393,7 @@ void main() {
 
   <div id="main">
   </div>
-    <audio id="audio" src="music/Farfromanyroad.mp3" style="display:none"></audio>
+    <audio id="audio" src="music/Farfromanyroad.ogg" style="display:none"></audio>
 
 <svg viewBox="0 0 500 250" class="is disposable" id="twisty">
   <path id="sad-arc" d="M 50 150 C 150 150, 250 100, 450 150" fill="transparent"/>
@@ -455,36 +415,6 @@ void main() {
 </svg>
   <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.1/dist/gsap.min.js"></script>
  <script type="module" src="./homepage.js"></script>
- <!-- <script type="module">
-    import { initThreeScene, destroyThreeScene } from './src/js/three.js';
-    import { load2DPage } from './src/js/back.js';
-    import {sound} from './src/js/var/threesound.js'
-    const main = document.getElementById('main');
-
-    function init2d(){
-      if (sound) {
-        sound.buffer = null
-        if (sound.isPlaying) {
-          sound.stop();
-        }
-        try {
-          sound.disconnect(); 
-          sound.disconnect(); 
-        } catch (e) {
-          console.warn("Audio disconnect failed", e);
-        }
-      }
-
-        window.localStorage.path = '2d'        
-        main.innerHTML = ''; // clear old content
-        const link = document.createElement('link');
-        link.rel = 'stylesheet';
-        link.href = './src/app.css'; // path to your CSS file
-        document.head.appendChild(link);
-        load2DPage(main);
-    }
-
-    window.init2d = init2d;
-  </script> -->  
+ 
 </body>
 </html>
