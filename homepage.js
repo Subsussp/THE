@@ -165,6 +165,7 @@ const ctx = canvas.getContext("2d");
 let animateId = null;
 canvas.height = 20
 canvas.width = 20 * 6 / 3
+let firstclick = true
 let run = false
 let allow = true
 let opacity = 0
@@ -176,7 +177,8 @@ canvas.addEventListener('click',async (e)=>{
   opacity = !run ? 0 : 1  
   run = !run
   if(run){
-      await audio.play();
+    await audio.play();
+
   }else{
       await audio.pause();
   }
@@ -219,6 +221,12 @@ function loop(){
   animateId = requestAnimationFrame(loop)
 }
 drawlines(Math.PI / 180,undefined,-3)
+document.addEventListener('click',()=>{
+  if(firstclick){
+    firstclick = false
+    canvas.click()
+  }  
+})
 // ########################################
 
 // Camera setup 
@@ -237,7 +245,7 @@ const fov = camera.fov * (Math.PI / 180);
 
 const height = 2 * Math.tan(fov / 2) * distanceZ;
 
-const width = height * camera.aspect;
+const width = 505.7840285242011;
 
 
 // Object setup 
@@ -1025,9 +1033,10 @@ const distance = activecamera.position.z;
 const vFOV = THREE.MathUtils.degToRad(camera.fov);
 const viewHeight = 2 * Math.tan(vFOV / 2) * distance;
 const viewWidth = viewHeight * camera.aspect;
-right.position.set(viewWidth / 2 - 40,viewHeight / 4,0)
+right.position.set(viewWidth / 2 - viewWidth / 10.345582401631388,viewHeight / 4,0)
 right.rotateY(-1)
-left.position.set(-viewWidth / 2 + 40,viewHeight / 4,0)
+
+left.position.set(-viewWidth / 2 + viewWidth / 10.345582401631388,viewHeight / 4,0)
 left.rotateY(1)
 right.name = 'right'
 left.name = 'left'
@@ -1266,7 +1275,6 @@ function animate(time){
     firstRender = false    
     document.getElementById('statue').innerText = names[0]
     document.getElementById('description').innerText = description[0]
-    canvas.click()
     new TWEEN.Tween(statue2.position).to({
     z: 0 ,
     y:0,
@@ -1402,5 +1410,6 @@ window.addEventListener('resize',()=> {
   camera.updateProjectionMatrix();
   renderer.setSize(window.innerWidth, window.innerHeight);
   renderer.setPixelRatio(window.devicePixelRatio);
+  mat2.uniforms.viewport = window.innerHeight
 })
 
