@@ -253,13 +253,13 @@ const dracoLoader2 = new DRACOLoader();
 dracoLoader2.setDecoderPath('https://www.gstatic.com/draco/v1/decoders/'); 
 loaderg.setDRACOLoader(dracoLoader2);
 
-const gltf = await loaderg.loadAsync('./3D/Apollo/Statue.glb');
+const gltf = await loaderg.loadAsync('https://cdn.jsdelivr.net/gh/Subsussp/THE@gh-pages/3D/Apollo/Statue.glb');
 
 const loader = new GLTFLoader();
 const dracoLoader = new DRACOLoader();
 dracoLoader.setDecoderPath('https://www.gstatic.com/draco/v1/decoders/'); 
 loader.setDRACOLoader(dracoLoader);
-const glb = await loader.loadAsync( './3D/Statue.glb' )
+const glb = await loader.loadAsync( 'https://cdn.jsdelivr.net/gh/Subsussp/THE@gh-pages/3D/Statue.glb' )
 
 
 let gmaterial = new THREE.MeshStandardMaterial({color: 0xffffff, 
