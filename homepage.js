@@ -174,7 +174,7 @@ let run = false
 let allow = true
 let opacity = 0
 canvas.addEventListener('click',async (e)=>{
-  if(!allow){
+  if(!allow || firstclick){
     e.preventDefault()
     return
   }
