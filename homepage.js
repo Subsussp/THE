@@ -1147,21 +1147,18 @@ gsap.to(scrollProgress, {
     onUpdate: (e)=>{
       if(e.progress == 0){
         First.style.opacity = 0.3
-        First.style.transform = `translateY(15px)`
-        First.style.scale = 0.8
+        First.style.transform = `translateY(15px) scale(0.8)`
         second.style.opacity = 1.0
         extramesh.material.uniforms.fOpacity.value = 1
         if(extramesh.material.uniforms.UOpacity?.value)extramesh.material.uniforms.UOpacity.value = 1
       }else{ 
         First.style.opacity = e.progress * 0.6 + .3
-        First.style.transform = `translateY(${e.progress * 50 + 15}px)`
-        First.style.scale = e.progress * 0.2 + 0.8 
+        First.style.transform = `translateY(${e.progress * 60 + 15}px) scale(${e.progress * 0.2 + 0.8})`
+        
         second.style.opacity = 1.0 - e.progress *0.5
+        second.style.transform = `translateY(${e.progress * 50 + 25}px) scale(${1 - e.progress * 0.2 })`
 
-        third.style.scale = 0.8 - 0.2 * e.progress 
-        third.style.transform = `translateY(${e.progress * 95 + 50}px)`
-        second.style.scale = 1 - e.progress * 0.2 
-        second.style.transform = `translateY(${e.progress * 60 + 25}px)`
+        third.style.transform = `translateY(${e.progress * 55 + 35}px) scale(${0.8 - 0.2 * e.progress })`
 
         document.getElementsByClassName('os')[0].style.opacity = (1- e.progress)
         document.getElementsByClassName('is')[0].style.opacity = (1- e.progress)
@@ -1209,14 +1206,11 @@ gsap.to(activecamera.position, {
       let scrollinst = document.getElementById('scrollinst').style.opacity
       if(scrollinst != '0'){
         scrollinst = 1 - e.progress 
-        First.style.scale = 0.6 + 0.2 * e.progress 
-        First.style.transform = `translateY(${e.progress * 35 - 20}px)`
+        First.style.transform = `translateY(${e.progress * 35 - 20}px) scale(${ 0.6 + 0.2 * e.progress })`
         second.style.opacity = e.progress * 0.4 + .4
-        second.style.transform = `translateY(${e.progress * 25}px)`
-        second.style.scale = e.progress * 0.2 + 0.8 
+        second.style.transform = `translateY(${e.progress * 25}px) scale(${ e.progress * 0.2 + 0.8 })`
         third.style.opacity = 1.0 - e.progress * 0.6
-        third.style.scale = 1 - 0.2 * e.progress 
-        third.style.transform = `translateY(${e.progress * 50}px)`
+        third.style.transform = `translateY(${e.progress * 35}px) scale(${ 1 - 0.2 * e.progress })`
       }
 
     }
