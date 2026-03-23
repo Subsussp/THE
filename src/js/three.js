@@ -585,22 +585,6 @@ function loadpart(){
 				renderer.render( scene, camera );
 			}
     const gainNode = sound.getOutput();
-	const meydaAnalyzer = Meyda.createMeydaAnalyzer({
-	audioContext: listener.context,
-	source: gainNode,
-	bufferSize: 512,
-	featureExtractors: ['rms', 'spectralCentroid', 'zcr'],
-	callback: (features) => {
-		// let feat = features.rms
-		// 	if(max < feat){
-		// 			max = feat
-		// 		}
-		// 		if(feat < min){
-		// 			min = feat
-		// 		}
-				// let change = +toMinusOneToOne(feat, min, max).toPrecision(2) ? +toMinusOneToOne(feat, min, max).toPrecision(2) :  0
-	}});
-	meydaAnalyzer.start();
 
 }
 

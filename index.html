@@ -11,11 +11,24 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,100&display=swap" rel="stylesheet">
 
 <style> 
-html{
-  line-height: 1.5;
-}
+  html{
+    line-height: 1.5;
+  }
   h1,h2{
     margin: 0;
+  }
+  .svg-container{
+    position: fixed;
+    z-index: 900;
+    top: 50%;
+    right: 0%;
+    width: 36px;
+    transform: translateY(-50%);
+  }
+  svg{
+    opacity: 1;
+    width: 100%;
+    height: 100%;
   }
  .scrollinst{
     font-family: "MyCustomFont1";
@@ -72,7 +85,7 @@ html{
       height: 100%;
       pointer-events: none;
     }
-    svg {
+    .Mysvg {
       width: 100%;
       position: fixed;
       font-size:4.2em;
@@ -80,7 +93,6 @@ html{
       left: 50%;
       transform: translateX(-50%);
       opacity: 0;
-
     }
 
     textPath {
@@ -113,6 +125,18 @@ a{
   font-size: 2em;
   color: gray;
   top: 5.5em;
+}
+#Second{
+  scale: .8;
+  transform-origin: center;
+}
+#First{
+  scale: .6;
+  transform: translateY(-20px);
+  transform-origin: center;
+}
+#Third{
+  transform-origin: center;
 }
 @font-face {
   font-family: 'Myfont';
@@ -153,7 +177,20 @@ a{
 
 </head>
 <body>
-  <div style="position: absolute;top: 50%;left: 50%;transform: translate(-50%,-50%);width: 140px;height: 180px;cursor: pointer;z-index: 500;user-select: none; outline: none;" class="disposable sfxbtn centerBtn"></div>
+<div class="svg-container disposable">
+
+  <svg width="36" height="60" viewBox="0 0 153 194" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <g id="Third">
+    <path id="Rectangle 1" d="M30 121C42 121 115 121 124 121C133 121 135 141 124 141C113 141 41 141 30 141C19 141 18 121 30 121Z" fill="white"/>
+    </g>
+    <g id="Second"  style="opacity: .4;">
+    <path id="Rectangle 1_2" d="M30 87C42 87 115 87 124 87C133 87 135 107 124 107C113 107 41 107 30 107C19 107 18 87 30 87Z" fill="white"/>
+    </g>
+    <g id="First"  style="opacity: .4;">
+    <path id="Rectangle 1_3" d="M30 53C42 53 115 53 124 53C133 53 135 73 124 73C113 73 41 73 30 73C19 73 18 53 30 53Z" fill="white"/>
+    </g>  
+  </svg>
+</div>
 <div id="scrollinst" class="disposable scrollinst" style="position: fixed; 
 bottom: 0; 
 z-index: 50; 
@@ -166,7 +203,7 @@ transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
 transition-duration: 300ms; 
 transition-duration: 300ms; 
 transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1); 
-" ><span style="padding: 12px;cursor: default;" class="sfxbtn"> Scroll down to discover</span></div>
+" ><span style="padding: 12px;cursor: default;user-select: none;" class="sfxbtn"> Scroll down to discover</span></div>
 
  <img id="img1" src="./src/js/noise.jpg" style="display:none">
 
@@ -220,7 +257,7 @@ transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
 
 
 </script>
-<script src="https://cdn.jsdelivr.net/npm/meyda/dist/web/meyda.min.js"></script>
+
   <script id="fragmentshader" type="fragment">
   uniform float u_red;
   uniform float u_blue;
@@ -375,14 +412,14 @@ void main() {
   }
 
 </script>
-     <nav class="nav" style="flex-direction: row;display: flex;justify-content: space-between;width:100%;position: absolute;padding:40px;">
+     <nav class="nav" style="flex-direction: row;display: flex;justify-content: space-between;width:100%;position: absolute;padding:40px;user-select: none;">
     <a href="https://subsussp.github.io/THE/" id="head" target="_blank" data-has-parsed="true">
         <div id="htext" class="sfxbtn" style="color: white;width: 100%;">
           THE
       </div> 
     </a>
     <ul style="
-    align-self: center;
+    align-self: center;margin: 0;
 ">
       <li>
         <div class="disposable">
@@ -394,9 +431,10 @@ void main() {
 
   <div id="main">
   </div>
-    <audio id="audio" src="music/Farfromanyroad.ogg" style="display:none"></audio>
+    <audio id="audio" autoplay muted src="music/Farfromanyroad.ogg" style="display:none"></audio>
+  <div style="position: absolute;top: 50%;left: 50%;transform: translate(-50%,-50%);width: 140px;height: 180px;cursor: pointer;z-index: 500;user-select: none; outline: none;" class="disposable sfxbtn centerBtn"></div>
 
-<svg viewBox="0 0 500 250" class="is disposable" id="twisty">
+<svg viewBox="0 0 500 250" class="is disposable Mysvg" id="twisty">
   <path id="sad-arc" d="M 50 150 C 150 150, 250 100, 450 150" fill="transparent"/>
 
   <text>
@@ -405,7 +443,7 @@ void main() {
     </textPath>
   </text>
 </svg>
-<svg viewBox="0 0 500 250"  class="os disposable" id="twisty">
+<svg viewBox="0 0 500 250"  class="os disposable Mysvg" id="twisty">
   <path id="sad-arc" d="M 50 150 C 150 150, 250 100, 450 150" fill="transparent"/>
 
   <text>

@@ -49,8 +49,7 @@ if(buttons){
     source.start();
   })
     button.addEventListener('mouseleave', () => {
-    Shouldplaysfx = true
-
+      Shouldplaysfx = true
   })
 
 });
@@ -66,8 +65,11 @@ let enteredfromstatue = false;
 let firstRender = true;
 const loaderg = new GLTFLoader();
 let main = document.getElementById('main')
+let First = document.getElementById('First')
+let second = document.getElementById('Second')
+let third = document.getElementById('Third')
 let scene = new THREE.Scene()
-let space = 288
+let space = 288 * (855 / window.innerHeight)
 let turn = 0
 let pheta = 0
 
@@ -137,6 +139,8 @@ audio.addEventListener('play', async () => {
     dataArray = new Uint8Array(bufferLength)
   }
 });
+audio.pause()
+
 audio.addEventListener('playing', () => {
   console.log('Audio is playing, starting analysis');
 
@@ -177,10 +181,11 @@ canvas.addEventListener('click',async (e)=>{
   opacity = !run ? 0 : 1  
   run = !run
   if(run){
+    audio.muted = false
     await audio.play();
-
   }else{
-      await audio.pause();
+    audio.muted = true
+    await audio.pause();
   }
   allow = false
   if(!animateId){
@@ -227,6 +232,7 @@ document.addEventListener('click',()=>{
     canvas.click()
   }  
 })
+
 // ########################################
 
 // Camera setup 
@@ -369,6 +375,8 @@ let panelmat = new THREE.ShaderMaterial({
     uProgress: { value: 0 },
     uTexture: { value: textTexture }
   },
+  transparent:true,
+  depthTest:false,
   vertexShader: `
     varying vec2 vUv;
     void main() {
@@ -950,7 +958,7 @@ vec3 fbm_vec3(vec3 p, float frequency, float offset)
 
     }
   `})
-const count = 500000;
+let count = 500000;
 let plane2 = new THREE.PlaneGeometry(1.5,.4,window.innerWidth,480)
 let geo = new THREE.BufferGeometry()
 let points = new Float32Array(count * 3)
@@ -1051,7 +1059,6 @@ scene.add(light1)
 
 let ongoing;
 
-
 statue.layers.set(1);
 statue2.layers.set(1);
 part1.layers.set(1)
@@ -1138,20 +1145,33 @@ gsap.to(scrollProgress, {
       snapTo: [0,1],
     },
     onUpdate: (e)=>{
-
       if(e.progress == 0){
+        First.style.opacity = 0.3
+        First.style.transform = `translateY(15px)`
+        First.style.scale = 0.8
+        second.style.opacity = 1.0
         extramesh.material.uniforms.fOpacity.value = 1
         if(extramesh.material.uniforms.UOpacity?.value)extramesh.material.uniforms.UOpacity.value = 1
       }else{ 
+        First.style.opacity = e.progress * 0.6 + .3
+        First.style.transform = `translateY(${e.progress * 50 + 15}px)`
+        First.style.scale = e.progress * 0.2 + 0.8 
+        second.style.opacity = 1.0 - e.progress *0.5
+
+        third.style.scale = 0.8 - 0.2 * e.progress 
+        third.style.transform = `translateY(${e.progress * 95 + 50}px)`
+        second.style.scale = 1 - e.progress * 0.2 
+        second.style.transform = `translateY(${e.progress * 60 + 25}px)`
+
         document.getElementsByClassName('os')[0].style.opacity = (1- e.progress)
         document.getElementsByClassName('is')[0].style.opacity = (1- e.progress)
         if(gain?.gain)gain.gain.value = (1- e.progress) * Math.random() 
         extramesh.material.uniforms.fOpacity.value = (1- e.progress) * Math.random() 
         if(e.progress == 1){
+          if(scene && enteredfromstatue){
             window.addEventListener("wheel", (e) => {
               e.preventDefault();
             }, { passive: false });
-          if(scene && enteredfromstatue){
             enteredfromstatue = false
             setTimeout(()=>{
               scene = null;
@@ -1186,8 +1206,17 @@ gsap.to(activecamera.position, {
       snapTo: [0,1],
     },
     onUpdate: (e)=>{
-      if(document.getElementById('scrollinst').style.opacity != '0'){
-        document.getElementById('scrollinst').style.opacity = 1 - e.progress 
+      let scrollinst = document.getElementById('scrollinst').style.opacity
+      if(scrollinst != '0'){
+        scrollinst = 1 - e.progress 
+        First.style.scale = 0.6 + 0.2 * e.progress 
+        First.style.transform = `translateY(${e.progress * 35 - 20}px)`
+        second.style.opacity = e.progress * 0.4 + .4
+        second.style.transform = `translateY(${e.progress * 25}px)`
+        second.style.scale = e.progress * 0.2 + 0.8 
+        third.style.opacity = 1.0 - e.progress * 0.6
+        third.style.scale = 1 - 0.2 * e.progress 
+        third.style.transform = `translateY(${e.progress * 50}px)`
       }
 
     }
@@ -1266,7 +1295,13 @@ raycast.layers.enableAll()
 function animate(time){
   const elapsedTime = clock.getElapsedTime()
   const deltaTime = elapsedTime - previousTime
-  
+  const fps = 1000 / deltaTime;
+  if(Math.round(fps) < 400){
+    geo.setDrawRange(0, 250000);
+  }else{
+    geo.setDrawRange(0, count);
+
+  }
   extramesh.rotation.y +=  Math.PI / 360   
   light1.position.x +=( (((Mouse.x)) * pointPlaneWidth / 2  ) -  light1.position.x  ) * deltaTime * 2.6
   light1.position.y += (((1- (Mouse.y + 1 )/2) * pointPlaneHeight + 2)  -  (light1.position.y + 1 /2)) * deltaTime * 3.3
@@ -1312,6 +1347,7 @@ function animate(time){
     statue2.rotation.y += directionro * Math.PI / 360 
   }
   composer.render()
+
   animationId = requestAnimationFrame(animate)
 
 }
