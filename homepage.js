@@ -165,20 +165,25 @@ audio.addEventListener('playing', () => {
 });
 
 let canvas = document.getElementById('wave') 
+let Loadercanvas = document.getElementById('wave2') 
 const ctx = canvas.getContext("2d");
+const ctx2 = Loadercanvas.getContext("2d");
 let animateId = null;
 canvas.height = 20
 canvas.width = 20 * 6 / 3
+Loadercanvas.height = 20
+Loadercanvas.width = 20 * 6 / 3
 let firstclick = true
 let run = false
 let allow = true
-let opacity = 0
+let opacity = {o:0}
+let opacityallowance = false
 canvas.addEventListener('click',async (e)=>{
   if(!allow || firstclick){
     e.preventDefault()
     return
   }
-  opacity = !run ? 0 : 1  
+  opacity.o = !run ? 0 : 1  
   run = !run
   if(run){
     audio.muted = false
@@ -194,29 +199,40 @@ canvas.addEventListener('click',async (e)=>{
 })
 function drawlines(pheta,startingH = canvas.height,off = 0){
   ctx.beginPath()
+      if(!opacityallowance){
+        ctx2.beginPath()
+      }
   for(let i =0; i < canvas.width / 6 ;i++){
     let y = Math.sin((pheta + i * .5))
     ctx.moveTo(10.5 + i * 4,startingH )
-    ctx.lineTo(10.5 + i * 4,startingH + off + (y * 7 - 8) * opacity * speed * 2 )
+    ctx.lineTo(10.5 + i * 4,startingH + off + (y * 7 - 8) * opacity.o * speed * 2 )
+    if(!opacityallowance){
+      ctx2.moveTo(10.5 + i * 4,startingH )
+      ctx2.lineTo(10.5 + i * 4,startingH + off + (y * 7 - 8)  * opacity.o * speed  )
+    }
   }
-  if(opacity < 1 & run){
-    opacity = +(opacity + 0.04).toFixed(2);
+  if(opacity.o < 1 && run && opacityallowance){
+    opacity.o = +(opacity.o + 0.04).toFixed(2);
   }
-  if(opacity == 1){
+  if(opacity.o == 1 && opacityallowance){
     allow = true
   }
-  if(opacity > 0 && !run){
-    opacity = +(opacity - 0.01).toFixed(2);
-  }if(opacity == 0){
+  if(opacity.o > 0 && !run && opacityallowance){
+    opacity.o = +(opacity.o - 0.01).toFixed(2);
+  }if(opacity.o == 0 && opacityallowance){
     allow = true
   }
   ctx.strokeStyle = "#ffffff"; 
   ctx.lineWidth = 1;    
   ctx.stroke()
+  ctx2.strokeStyle = "#ffffff"; 
+  ctx2.lineWidth = 1;    
+  ctx2.stroke()
 }
 
 function loop(){
   ctx.clearRect(0, 0, canvas.width, canvas.height); 
+  ctx2.clearRect(0, 0, Loadercanvas.width, Loadercanvas.height); 
   if(pheta >= 360){
     pheta = 0
   }
@@ -225,7 +241,8 @@ function loop(){
   drawlines(phetaR,undefined,-3)
   animateId = requestAnimationFrame(loop)
 }
-drawlines(Math.PI / 180,undefined,-3)
+
+
 document.addEventListener('click',()=>{
   if(firstclick){
     firstclick = false
@@ -253,40 +270,74 @@ const height = 2 * Math.tan(fov / 2) * distanceZ;
 
 const width = 505.7840285242011;
 
+drawlines(pheta,undefined,-3)
 
 // Object setup 
-const dracoLoader2 = new DRACOLoader();
-dracoLoader2.setDecoderPath('https://www.gstatic.com/draco/v1/decoders/'); 
-loaderg.setDRACOLoader(dracoLoader2);
 
-const gltf = await loaderg.loadAsync('https://cdn.jsdelivr.net/gh/Subsussp/THE@gh-pages/3D/Apollo/Statue.glb');
 
+let loaderanimationr;
 const loader = new GLTFLoader();
 const dracoLoader = new DRACOLoader();
 dracoLoader.setDecoderPath('https://www.gstatic.com/draco/v1/decoders/'); 
+loaderg.setDRACOLoader(dracoLoader);
 loader.setDRACOLoader(dracoLoader);
+const gltf = await loaderg.loadAsync('https://cdn.jsdelivr.net/gh/Subsussp/THE@gh-pages/3D/Apollo/Statue.glb');
 const glb = await loader.loadAsync( 'https://cdn.jsdelivr.net/gh/Subsussp/THE@gh-pages/3D/Statue.glb' )
+
+  let timeline = gsap.timeline({
+      delay:1.4,
+      defaults:{
+          ease:'power3.inOut',
+          duration:3,
+      }
+  })
+  timeline.to('#wave2',{
+      scale:1,
+      x:window.innerWidth/ 2 - 60,
+      y:-window.innerHeight/ 2 + 50,
+      // onStart:()=>{
+
+      // }
+  })
+  .to('#loader-cont',{
+    opacity:0
+  },"<")
+  .to('#wave',{
+        opacity:1,
+        duration:3,
+        onComplete:()=>{
+          opacityallowance = true
+        }
+  }).to('#wave2',{
+      opacity:0,
+      duration:3,
+      onComplete:()=>{
+          document.getElementById('loader-cont').remove()         
+          Loadercanvas.remove()
+          cancelAnimationFrame(loaderanimationr)
+      }
+  },'<')
+
 
 
 let gmaterial = new THREE.MeshStandardMaterial({color: 0xffffff, 
   roughness: 0.2, 
   metalness: 0,
-  side: THREE.DoubleSide
+  side: THREE.FrontSide
 });
-
-
 
 let statue = glb.scene
 statue.traverse(child => {
   if (child.isMesh) {
     if (child.geometry) {
-      child.geometry.computeVertexNormals();    
       child.geometry.center();;    
     }
     child.material = gmaterial
-
   }
 });
+
+
+
 // let statue = new THREE.Mesh( geometry,gmaterial )
 // let screengeo = new THREE.PlaneGeometry(width ,height)
 // const renderTarget = new THREE.WebGLRenderTarget(width ,height)
@@ -358,8 +409,8 @@ const ctx3 = canvas3.getContext("2d");
 ctx3.fillRect(0, 0, canvas3.width, canvas3.height);
 
 ctx3.fillStyle = "white";
-document.fonts.load("bold 50px Inter").then(() => {
-  ctx3.font = "bold 50px Inter";
+document.fonts.load("700 50px Inter").then(() => {
+  ctx3.font = "700 50px Inter";
   ctx3.letterSpacing = "-2px";
   ctx3.textBaseline = "middle";
   ctx3.textAlign= "center";

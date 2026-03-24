@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+              body {
+        margin: 0;      
+        background-color: black;
+  }
+        .nav{
+        position: fixed;
+        top: 0;
+        z-index: 100;
+        }
+          html{
+    line-height: 1.5;
+  }
+  h1,h2{
+    margin: 0;
+  }
+  .svg-container{
+    position: fixed;
+    z-index: 900;
+    top: 50%;
+    right: 0%;
+    width: 36px;
+    transform: translateY(-50%);
+  }
+  svg{
+    opacity: 1;
+    width: 100%;
+    height: 100%;
+  }
+ .scrollinst{
+    font-family: "MyCustomFont1";
+    text-anchor: start;
+    text-align: left;
+    font-weight: 300;
+    line-height: 15px;
+    font-size: 10px;
+    opacity: .8;
+    letter-spacing: 1.4px;
+  }
+    .hidden {
+      opacity: 0;
+      pointer-events: none;
+      transform: translateX(-50%) translateY(-20px);
+    }
+      body {
+        margin: 0;      
+        background-color: black;
+  }
+  ::-webkit-scrollbar,::-webkit-scrollbar-track{
+    display: none;
+  }
+  *, ::after, ::before {
+    box-sizing: border-box;
+    border-width: 0;
+    border-style: solid;
+    border-color: #e5e7eb;
+  }
+  #main{
+    position: fixed;
+    top: 0;
+  }
+  h1,h2{
+  font-family: "Inter", sans-serif;
+  font-weight: 100;
+  text-align: center;
+  width: 100%;
+  transition: opacity 0.5s ease-in-out;
+  pointer-events: none;
+  }
+    #statue {
+      color: white;
+      position: fixed;
+      font-size: 6em;
+      top: 0.5em;
+    }
+    #twisty{
+      user-select: none;
+      cursor: default;
+      pointer-events: none;
+    }
+    .smooth-wrapper{
+      height: 100%;
+      pointer-events: none;
+    }
+    .Mysvg {
+      width: 100%;
+      position: fixed;
+      font-size:4.2em;
+      top:1rem;
+      left: 50%;
+      transform: translateX(-50%);
+      opacity: 0;
+    }
+
+    textPath {
+      fill: #ffffff;      
+      font-family: "MyCustomFont";
+      color: white;
+      transform: scale(.2);
+      text-shadow: 5px 2px 0px rgba(0,0,0,0.6);
+    }
+    .centerBtn:focus{
+        outline: none; 
+    }
+#htext{
+  letter-spacing: 20px;
+  transition: all 300ms ease-in-out;
+  font-family: "Myfont";
+  font-weight: 400;
+
+}
+.nav{
+  position: fixed;
+  top: 0;
+  z-index: 100;
+}
+a{
+  color: transparent;
+}
+#description {
+  position: fixed;
+  font-size: 2em;
+  color: gray;
+  top: 5.5em;
+}
+#Second{
+  transform: scale(0.8);
+  transform-origin: center;
+}
+#First{
+  transform: translateY(-20px) scale(0.6);
+  transform-origin: center;
+}
+#Third{
+  transform-origin: center;
+}
+@font-face {
+  font-family: 'Myfont';
+  src: url("./fonts/NeueRegradeVariable.ttf") format("truetype");
+  font-weight: 100 900; 
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'MyCustomFont';
+  src: url('fonts/DisplayNarrowExtraLight.ttf') format('truetype');
+  font-style: normal;
+}
+@font-face {
+  font-family: 'MyCustomFont1';
+  src: url('fonts/VintageMachine.otf') format('opentype');
+  font-style: normal;
+  font-display: swap;
+}
+
+    </style>
+</head>
+<body style="background-color: black;">
+         <nav class="nav" style="flex-direction: row;display: flex;justify-content: space-between;width:100%;position: absolute;padding:40px;user-select: none;">
+    <a href="https://subsussp.github.io/THE/" id="head" target="_blank" data-has-parsed="true">
+        <div id="htext" class="sfxbtn" style="color: white;width: 100%;">
+          THE
+      </div> 
+    </a>
+    <ul style="
+    align-self: center;margin: 0;
+">
+      <li>
+        <div class="disposable">
+          <canvas id="wave" style="cursor: pointer;height: 100%;opacity: 0;" class="sfxbtn"></canvas>
+        </div>
+      </li>
+    </ul>
+  </nav>
+  <div id="loader-cont" style="background-color: black;width: 100%;height: 100%;position: absolute;z-index: 400;">
+</div>
+  <canvas id="wave2" style="position: absolute;top: 50%;left: 50%;transform: translate(-50%,-50%);transform-origin: center;z-index: 500;">    
+    </canvas>
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.1/dist/gsap.min.js"></script>
+    <script>
+        
+    let canvas2 = document.getElementById('wave') 
+    let canvas = document.getElementById('wave2') 
+    const ctx = canvas.getContext("2d");
+    const ctx2 = canvas2.getContext("2d");
+    canvas2.height = 20
+    canvas2.width = 20 * 6 / 3
+    canvas.height = 20
+    canvas.width = 20 * 6 / 3
+    let pheta2 = 0
+    let opacity = {o:1}
+    function drawlines2(pheta2,startingH = canvas2.height,off = 0){
+    ctx.beginPath()
+    ctx2.beginPath()
+    for(let i =0; i < canvas2.width / 6 ;i++){
+        let y = Math.sin((pheta2 + i * .5))
+        ctx2.moveTo(10.5 + i * 4,startingH )
+        ctx2.lineTo(10.5 + i * 4,startingH + off + (y * 7 - 8) * 2 * .5 * opacity.o)
+        ctx.moveTo(10.5 + i * 4,startingH )
+        ctx.lineTo(10.5 + i * 4,startingH + off + (y * 7 - 8) * 2 * .5 * opacity.o)
+    }
+    ctx.strokeStyle = "#ffffff"; 
+    ctx.lineWidth = 1;    
+    ctx.stroke()
+    ctx2.strokeStyle = "#ffffff"; 
+    ctx2.lineWidth = 1;    
+    ctx2.stroke()
+    }
+
+    function loop2(){
+        ctx.clearRect(0, 0, canvas.width, canvas.height); 
+        ctx2.clearRect(0, 0, canvas2.width, canvas2.height); 
+        if(pheta2 >= 360){
+            pheta2 = 0
+        }
+        let phetaR = pheta2 * Math.PI / 180
+        pheta2 += 2 * 4 * 0.5
+        drawlines2(phetaR,undefined,-3)
+        requestAnimationFrame(loop2)
+    }
+    loop2()
+    let timeline = gsap.timeline({
+        delay:0.4,
+        defaults:{
+            ease:'power3.inOut',
+            duration:3,
+        }
+    })
+    timeline.fromTo('#wave2',{
+        scale: 2.5,
+    },{
+        scale:1,
+        x:window.innerWidth/ 2 - 60,
+        y:-window.innerHeight/ 2 + 50,
+    })
+    .to('#loader-cont',{
+        opacity:0
+    },"<")
+    .to(opacity,
+    {o:0})
+    .to('#wave',{
+            opacity:1,
+            duration:3,
+    }).to('#wave2',{
+        opacity:0,
+        duration:3,
+        onComplete:()=>{
+            document.getElementById('loader-cont').remove()         
+            canvas.remove()
+        }
+        },'<')
+    </script>
+</body>
+
+</html>
