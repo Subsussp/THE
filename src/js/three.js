@@ -38,31 +38,43 @@ function configaudio(buffer) {
 // samples tab settings
 const sampleActions = {
     '1': () =>{		
-		audioLoader.load('./music/sample1.mp3', function (buffer) {
-				configaudio(buffer)
-				});} ,
+	audioLoader.load('./music/sample1.mp3', function (buffer) {
+		configaudio(buffer)
+	});} ,
     '2': () => {
-				audioLoader.load('./music/sample2.mp3', function (buffer) {
-					configaudio(buffer)
-				});
+	audioLoader.load('./music/sample2.mp3', function (buffer) {
+		configaudio(buffer)
+	});
 	},
 	'3':() => {	
 	audioLoader.load('./music/sample3.mp3', function (buffer) {
-			configaudio(buffer)
+		configaudio(buffer)
 	})} ,
 	'4':() => {	
-	audioLoader.load('./music/Farfromanyroad.ogg', function (buffer) {
+	audioLoader.load('./music/Farfromanyroad.mp3', function (buffer) {
+		configaudio(buffer)
+	})} ,
+	'5':() => {	
+	audioLoader.load('./music/sample5.mp3', function (buffer) {
+			configaudio(buffer)
+	})} ,
+	'6':() => {	
+	audioLoader.load('./music/sample6.mp3', function (buffer) {
+			configaudio(buffer)
+	})} ,
+	'7':() => {	
+	audioLoader.load('./music/sample7.mp3', function (buffer) {
 			configaudio(buffer)
 	})} 
   };
 
 let setfirst = false
-let type = 'Youtube';
-let url = {Youtube:'https://www.youtube.com/watch?v=mNEUkkoUoIA&list=RDmNEUkkoUoIA&start_radio=1',Spotify:'',Soundcloud:''}
-const settings = {
-	platform: type,
-	value: url['Youtube']
-	};
+// let type = 'Youtube';
+// let url = {Youtube:'https://www.youtube.com/watch?v=mNEUkkoUoIA&list=RDmNEUkkoUoIA&start_radio=1',Spotify:'',Soundcloud:''}
+// const settings = {
+// 	platform: type,
+// 	value: url['Youtube']
+// 	};
 
 const volume = {Volume: .5}
 const audioSettings = {
@@ -104,11 +116,11 @@ camera.add(listener);
 const Song = gui.addFolder('Song');
 
 // audio url input
-const urltab = Song.add(settings, 'value').onChange(function (value) {
-    if(value){
-url[type] = value
-}
-}).name('url');
+// const urltab = Song.add(settings, 'value').onChange(function (value) {
+//     if(value){
+// url[type] = value
+// }
+// }).name('url');
 
 // samples tab
 const samples = Song.add(
@@ -117,10 +129,13 @@ const samples = Song.add(
   },
   'value',
   {
-    'Sample 1': '1',
-    'Sample 2': '2',
-    'Sample 3': '3',
-    'Sample 4': '4'
+    'Carlo Savina - Joyful Love': '1',
+    'Ghostly Kisses - Clay': '2',
+    'mehro - chance with you': '3',
+    'The Handsome Family - Far From Any Road': '4',
+    'Lege-Cy - HAGGA': '5',
+    'Lege-Cy - SWISSRA': '6',
+    'Sample 7': '7',
   }
 ).name('Samples').onChange(function (value) {
   if (sampleActions[value]) {
@@ -157,49 +172,49 @@ button1.onclick = (e) =>{
         }
     };
     
-	const button3 = document.createElement('button');
-    button3.innerText = 'load';
-    button3.onclick =async () =>{
-   // Create a CSS spinner
-        const spinner = document.createElement('div');
-        spinner.classList.add('spinner');
-        // Add CSS styling for the spinner
-        const style = document.createElement('style');
-        style.textContent = `
-        .spinner {
-            margin:4px;
-            width: 28px;
-            height: 15px;
-            border: 2px solid #999;
-            border-top-color: #222;
-            border-radius: 50%;
-            animation: spin 0.8s linear infinite;
-            }
+// 	const button3 = document.createElement('button');
+//     button3.innerText = 'load';
+//     button3.onclick =async () =>{
+//    // Create a CSS spinner
+//         const spinner = document.createElement('div');
+//         spinner.classList.add('spinner');
+//         // Add CSS styling for the spinner
+//         const style = document.createElement('style');
+//         style.textContent = `
+//         .spinner {
+//             margin:4px;
+//             width: 28px;
+//             height: 15px;
+//             border: 2px solid #999;
+//             border-top-color: #222;
+//             border-radius: 50%;
+//             animation: spin 0.8s linear infinite;
+//             }
             
-            @keyframes spin {
-                to { transform: rotate(360deg); }
-                }
-                `;
-document.head.appendChild(style);
-const controllerDom = Song.domElement;
-controllerDom.querySelector('.controller').appendChild(spinner);
-let load ;
-if (audioCache.has(url[type])) {
-  load = audioCache.get(url[type]);
-} else {
-    const objectUrl =await fetchaudio(url[type],type)
-    audioCache.set(url[type], objectUrl);
-    load = objectUrl;
-}
-audioLoader.load(load, function (buffer) {
-    spinner.remove();
-	configaudio(buffer)
-});
-    }
+//             @keyframes spin {
+//                 to { transform: rotate(360deg); }
+//                 }
+//                 `;
+// document.head.appendChild(style);
+// const controllerDom = Song.domElement;
+// controllerDom.querySelector('.controller').appendChild(spinner);
+// // let load ;
+// // if (audioCache.has(url[type])) {
+// //   load = audioCache.get(url[type]);
+// // } else {
+// //     const objectUrl =await fetchaudio(url[type],type)
+// //     audioCache.set(url[type], objectUrl);
+// //     load = objectUrl;
+// // }
+// // audioLoader.load(load, function (buffer) {
+// //     spinner.remove();
+// // 	configaudio(buffer)
+// // });
+//     }
 
 container.appendChild(button1);
 container.appendChild(button2);              
-container.appendChild(button3);
+// container.appendChild(button3);
 
 
 Song.domElement.appendChild(container);
@@ -412,7 +427,7 @@ function loadpart(){
 				maxSpeed = uniform( 0 );
 				const gravityConstant = 6.67e-11;
 				velocityDamping = uniform( 0 );
-				const scale = uniform( 0.008 );
+				const scale = uniform( 0.005 );
 				const boundHalfExtent = uniform( 8 );
 				const colorA = uniform( color( '#5900ff' ) );
 				const colorB = uniform( color( '#ffa575' ) );

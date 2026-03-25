@@ -29,11 +29,11 @@ window.addEventListener('DOMContentLoaded',()=>{
 })
 gain2.gain.value = .3
 let Shouldplaysfx = true
-fetch('./music/sfx.ogg')
+fetch('./music/sfx.mp3')
   .then(r => r.arrayBuffer())
   .then(data => sfx.decodeAudioData(data))
   .then(decoded => buffer = decoded);
-fetch('./music/mainsfx.ogg')
+fetch('./music/mainsfx.mp3')
   .then(r => r.arrayBuffer())
   .then(data => sfx.decodeAudioData(data))
   .then(decoded => buffer2 = decoded);
@@ -1227,9 +1227,9 @@ gsap.to(activecamera.position, {
       snapTo: [0,1],
     },
     onUpdate: (e)=>{
-      let scrollinst = document.getElementById('scrollinst').style.opacity
+      let scrollinst = document.getElementById('scrollinst')
       if(scrollinst != '0'){
-        scrollinst = 1 - e.progress 
+        scrollinst.style.opacity = 1 - e.progress 
         First.style.transform = `translateY(${e.progress * 35 - 20}px) scale(${ 0.6 + 0.2 * e.progress })`
         second.style.opacity = e.progress * 0.6 + .4
         second.style.transform = `translateY(${e.progress * 30 - 5}px) scale(${ e.progress * 0.2 + 0.8 })`
