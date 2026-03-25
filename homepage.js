@@ -484,251 +484,251 @@ let description = [`God Of Music`,'God Of Wine',]
 let light = new THREE.DirectionalLight(0xfafafa,1)
 const light1 = new THREE.PointLight(0xfafafa,100,90,0.7)
 
-let mat = new THREE.ShaderMaterial({
-  uniforms:{
-    distortion2:{value:1.0},
-    viewport:{value:window.innerHeight},
-    uAudio: { value: new Float32Array(1024) },
-    time: {value: 1.0},
-    opacity: {value : 1.0}
+// let mat = new THREE.ShaderMaterial({
+//   uniforms:{
+//     distortion2:{value:1.0},
+//     viewport:{value:window.innerHeight},
+//     uAudio: { value: new Float32Array(1024) },
+//     time: {value: 1.0},
+//     opacity: {value : 1.0}
 
-  },
-  transparent:true, 
-  blending:THREE.NormalBlending,  
-  vertexShader: `
-  varying vec2 vUv;
-  varying vec3 vposistion;
-  uniform float uAudio[1024];
-  uniform float time;
-  uniform float distortion2;
-vec3 mod289(vec3 x)
-{
-  return x - floor(x * (1.0 / 289.0)) * 289.0;
-}
+//   },
+//   transparent:true, 
+//   blending:THREE.NormalBlending,  
+//   vertexShader: `
+//   varying vec2 vUv;
+//   varying vec3 vposistion;
+//   uniform float uAudio[1024];
+//   uniform float time;
+//   uniform float distortion2;
+// vec3 mod289(vec3 x)
+// {
+//   return x - floor(x * (1.0 / 289.0)) * 289.0;
+// }
 
-vec4 mod289(vec4 x)
-{
-  return x - floor(x * (1.0 / 289.0)) * 289.0;
-}
+// vec4 mod289(vec4 x)
+// {
+//   return x - floor(x * (1.0 / 289.0)) * 289.0;
+// }
 
-vec4 permute(vec4 x)
-{
-  return mod289(((x*34.0)+10.0)*x);
-}
+// vec4 permute(vec4 x)
+// {
+//   return mod289(((x*34.0)+10.0)*x);
+// }
 
-vec4 taylorInvSqrt(vec4 r)
-{
-  return 1.79284291400159 - 0.85373472095314 * r;
-}
+// vec4 taylorInvSqrt(vec4 r)
+// {
+//   return 1.79284291400159 - 0.85373472095314 * r;
+// }
 
-vec3 fade(vec3 t) {
-  return t*t*t*(t*(t*6.0-15.0)+10.0);
-}
+// vec3 fade(vec3 t) {
+//   return t*t*t*(t*(t*6.0-15.0)+10.0);
+// }
 
-// Classic Perlin noise
-float cnoise(vec3 P)
-{
-  vec3 Pi0 = floor(P); // Integer part for indexing
-  vec3 Pi1 = Pi0 + vec3(1.0); // Integer part + 1
-  Pi0 = mod289(Pi0);
-  Pi1 = mod289(Pi1);
-  vec3 Pf0 = fract(P); // Fractional part for interpolation
-  vec3 Pf1 = Pf0 - vec3(1.0); // Fractional part - 1.0
-  vec4 ix = vec4(Pi0.x, Pi1.x, Pi0.x, Pi1.x);
-  vec4 iy = vec4(Pi0.yy, Pi1.yy);
-  vec4 iz0 = Pi0.zzzz;
-  vec4 iz1 = Pi1.zzzz;
+// // Classic Perlin noise
+// float cnoise(vec3 P)
+// {
+//   vec3 Pi0 = floor(P); // Integer part for indexing
+//   vec3 Pi1 = Pi0 + vec3(1.0); // Integer part + 1
+//   Pi0 = mod289(Pi0);
+//   Pi1 = mod289(Pi1);
+//   vec3 Pf0 = fract(P); // Fractional part for interpolation
+//   vec3 Pf1 = Pf0 - vec3(1.0); // Fractional part - 1.0
+//   vec4 ix = vec4(Pi0.x, Pi1.x, Pi0.x, Pi1.x);
+//   vec4 iy = vec4(Pi0.yy, Pi1.yy);
+//   vec4 iz0 = Pi0.zzzz;
+//   vec4 iz1 = Pi1.zzzz;
 
-  vec4 ixy = permute(permute(ix) + iy);
-  vec4 ixy0 = permute(ixy + iz0);
-  vec4 ixy1 = permute(ixy + iz1);
+//   vec4 ixy = permute(permute(ix) + iy);
+//   vec4 ixy0 = permute(ixy + iz0);
+//   vec4 ixy1 = permute(ixy + iz1);
 
-  vec4 gx0 = ixy0 * (1.0 / 7.0);
-  vec4 gy0 = fract(floor(gx0) * (1.0 / 7.0)) - 0.5;
-  gx0 = fract(gx0);
-  vec4 gz0 = vec4(0.5) - abs(gx0) - abs(gy0);
-  vec4 sz0 = step(gz0, vec4(0.0));
-  gx0 -= sz0 * (step(0.0, gx0) - 0.5);
-  gy0 -= sz0 * (step(0.0, gy0) - 0.5);
+//   vec4 gx0 = ixy0 * (1.0 / 7.0);
+//   vec4 gy0 = fract(floor(gx0) * (1.0 / 7.0)) - 0.5;
+//   gx0 = fract(gx0);
+//   vec4 gz0 = vec4(0.5) - abs(gx0) - abs(gy0);
+//   vec4 sz0 = step(gz0, vec4(0.0));
+//   gx0 -= sz0 * (step(0.0, gx0) - 0.5);
+//   gy0 -= sz0 * (step(0.0, gy0) - 0.5);
 
-  vec4 gx1 = ixy1 * (1.0 / 7.0);
-  vec4 gy1 = fract(floor(gx1) * (1.0 / 7.0)) - 0.5;
-  gx1 = fract(gx1);
-  vec4 gz1 = vec4(0.5) - abs(gx1) - abs(gy1);
-  vec4 sz1 = step(gz1, vec4(0.0));
-  gx1 -= sz1 * (step(0.0, gx1) - 0.5);
-  gy1 -= sz1 * (step(0.0, gy1) - 0.5);
+//   vec4 gx1 = ixy1 * (1.0 / 7.0);
+//   vec4 gy1 = fract(floor(gx1) * (1.0 / 7.0)) - 0.5;
+//   gx1 = fract(gx1);
+//   vec4 gz1 = vec4(0.5) - abs(gx1) - abs(gy1);
+//   vec4 sz1 = step(gz1, vec4(0.0));
+//   gx1 -= sz1 * (step(0.0, gx1) - 0.5);
+//   gy1 -= sz1 * (step(0.0, gy1) - 0.5);
 
-  vec3 g000 = vec3(gx0.x,gy0.x,gz0.x);
-  vec3 g100 = vec3(gx0.y,gy0.y,gz0.y);
-  vec3 g010 = vec3(gx0.z,gy0.z,gz0.z);
-  vec3 g110 = vec3(gx0.w,gy0.w,gz0.w);
-  vec3 g001 = vec3(gx1.x,gy1.x,gz1.x);
-  vec3 g101 = vec3(gx1.y,gy1.y,gz1.y);
-  vec3 g011 = vec3(gx1.z,gy1.z,gz1.z);
-  vec3 g111 = vec3(gx1.w,gy1.w,gz1.w);
+//   vec3 g000 = vec3(gx0.x,gy0.x,gz0.x);
+//   vec3 g100 = vec3(gx0.y,gy0.y,gz0.y);
+//   vec3 g010 = vec3(gx0.z,gy0.z,gz0.z);
+//   vec3 g110 = vec3(gx0.w,gy0.w,gz0.w);
+//   vec3 g001 = vec3(gx1.x,gy1.x,gz1.x);
+//   vec3 g101 = vec3(gx1.y,gy1.y,gz1.y);
+//   vec3 g011 = vec3(gx1.z,gy1.z,gz1.z);
+//   vec3 g111 = vec3(gx1.w,gy1.w,gz1.w);
 
-  vec4 norm0 = taylorInvSqrt(vec4(dot(g000, g000), dot(g010, g010), dot(g100, g100), dot(g110, g110)));
-  g000 *= norm0.x;
-  g010 *= norm0.y;
-  g100 *= norm0.z;
-  g110 *= norm0.w;
-  vec4 norm1 = taylorInvSqrt(vec4(dot(g001, g001), dot(g011, g011), dot(g101, g101), dot(g111, g111)));
-  g001 *= norm1.x;
-  g011 *= norm1.y;
-  g101 *= norm1.z;
-  g111 *= norm1.w;
+//   vec4 norm0 = taylorInvSqrt(vec4(dot(g000, g000), dot(g010, g010), dot(g100, g100), dot(g110, g110)));
+//   g000 *= norm0.x;
+//   g010 *= norm0.y;
+//   g100 *= norm0.z;
+//   g110 *= norm0.w;
+//   vec4 norm1 = taylorInvSqrt(vec4(dot(g001, g001), dot(g011, g011), dot(g101, g101), dot(g111, g111)));
+//   g001 *= norm1.x;
+//   g011 *= norm1.y;
+//   g101 *= norm1.z;
+//   g111 *= norm1.w;
 
-  float n000 = dot(g000, Pf0);
-  float n100 = dot(g100, vec3(Pf1.x, Pf0.yz));
-  float n010 = dot(g010, vec3(Pf0.x, Pf1.y, Pf0.z));
-  float n110 = dot(g110, vec3(Pf1.xy, Pf0.z));
-  float n001 = dot(g001, vec3(Pf0.xy, Pf1.z));
-  float n101 = dot(g101, vec3(Pf1.x, Pf0.y, Pf1.z));
-  float n011 = dot(g011, vec3(Pf0.x, Pf1.yz));
-  float n111 = dot(g111, Pf1);
+//   float n000 = dot(g000, Pf0);
+//   float n100 = dot(g100, vec3(Pf1.x, Pf0.yz));
+//   float n010 = dot(g010, vec3(Pf0.x, Pf1.y, Pf0.z));
+//   float n110 = dot(g110, vec3(Pf1.xy, Pf0.z));
+//   float n001 = dot(g001, vec3(Pf0.xy, Pf1.z));
+//   float n101 = dot(g101, vec3(Pf1.x, Pf0.y, Pf1.z));
+//   float n011 = dot(g011, vec3(Pf0.x, Pf1.yz));
+//   float n111 = dot(g111, Pf1);
 
-  vec3 fade_xyz = fade(Pf0);
-  vec4 n_z = mix(vec4(n000, n100, n010, n110), vec4(n001, n101, n011, n111), fade_xyz.z);
-  vec2 n_yz = mix(n_z.xy, n_z.zw, fade_xyz.y);
-  float n_xyz = mix(n_yz.x, n_yz.y, fade_xyz.x); 
-  return 2.2 * n_xyz;
-}
+//   vec3 fade_xyz = fade(Pf0);
+//   vec4 n_z = mix(vec4(n000, n100, n010, n110), vec4(n001, n101, n011, n111), fade_xyz.z);
+//   vec2 n_yz = mix(n_z.xy, n_z.zw, fade_xyz.y);
+//   float n_xyz = mix(n_yz.x, n_yz.y, fade_xyz.x); 
+//   return 2.2 * n_xyz;
+// }
 
-// Classic Perlin noise, periodic variant
-float pnoise(vec3 P, vec3 rep)
-{
-  vec3 Pi0 = mod(floor(P), rep); // Integer part, modulo period
-  vec3 Pi1 = mod(Pi0 + vec3(1.0), rep); // Integer part + 1, mod period
-  Pi0 = mod289(Pi0);
-  Pi1 = mod289(Pi1);
-  vec3 Pf0 = fract(P); // Fractional part for interpolation
-  vec3 Pf1 = Pf0 - vec3(1.0); // Fractional part - 1.0
-  vec4 ix = vec4(Pi0.x, Pi1.x, Pi0.x, Pi1.x);
-  vec4 iy = vec4(Pi0.yy, Pi1.yy);
-  vec4 iz0 = Pi0.zzzz;
-  vec4 iz1 = Pi1.zzzz;
+// // Classic Perlin noise, periodic variant
+// float pnoise(vec3 P, vec3 rep)
+// {
+//   vec3 Pi0 = mod(floor(P), rep); // Integer part, modulo period
+//   vec3 Pi1 = mod(Pi0 + vec3(1.0), rep); // Integer part + 1, mod period
+//   Pi0 = mod289(Pi0);
+//   Pi1 = mod289(Pi1);
+//   vec3 Pf0 = fract(P); // Fractional part for interpolation
+//   vec3 Pf1 = Pf0 - vec3(1.0); // Fractional part - 1.0
+//   vec4 ix = vec4(Pi0.x, Pi1.x, Pi0.x, Pi1.x);
+//   vec4 iy = vec4(Pi0.yy, Pi1.yy);
+//   vec4 iz0 = Pi0.zzzz;
+//   vec4 iz1 = Pi1.zzzz;
 
-  vec4 ixy = permute(permute(ix) + iy);
-  vec4 ixy0 = permute(ixy + iz0);
-  vec4 ixy1 = permute(ixy + iz1);
+//   vec4 ixy = permute(permute(ix) + iy);
+//   vec4 ixy0 = permute(ixy + iz0);
+//   vec4 ixy1 = permute(ixy + iz1);
 
-  vec4 gx0 = ixy0 * (1.0 / 7.0);
-  vec4 gy0 = fract(floor(gx0) * (1.0 / 7.0)) - 0.5;
-  gx0 = fract(gx0);
-  vec4 gz0 = vec4(0.5) - abs(gx0) - abs(gy0);
-  vec4 sz0 = step(gz0, vec4(0.0));
-  gx0 -= sz0 * (step(0.0, gx0) - 0.5);
-  gy0 -= sz0 * (step(0.0, gy0) - 0.5);
+//   vec4 gx0 = ixy0 * (1.0 / 7.0);
+//   vec4 gy0 = fract(floor(gx0) * (1.0 / 7.0)) - 0.5;
+//   gx0 = fract(gx0);
+//   vec4 gz0 = vec4(0.5) - abs(gx0) - abs(gy0);
+//   vec4 sz0 = step(gz0, vec4(0.0));
+//   gx0 -= sz0 * (step(0.0, gx0) - 0.5);
+//   gy0 -= sz0 * (step(0.0, gy0) - 0.5);
 
-  vec4 gx1 = ixy1 * (1.0 / 7.0);
-  vec4 gy1 = fract(floor(gx1) * (1.0 / 7.0)) - 0.5;
-  gx1 = fract(gx1);
-  vec4 gz1 = vec4(0.5) - abs(gx1) - abs(gy1);
-  vec4 sz1 = step(gz1, vec4(0.0));
-  gx1 -= sz1 * (step(0.0, gx1) - 0.5);
-  gy1 -= sz1 * (step(0.0, gy1) - 0.5);
+//   vec4 gx1 = ixy1 * (1.0 / 7.0);
+//   vec4 gy1 = fract(floor(gx1) * (1.0 / 7.0)) - 0.5;
+//   gx1 = fract(gx1);
+//   vec4 gz1 = vec4(0.5) - abs(gx1) - abs(gy1);
+//   vec4 sz1 = step(gz1, vec4(0.0));
+//   gx1 -= sz1 * (step(0.0, gx1) - 0.5);
+//   gy1 -= sz1 * (step(0.0, gy1) - 0.5);
 
-  vec3 g000 = vec3(gx0.x,gy0.x,gz0.x);
-  vec3 g100 = vec3(gx0.y,gy0.y,gz0.y);
-  vec3 g010 = vec3(gx0.z,gy0.z,gz0.z);
-  vec3 g110 = vec3(gx0.w,gy0.w,gz0.w);
-  vec3 g001 = vec3(gx1.x,gy1.x,gz1.x);
-  vec3 g101 = vec3(gx1.y,gy1.y,gz1.y);
-  vec3 g011 = vec3(gx1.z,gy1.z,gz1.z);
-  vec3 g111 = vec3(gx1.w,gy1.w,gz1.w);
+//   vec3 g000 = vec3(gx0.x,gy0.x,gz0.x);
+//   vec3 g100 = vec3(gx0.y,gy0.y,gz0.y);
+//   vec3 g010 = vec3(gx0.z,gy0.z,gz0.z);
+//   vec3 g110 = vec3(gx0.w,gy0.w,gz0.w);
+//   vec3 g001 = vec3(gx1.x,gy1.x,gz1.x);
+//   vec3 g101 = vec3(gx1.y,gy1.y,gz1.y);
+//   vec3 g011 = vec3(gx1.z,gy1.z,gz1.z);
+//   vec3 g111 = vec3(gx1.w,gy1.w,gz1.w);
 
-  vec4 norm0 = taylorInvSqrt(vec4(dot(g000, g000), dot(g010, g010), dot(g100, g100), dot(g110, g110)));
-  g000 *= norm0.x;
-  g010 *= norm0.y;
-  g100 *= norm0.z;
-  g110 *= norm0.w;
-  vec4 norm1 = taylorInvSqrt(vec4(dot(g001, g001), dot(g011, g011), dot(g101, g101), dot(g111, g111)));
-  g001 *= norm1.x;
-  g011 *= norm1.y;
-  g101 *= norm1.z;
-  g111 *= norm1.w;
+//   vec4 norm0 = taylorInvSqrt(vec4(dot(g000, g000), dot(g010, g010), dot(g100, g100), dot(g110, g110)));
+//   g000 *= norm0.x;
+//   g010 *= norm0.y;
+//   g100 *= norm0.z;
+//   g110 *= norm0.w;
+//   vec4 norm1 = taylorInvSqrt(vec4(dot(g001, g001), dot(g011, g011), dot(g101, g101), dot(g111, g111)));
+//   g001 *= norm1.x;
+//   g011 *= norm1.y;
+//   g101 *= norm1.z;
+//   g111 *= norm1.w;
 
-  float n000 = dot(g000, Pf0);
-  float n100 = dot(g100, vec3(Pf1.x, Pf0.yz));
-  float n010 = dot(g010, vec3(Pf0.x, Pf1.y, Pf0.z));
-  float n110 = dot(g110, vec3(Pf1.xy, Pf0.z));
-  float n001 = dot(g001, vec3(Pf0.xy, Pf1.z));
-  float n101 = dot(g101, vec3(Pf1.x, Pf0.y, Pf1.z));
-  float n011 = dot(g011, vec3(Pf0.x, Pf1.yz));
-  float n111 = dot(g111, Pf1);
+//   float n000 = dot(g000, Pf0);
+//   float n100 = dot(g100, vec3(Pf1.x, Pf0.yz));
+//   float n010 = dot(g010, vec3(Pf0.x, Pf1.y, Pf0.z));
+//   float n110 = dot(g110, vec3(Pf1.xy, Pf0.z));
+//   float n001 = dot(g001, vec3(Pf0.xy, Pf1.z));
+//   float n101 = dot(g101, vec3(Pf1.x, Pf0.y, Pf1.z));
+//   float n011 = dot(g011, vec3(Pf0.x, Pf1.yz));
+//   float n111 = dot(g111, Pf1);
 
-  vec3 fade_xyz = fade(Pf0);
-  vec4 n_z = mix(vec4(n000, n100, n010, n110), vec4(n001, n101, n011, n111), fade_xyz.z);
-  vec2 n_yz = mix(n_z.xy, n_z.zw, fade_xyz.y);
-  float n_xyz = mix(n_yz.x, n_yz.y, fade_xyz.x); 
-  return 2.2 * n_xyz;
-}
+//   vec3 fade_xyz = fade(Pf0);
+//   vec4 n_z = mix(vec4(n000, n100, n010, n110), vec4(n001, n101, n011, n111), fade_xyz.z);
+//   vec2 n_yz = mix(n_z.xy, n_z.zw, fade_xyz.y);
+//   float n_xyz = mix(n_yz.x, n_yz.y, fade_xyz.x); 
+//   return 2.2 * n_xyz;
+// }
 
 
-mat3 rotation3dY(float angle) {
-  float s = sin(angle);
-  float c = cos(angle);
+// mat3 rotation3dY(float angle) {
+//   float s = sin(angle);
+//   float c = cos(angle);
 
-  return mat3(
-    c, 0.0, -s,
-    0.0, 1.0, 0.0,
-    s, 0.0, c
-  );
-}
+//   return mat3(
+//     c, 0.0, -s,
+//     0.0, 1.0, 0.0,
+//     s, 0.0, c
+//   );
+// }
 
-float saturate(float x)
-{
-  return clamp(x, 0.0, 1.0);
-}
+// float saturate(float x)
+// {
+//   return clamp(x, 0.0, 1.0);
+// }
 
-vec3 curl_noise(vec3 p)
-{
+// vec3 curl_noise(vec3 p)
+// {
 
-  // return curlNoise(p);
-  const float step = 0.01;
-  float ddx = cnoise(p+vec3(step, 0.0, 0.0)) - cnoise(p-vec3(step, 0.0, 0.0));
-  float ddy = cnoise(p+vec3(0.0, step, 0.0)) - cnoise(p-vec3(0.0, step, 0.0));
-  float ddz = cnoise(p+vec3(0.0, 0.0, step)) - cnoise(p-vec3(0.0, 0.0, step));
+//   // return curlNoise(p);
+//   const float step = 0.01;
+//   float ddx = cnoise(p+vec3(step, 0.0, 0.0)) - cnoise(p-vec3(step, 0.0, 0.0));
+//   float ddy = cnoise(p+vec3(0.0, step, 0.0)) - cnoise(p-vec3(0.0, step, 0.0));
+//   float ddz = cnoise(p+vec3(0.0, 0.0, step)) - cnoise(p-vec3(0.0, 0.0, step));
 
-  const float divisor = 1.0 / ( 2.0 * step );
-  return ( vec3(ddy - ddz, ddz - ddx, ddx - ddy) * divisor );
-}
+//   const float divisor = 1.0 / ( 2.0 * step );
+//   return ( vec3(ddy - ddz, ddz - ddx, ddx - ddy) * divisor );
+// }
 
-vec3 fbm_vec3(vec3 p, float frequency, float offset)
-{
-  return vec3(
-    cnoise((p+vec3(offset))*frequency),
-    cnoise((p+vec3(offset+20.0))*frequency),
-    cnoise((p+vec3(offset-30.0))*frequency)
-  );
-}
-  uniform 
-  void main(){
-    vUv = uv;
-    gl_PointSize = .2;
-    vposistion = position;
-    vec3 pos = position;
-    int index = 1024 - int(mod((position.y + 0.5) * 1024.0, 1024.0));
-    float audioValue = uAudio[index];
-    vec3 distortion = curl_noise(vec3(pos.x + time ,pos.y,0.0));
-    vec3 finalposition = pos * distortion;
-    // vec3 finalposition = pos ;
-    // vposistion.x += .4 - audioValue * 0.2 * time ;
-    // pos.x += audioValue * 0.2;
-    gl_Position = projectionMatrix * modelViewMatrix * vec4(finalposition, 1.0);
+// vec3 fbm_vec3(vec3 p, float frequency, float offset)
+// {
+//   return vec3(
+//     cnoise((p+vec3(offset))*frequency),
+//     cnoise((p+vec3(offset+20.0))*frequency),
+//     cnoise((p+vec3(offset-30.0))*frequency)
+//   );
+// }
+//   uniform 
+//   void main(){
+//     vUv = uv;
+//     gl_PointSize = .2;
+//     vposistion = position;
+//     vec3 pos = position;
+//     int index = 1024 - int(mod((position.y + 0.5) * 1024.0, 1024.0));
+//     float audioValue = uAudio[index];
+//     vec3 distortion = curl_noise(vec3(pos.x + time ,pos.y,0.0));
+//     vec3 finalposition = pos * distortion;
+//     // vec3 finalposition = pos ;
+//     // vposistion.x += .4 - audioValue * 0.2 * time ;
+//     // pos.x += audioValue * 0.2;
+//     gl_Position = projectionMatrix * modelViewMatrix * vec4(finalposition, 1.0);
 
-   }
-  `,fragmentShader:`
-    varying vec3 vposistion;
-    uniform float opacity;
-    void main() {
-      float x = vposistion.x;
-      float fade = 1.0 - (x / .4);
-      // gl_FragColor = vec4(fade,fade,fade, fade); 
-      gl_FragColor = vec4(1.0,1.0,1.0, opacity); 
-    }
-  `})
+//    }
+//   `,fragmentShader:`
+//     varying vec3 vposistion;
+//     uniform float opacity;
+//     void main() {
+//       float x = vposistion.x;
+//       float fade = 1.0 - (x / .4);
+//       // gl_FragColor = vec4(fade,fade,fade, fade); 
+//       gl_FragColor = vec4(1.0,1.0,1.0, opacity); 
+//     }
+//   `})
 let mat2 = new THREE.ShaderMaterial({
   uniforms:{
     distortion:{value:config.distortion},
@@ -983,7 +983,7 @@ vec3 fbm_vec3(vec3 p, float frequency, float offset)
     }
   `})
 let count = 500000;
-let plane2 = new THREE.PlaneGeometry(1.5,.4,window.innerWidth,480)
+// let plane2 = new THREE.PlaneGeometry(1.5,.4,window.innerWidth,480)
 let geo = new THREE.BufferGeometry()
 let points = new Float32Array(count * 3)
 let particlesPerRow = 2500
@@ -1003,25 +1003,25 @@ for(let i =0; i < count;i++){
   points[i * 3 + 2] = 0
 }
 geo.setAttribute('position',new THREE.BufferAttribute(points,3))
-let plane = new THREE.PlaneGeometry(.4 ,1,480,innerHeight)
-const pos = plane.attributes.position;
-const pos2 = plane2.attributes.position;
-for (let i = 0; i < pos.count; i++) {
-  pos.setX(i, pos.getX(i) + .4  / 2); 
-}
-for (let i = 0; i < pos2.count; i++) {
-  pos2.setY(i, pos2.getY(i) - .4 / 2);
-}
-pos.needsUpdate = true;
+// let plane = new THREE.PlaneGeometry(.4 ,1,480,innerHeight)
+// const pos = plane.attributes.position;
+// const pos2 = plane2.attributes.position;
+// for (let i = 0; i < pos.count; i++) {
+//   pos.setX(i, pos.getX(i) + .4  / 2); 
+// }
+// for (let i = 0; i < pos2.count; i++) {
+//   pos2.setY(i, pos2.getY(i) - .4 / 2);
+// }
+// pos.needsUpdate = true;
 // pos2.needsUpdate = true;
 let part = new THREE.Points(geo,mat2)
-let part1 = new THREE.Points(plane,mat)
-let part2 = new THREE.Points(plane2,mat2)
+// let part1 = new THREE.Points(plane,mat)
+// let part2 = new THREE.Points(plane2,mat2)
 part.position.set(0,68,-40)
-part1.scale.set(278,278,278)
-part1.position.set(0,68,0)
-part1.position.set(0,68,-40)
-part1.rotateY(Math.PI)
+// part1.scale.set(278,278,278)
+// part1.position.set(0,68,0)
+// part1.position.set(0,68,-40)
+// part1.rotateY(Math.PI)
 
 
 
@@ -1085,7 +1085,7 @@ let ongoing;
 
 statue.layers.set(1);
 statue2.layers.set(1);
-part1.layers.set(1)
+// part1.layers.set(1)
 part.layers.set(1)
 left.layers.set(2)
 right.layers.set(2)
@@ -1299,7 +1299,7 @@ function updateAudio() {
     analyser.getByteFrequencyData(dataArray) 
     uniforms.u_frequency.value = (getAverageFrequency()) * uniforms.uOpacity.value * uniforms.fOpacity.value;
     for (let i = 0; i < dataArray.length; i++) {
-      mat.uniforms.uAudio.value[i] = dataArray[i] / 255;
+      // mat.uniforms.uAudio.value[i] = dataArray[i] / 255;
       mat2.uniforms.uAudio.value[i] = dataArray[i] / 255;
   }};
 }
@@ -1378,7 +1378,6 @@ function animate(time){
     .start()
 
   }
-  mat.uniforms.time.value = config.distortion * elapsedTime
   // mat.uniforms.opacity.value =- Math.random() * elapsedTime  
   mat2.uniforms.time.value = config.distortion * elapsedTime
   mat2.uniforms.etime.value =  deltaTime 
@@ -1474,27 +1473,24 @@ window.addEventListener('click',(e)=>{
   Mouse.y = cursorY
   raycast.setFromCamera(Mouse,activecamera)
   let intersections = raycast.intersectObjects([right,left,statue2,statue],true)
-  if(intersections.filter((object)=>object.object.name == "Object_4" || object.object.name == "Statue").length > 0 && !ongoing&& intersections.length > 0 && intersections[0]){
+  if(intersections.filter((object)=>object.object.name == "Object_4" || object.object.name == "Statue").length > 0 && !ongoing&& intersections.length > 0 ){
     ongoing = true
     enteredfromstatue = true
     gsap.to(window, {
           duration: 3,
           scrollTo: { y: document.body.scrollHeight * 0.52969565217 },
           ease: "power2.inOut",
-          onComplete:()=>{
+          onComplete:function (){
             ongoing = false
-            setTimeout(()=>{
-              const source = sfx.createBufferSource();
-              source.buffer = buffer2;
-              source.connect(gain2).connect(sfx.destination);
-              source.start();
-            }
-            ,400)
+            const source = sfx.createBufferSource();
+            source.buffer = buffer2;
+            source.connect(gain2).connect(sfx.destination);
+            source.start();
           }
         });
     return
   }
-  if(intersections.length > 0 && intersections[0] && !ongoing && intersections.filter((object)=>object.object.name == "left" || object.object.name == "right").length > 0){
+  if(intersections.length > 0 && !ongoing && intersections.filter((object)=>object.object.name == "left" || object.object.name == "right").length > 0){
       ongoing = true
       next(intersections[0].object.name)  
   }
