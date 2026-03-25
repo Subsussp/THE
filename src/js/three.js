@@ -37,13 +37,13 @@ function configaudio(buffer) {
 }
 // samples tab settings
 const sampleFiles = {
-  '1': './music/sample1.mp3',
-  '2': './music/sample2.mp3',
-  '3': './music/sample3.mp3',
-  '4': './music/Farfromanyroad.mp3',
-  '5': './music/sample5.mp3',
-  '6': './music/sample6.mp3',
-  '7': './music/sample7.mp3',
+  '1': 'https://cdn.jsdelivr.net/gh/Subsussp/THE@gh-pages/music/sample1.mp3',
+  '2': 'https://cdn.jsdelivr.net/gh/Subsussp/THE@gh-pages/music/sample2.mp3',
+  '3': 'https://cdn.jsdelivr.net/gh/Subsussp/THE@gh-pages/music/sample3.mp3',
+  '4': 'https://cdn.jsdelivr.net/gh/Subsussp/THE@gh-pages/music/Farfromanyroad.mp3',
+  '5': 'https://cdn.jsdelivr.net/gh/Subsussp/THE@gh-pages/music/sample5.mp3',
+  '6': 'https://cdn.jsdelivr.net/gh/Subsussp/THE@gh-pages/music/sample6.mp3',
+  '7': 'https://cdn.jsdelivr.net/gh/Subsussp/THE@gh-pages/music/sample7.mp3',
 };
 const loadedSamples = {};
 function loadSample(file) {

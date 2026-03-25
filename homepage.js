@@ -29,11 +29,11 @@ window.addEventListener('DOMContentLoaded',()=>{
 })
 gain2.gain.value = .3
 let Shouldplaysfx = true
-fetch('./music/sfx.mp3')
+fetch('https://cdn.jsdelivr.net/gh/Subsussp/THE@gh-pages/music/sfx.mp3')
   .then(r => r.arrayBuffer())
   .then(data => sfx.decodeAudioData(data))
   .then(decoded => buffer = decoded);
-fetch('./music/mainsfx.mp3')
+fetch('https://cdn.jsdelivr.net/gh/Subsussp/THE@gh-pages/music/mainsfx.mp3')
   .then(r => r.arrayBuffer())
   .then(data => sfx.decodeAudioData(data))
   .then(decoded => buffer2 = decoded);
