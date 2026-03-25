@@ -7,8 +7,6 @@ import { RenderPass } from 'https://cdn.jsdelivr.net/npm/three@0.158.0/examples/
 import { UnrealBloomPass } from 'https://cdn.jsdelivr.net/npm/three@0.158.0/examples/jsm/postprocessing/UnrealBloomPass.js';
 import { OutputPass } from 'https://cdn.jsdelivr.net/npm/three@0.158.0/examples/jsm/postprocessing/OutputPass.js';
 import { OrbitControls } from 'https://cdn.jsdelivr.net/npm/three@0.158.0/examples/jsm/controls/OrbitControls.js';
-import { fetchaudio } from './fetchaudio.js';
-import { audioCache } from './var/audiocache.js';
 import { GUI } from 'https://cdn.jsdelivr.net/npm/lil-gui@0.18/+esm';
 import { float, If, PI, color, cos, instanceIndex, Loop, mix,atan,vec2,length , mod, sin, instancedArray, Fn, uint, uniform, uniformArray, hash, vec3, vec4, ceil, min, time } from '../../build/three.tsl.js';
 import { listener, sound } from './var/threesound.js';
@@ -21,6 +19,47 @@ let button1 = document.createElement('button')
 const audioLoader = new THREE.AudioLoader();
 let main = document.getElementById('main')
 let currentSceneHandler = null;
+let inject = true
+document.body.insertAdjacentHTML('beforebegin',`<div class="Warning" id="warnin" style="position: absolute;border: 2px solid white;top: 50%;padding-top:44px;left: 50%;transform: translate(-50%,-50%) scale(0.7);transform-origin: center ;display: flex;width: 750px;height: 400px;flex-direction:column;background-color: black;z-index:600">
+	<div>
+		<div style="color: white;text-align: center;" class="header">GPU REQUIRED</div>
+		<svg width="100%" height="20">
+		<line x1="224" y1="10" x2="528" y2="10" stroke="white"/>
+		</svg>
+	</div>
+	<div class="content" style="color: white;width:100%;position: absolute;top: 58%;left: 50%;transform: translate(-50%,-50%);text-align: center;padding: 0 47px;">
+		You need a GPU or at least an integrated one <br /> for the website to work properly, though <br /> integrated GPUs aren't recommended.
+	</div>
+	</div>`)
+function handleClick() {
+  const item = document.getElementById('warnin');
+
+  if (inject && item) {
+    inject = false;
+
+    item.innerHTML = `
+      <div style="font-size: 46px;font-family: 'MyCustomFont1';color: azure;position: absolute;top: 25%;left: 50%;transform: translate(-50%,-50%);text-align: center;width: 100%;">
+        If the website isn't working <span style="color: rgb(133, 23, 23);">properly</span>
+      </div>
+
+      <svg style="width: 100%;height:10%;position: absolute;top: 50%;left: 50%;transform: translate(-50%,-50%);">
+        <line x1="32.5" y1="20" x2="718.5" y2="20" stroke="white"/>
+      </svg>
+
+      <div style="font-size: 48px;font-family: 'MyCustomFont1';color: azure;position: absolute;top: 70%;left: 50%;transform: translate(-50%,-50%);text-align: center;width: 100%;">
+        check out the <a target="_blank" href="https://flavortown.hackclub.com/projects/4068" style="background-color: rgb(24, 20, 20);color: white;text-decoration: none;">\`Demo\`</a> in my repo
+      </div>
+    `;
+  } else if (item && !inject) {
+    item.remove();
+    document.removeEventListener('click', handleClick);
+  }
+}
+
+document.addEventListener('click', handleClick);
+
+
+
 function configaudio(buffer) {
 	minN = 0
 	minh = 0;

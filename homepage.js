@@ -1330,41 +1330,42 @@ function animate(time){
   if(firstRender){
     firstRender = false    
     if(window.scrollY == 0){
-  let timeline = gsap.timeline({
-      defaults:{
-          ease:'power4.inOut',
-          duration:3,
-      }
-  })
-  timeline.to('#wave2',{
-      scale:1,
-      x:window.innerWidth/ 2 - 60,
-      y:-window.innerHeight/ 2 + 50,
-  })
-  .to('#loader-cont',{
-    opacity:0
-  },"<")
-
-  .to('#wave',{
-        opacity:1,
-        duration:2,
-        onComplete:()=>{
-          opacityallowance = true
+    let timeline = gsap.timeline({
+        defaults:{
+            ease:'power4.inOut',
+            duration:3,
         }
-  })
-  .to(factor,{
-    o:1,
-    duration:2
-    ,onComplete:()=>{
-        document.getElementById('loader-cont').remove()         
-        Loadercanvas.remove()
-        clearInterval(loaderanimationr)
-    }
-  },"<-.5")
-  .to('#wave2',{
-      opacity:0,
-      duration:2,
-  },'<')
+    })
+    timeline.to('#wave2',{
+        scale:1,
+        x:window.innerWidth/ 2 - 60,
+        y:-window.innerHeight/ 2 + 50,
+    })
+    .to('#loader-cont',{
+      opacity:0
+    },"<")
+
+    .to('#wave',{
+          opacity:1,
+          duration:2,
+          onComplete:()=>{
+            opacityallowance = true
+          }
+    })
+    .to(factor,{
+      o:1,
+      duration:2
+      ,onComplete:()=>{
+          document.getElementById('loader-cont').remove()         
+          Loadercanvas.remove()
+          clearInterval(loaderanimationr)
+      }
+    },"<-.5")
+    .to('#wave2',{
+        opacity:0,
+        duration:2,
+    },'<')
+
 }else{
   Loadercanvas.remove()
   document.getElementById('loader-cont').remove()         
