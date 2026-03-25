@@ -52,7 +52,6 @@ function loadSample(file) {
 Object.entries(sampleFiles).forEach(([key, path]) => {
   loadSample(path).then(buffer => {
     loadedSamples[key] = buffer;
-    console.log(`Sample ${key} loaded`);
   });
 });
 const sampleActions = {
@@ -67,7 +66,6 @@ const sampleActions = {
 function playSample(key) {
   const buffer = loadedSamples[key];
   if (!buffer) {
-    console.warn(`Sample ${key} not ready yet.`);
     return;
   }
   configaudio(buffer);
