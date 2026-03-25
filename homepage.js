@@ -250,6 +250,8 @@ if(window.scrollY == 0){
   }
   DrawLines()
 loaderanimationr = setInterval(DrawLines, 300);
+}else{
+  canvas.style.opacity = 1
 }
 
 
@@ -1349,20 +1351,19 @@ function animate(time){
         onComplete:()=>{
           opacityallowance = true
         }
-  
   })
   .to(factor,{
     o:1,
     duration:2
+    ,onComplete:()=>{
+        document.getElementById('loader-cont').remove()         
+        Loadercanvas.remove()
+        clearInterval(loaderanimationr)
+    }
   },"<-.5")
   .to('#wave2',{
       opacity:0,
       duration:2,
-      onComplete:()=>{
-          document.getElementById('loader-cont').remove()         
-          Loadercanvas.remove()
-          clearInterval(loaderanimationr)
-      }
   },'<')
 }else{
   Loadercanvas.remove()

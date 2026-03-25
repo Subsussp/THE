@@ -36,37 +36,42 @@ function configaudio(buffer) {
 	sound.play()
 }
 // samples tab settings
+const sampleFiles = {
+  '1': './music/sample1.mp3',
+  '2': './music/sample2.mp3',
+  '3': './music/sample3.mp3',
+  '4': './music/Farfromanyroad.mp3',
+  '5': './music/sample5.mp3',
+  '6': './music/sample6.mp3',
+  '7': './music/sample7.mp3',
+};
+const loadedSamples = {};
+function loadSample(file) {
+  return new Promise(resolve => audioLoader.load(file, resolve));
+}
+Object.entries(sampleFiles).forEach(([key, path]) => {
+  loadSample(path).then(buffer => {
+    loadedSamples[key] = buffer;
+    console.log(`Sample ${key} loaded`);
+  });
+});
 const sampleActions = {
-    '1': () =>{		
-	audioLoader.load('./music/sample1.mp3', function (buffer) {
-		configaudio(buffer)
-	});} ,
-    '2': () => {
-	audioLoader.load('./music/sample2.mp3', function (buffer) {
-		configaudio(buffer)
-	});
-	},
-	'3':() => {	
-	audioLoader.load('./music/sample3.mp3', function (buffer) {
-		configaudio(buffer)
-	})} ,
-	'4':() => {	
-	audioLoader.load('./music/Farfromanyroad.mp3', function (buffer) {
-		configaudio(buffer)
-	})} ,
-	'5':() => {	
-	audioLoader.load('./music/sample5.mp3', function (buffer) {
-			configaudio(buffer)
-	})} ,
-	'6':() => {	
-	audioLoader.load('./music/sample6.mp3', function (buffer) {
-			configaudio(buffer)
-	})} ,
-	'7':() => {	
-	audioLoader.load('./music/sample7.mp3', function (buffer) {
-			configaudio(buffer)
-	})} 
-  };
+  '1': () => playSample('1'),
+  '2': () => playSample('2'),
+  '3': () => playSample('3'),
+  '4': () => playSample('4'),
+  '5': () => playSample('5'),
+  '6': () => playSample('6'),
+  '7': () => playSample('7'),
+};
+function playSample(key) {
+  const buffer = loadedSamples[key];
+  if (!buffer) {
+    console.warn(`Sample ${key} not ready yet.`);
+    return;
+  }
+  configaudio(buffer);
+}
 
 let setfirst = false
 // let type = 'Youtube';
