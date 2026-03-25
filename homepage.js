@@ -1109,9 +1109,9 @@ const composer = new EffectComposer(renderer);
 
 composer.addPass(new RenderPass(scene, activecamera));
 
-// const afterimagePass = new AfterimagePass();
-// afterimagePass.uniforms['damp'].value = 0.65;  
-// composer.addPass(afterimagePass);
+const afterimagePass = new AfterimagePass();
+afterimagePass.uniforms['damp'].value = 0.65;  
+composer.addPass(afterimagePass);
 
 
 
@@ -1314,8 +1314,9 @@ function animate(time){
   const elapsedTime = clock.getElapsedTime()
   const deltaTime = elapsedTime - previousTime
   const fps = 1000 / deltaTime;
-  if(Math.round(fps) < 400){
+  if(Math.round(fps) < 500){
     geo.setDrawRange(0, 250000);
+    afterimagePass.uniforms['damp'].value = 0.0;  
   }else{
     geo.setDrawRange(0, count);
 
