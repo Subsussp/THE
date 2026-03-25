@@ -176,14 +176,14 @@ Loadercanvas.width = 20 * 6 / 3
 let firstclick = true
 let run = false
 let allow = true
-let opacity = {o:0}
+let opacity = 0
 let opacityallowance = false
 canvas.addEventListener('click',async (e)=>{
   if(!allow || firstclick){
     e.preventDefault()
     return
   }
-  opacity.o = !run ? 0 : 1  
+  opacity = !run ? 0 : 1  
   run = !run
   if(run){
     audio.muted = false
@@ -199,40 +199,29 @@ canvas.addEventListener('click',async (e)=>{
 })
 function drawlines(pheta,startingH = canvas.height,off = 0){
   ctx.beginPath()
-      if(!opacityallowance){
-        ctx2.beginPath()
-      }
   for(let i =0; i < canvas.width / 6 ;i++){
     let y = Math.sin((pheta + i * .5))
     ctx.moveTo(10.5 + i * 4,startingH )
-    ctx.lineTo(10.5 + i * 4,startingH + off + (y * 7 - 8) * opacity.o * speed * 2 )
-    if(!opacityallowance){
-      ctx2.moveTo(10.5 + i * 4,startingH )
-      ctx2.lineTo(10.5 + i * 4,startingH + off + (y * 7 - 8)  * opacity.o * speed  )
-    }
+    ctx.lineTo(10.5 + i * 4,startingH + off + (y * 7 - 8) * opacity* speed * 2 )
   }
-  if(opacity.o < 1 && run && opacityallowance){
-    opacity.o = +(opacity.o + 0.04).toFixed(2);
+  if(opacity< 1 && run && opacityallowance){
+    opacity= +(opacity+ 0.04).toFixed(2);
   }
-  if(opacity.o == 1 && opacityallowance){
+  if(opacity== 1 && opacityallowance){
     allow = true
   }
-  if(opacity.o > 0 && !run && opacityallowance){
-    opacity.o = +(opacity.o - 0.01).toFixed(2);
-  }if(opacity.o == 0 && opacityallowance){
+  if(opacity> 0 && !run && opacityallowance){
+    opacity= +(opacity- 0.01).toFixed(2);
+  }if(opacity== 0 && opacityallowance){
     allow = true
   }
   ctx.strokeStyle = "#ffffff"; 
   ctx.lineWidth = 1;    
   ctx.stroke()
-  ctx2.strokeStyle = "#ffffff"; 
-  ctx2.lineWidth = 1;    
-  ctx2.stroke()
 }
 
 function loop(){
   ctx.clearRect(0, 0, canvas.width, canvas.height); 
-  ctx2.clearRect(0, 0, Loadercanvas.width, Loadercanvas.height); 
   if(pheta >= 360){
     pheta = 0
   }
@@ -240,6 +229,27 @@ function loop(){
   pheta += 2 * 4 * speed
   drawlines(phetaR,undefined,-3)
   animateId = requestAnimationFrame(loop)
+}
+drawlines(pheta,undefined,-3)
+
+let loaderanimationr;
+let factor = {o:0};
+if(window.scrollY == 0){
+  function DrawLines(){
+    ctx2.clearRect(0, 0, Loadercanvas.width, Loadercanvas.height);
+    ctx2.beginPath()
+    for(let i =0; i < Loadercanvas.width / 6 ;i++){
+      let rand = Math.random() 
+      let alpha =  Math.min(1, ((rand*i / 2 ) + factor.o)); 
+      ctx2.beginPath();
+      ctx2.strokeStyle = `rgba(255,255,255,${alpha})`;
+      ctx2.moveTo(10.5 + i * 4, Loadercanvas.height);
+      ctx2.lineTo(10.5 + i * 4, Loadercanvas.height - 3 );
+      ctx2.stroke();
+    }
+  }
+  DrawLines()
+loaderanimationr = setInterval(DrawLines, 300);
 }
 
 
@@ -263,6 +273,7 @@ renderer.setSize(window.innerWidth, window.innerHeight);
 main.appendChild(renderer.domElement);
 
 
+
 const distanceZ = camera.position.z + 40; 
 const fov = camera.fov * (Math.PI / 180); 
 
@@ -270,12 +281,9 @@ const height = 2 * Math.tan(fov / 2) * distanceZ;
 
 const width = 505.7840285242011;
 
-drawlines(pheta,undefined,-3)
-
 // Object setup 
 
 
-let loaderanimationr;
 const loader = new GLTFLoader();
 const dracoLoader = new DRACOLoader();
 dracoLoader.setDecoderPath('https://www.gstatic.com/draco/v1/decoders/'); 
@@ -283,41 +291,6 @@ loaderg.setDRACOLoader(dracoLoader);
 loader.setDRACOLoader(dracoLoader);
 const gltf = await loaderg.loadAsync('https://cdn.jsdelivr.net/gh/Subsussp/THE@gh-pages/3D/Apollo/Statue.glb');
 const glb = await loader.loadAsync( 'https://cdn.jsdelivr.net/gh/Subsussp/THE@gh-pages/3D/Statue.glb' )
-
-  let timeline = gsap.timeline({
-      delay:1.4,
-      defaults:{
-          ease:'power3.inOut',
-          duration:3,
-      }
-  })
-  timeline.to('#wave2',{
-      scale:1,
-      x:window.innerWidth/ 2 - 60,
-      y:-window.innerHeight/ 2 + 50,
-      // onStart:()=>{
-
-      // }
-  })
-  .to('#loader-cont',{
-    opacity:0
-  },"<")
-  .to('#wave',{
-        opacity:1,
-        duration:3,
-        onComplete:()=>{
-          opacityallowance = true
-        }
-  }).to('#wave2',{
-      opacity:0,
-      duration:3,
-      onComplete:()=>{
-          document.getElementById('loader-cont').remove()         
-          Loadercanvas.remove()
-          cancelAnimationFrame(loaderanimationr)
-      }
-  },'<')
-
 
 
 let gmaterial = new THREE.MeshStandardMaterial({color: 0xffffff, 
@@ -1258,8 +1231,8 @@ gsap.to(activecamera.position, {
       if(scrollinst != '0'){
         scrollinst = 1 - e.progress 
         First.style.transform = `translateY(${e.progress * 35 - 20}px) scale(${ 0.6 + 0.2 * e.progress })`
-        second.style.opacity = e.progress * 0.4 + .4
-        second.style.transform = `translateY(${e.progress * 25}px) scale(${ e.progress * 0.2 + 0.8 })`
+        second.style.opacity = e.progress * 0.6 + .4
+        second.style.transform = `translateY(${e.progress * 30 - 5}px) scale(${ e.progress * 0.2 + 0.8 })`
         third.style.opacity = 1.0 - e.progress * 0.6
         third.style.transform = `translateY(${e.progress * 35}px) scale(${ 1 - 0.2 * e.progress })`
       }
@@ -1353,6 +1326,48 @@ function animate(time){
   TWEEN.update(time);
   if(firstRender){
     firstRender = false    
+    if(window.scrollY == 0){
+  let timeline = gsap.timeline({
+      defaults:{
+          ease:'power4.inOut',
+          duration:3,
+      }
+  })
+  timeline.to('#wave2',{
+      scale:1,
+      x:window.innerWidth/ 2 - 60,
+      y:-window.innerHeight/ 2 + 50,
+  })
+  .to('#loader-cont',{
+    opacity:0
+  },"<")
+
+  .to('#wave',{
+        opacity:1,
+        duration:2,
+        onComplete:()=>{
+          opacityallowance = true
+        }
+  
+  })
+  .to(factor,{
+    o:1,
+    duration:2
+  },"<-.5")
+  .to('#wave2',{
+      opacity:0,
+      duration:2,
+      onComplete:()=>{
+          document.getElementById('loader-cont').remove()         
+          Loadercanvas.remove()
+          clearInterval(loaderanimationr)
+      }
+  },'<')
+}else{
+  Loadercanvas.remove()
+  document.getElementById('loader-cont').remove()         
+
+}
     document.getElementById('statue').innerText = names[0]
     document.getElementById('description').innerText = description[0]
     new TWEEN.Tween(statue2.position).to({

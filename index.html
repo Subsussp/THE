@@ -21,7 +21,7 @@
     position: fixed;
     z-index: 900;
     top: 50%;
-    right: 0%;
+    right: .9dvw;
     width: 36px;
     transform: translateY(-50%);
   }
@@ -127,7 +127,7 @@ a{
   top: 5.5em;
 }
 #Second{
-  transform: scale(0.8);
+  transform: translateY(-5px) scale(0.8);
   transform-origin: center;
 }
 #First{
@@ -182,10 +182,10 @@ a{
     <g id="Third">
     <path id="Rectangle 1" d="M30 121C42 121 115 121 124 121C133 121 135 141 124 141C113 141 41 141 30 141C19 141 18 121 30 121Z" fill="white"/>
     </g>
-    <g id="Second"  style="opacity: .4;">
+    <g id="Second"   style="opacity: .4;">
     <path id="Rectangle 1_2" d="M30 87C42 87 115 87 124 87C133 87 135 107 124 107C113 107 41 107 30 107C19 107 18 87 30 87Z" fill="white"/>
     </g>
-    <g id="First"  style="opacity: .4;">
+    <g id="First"   style="opacity: .4;">
     <path id="Rectangle 1_3" d="M30 53C42 53 115 53 124 53C133 53 135 73 124 73C113 73 41 73 30 73C19 73 18 53 30 53Z" fill="white"/>
     </g>  
   </svg>
@@ -427,14 +427,14 @@ void main() {
       </li>
     </ul>
   </nav>
-  <div id="loader-cont" style="background-color: black;width: 100%;height: 100%;position: absolute;z-index: 400;">
+  <div id="loader-cont" style="background-color: black;width: 100%;height: 100%;position: fixed;z-index: 400;">
 </div>
-  <canvas id="wave2" style="position: absolute;top: 50%;left: 50%;transform: translate(-50%,-50%) scale(1.5);transform-origin: center;z-index: 500;">    
+  <canvas id="wave2" style="position: fixed;top: 50%;left: 50%;transform: translate(-50%,-50%) scale(1.5);transform-origin: center;z-index: 500;">    
   </canvas>
   <div id="main">
   </div>
     <audio id="audio" autoplay muted src="music/Farfromanyroad.ogg" style="display:none"></audio>
-  <!-- <div style="position: absolute;top: 50%;left: 50%;transform: translate(-50%,-50%);width: 140px;height: 180px;cursor: pointer;z-index: 500;user-select: none; outline: none;" class="disposable sfxbtn centerBtn"></div> -->
+  <div style="position: absolute;top: 50%;left: 50%;transform: translate(-50%,-50%);width: 140px;height: 180px;user-select: none; outline: none;" class="disposable sfxbtn centerBtn"></div>
 
 <svg viewBox="0 0 500 250" class="is disposable Mysvg" id="twisty">
   <path id="sad-arc" d="M 50 150 C 150 150, 250 100, 450 150" fill="transparent"/>
