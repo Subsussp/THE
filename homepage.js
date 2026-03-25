@@ -1109,9 +1109,9 @@ const composer = new EffectComposer(renderer);
 
 composer.addPass(new RenderPass(scene, activecamera));
 
-const afterimagePass = new AfterimagePass();
-afterimagePass.uniforms['damp'].value = 0.65;  
-composer.addPass(afterimagePass);
+// const afterimagePass = new AfterimagePass();
+// afterimagePass.uniforms['damp'].value = 0.65;  
+// composer.addPass(afterimagePass);
 
 
 
