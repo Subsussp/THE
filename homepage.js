@@ -39,7 +39,7 @@ fetch('https://cdn.jsdelivr.net/gh/Subsussp/THE@gh-pages/music/mainsfx.mp3')
   .then(r => r.arrayBuffer())
   .then(data => sfx.decodeAudioData(data))
   .then(decoded => buffer2 = decoded);
-fetch('./music/Padsfx.mp3')
+fetch('https://cdn.jsdelivr.net/gh/Subsussp/THE@gh-pages/music/Padsfx.mp3')
   .then(r => r.arrayBuffer())
   .then(data => sfx.decodeAudioData(data))
   .then(decoded => buffer3 = decoded);
