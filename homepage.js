@@ -13,6 +13,7 @@ gsap.registerPlugin(ScrollTrigger,ScrollSmoother,(gsap.plugins.ScrollToPlugin ||
 const sfx = new (window.AudioContext || window.webkitAudioContext)();
 let buffer;
 let buffer2;
+let buffer3;
 let gain2 = sfx.createGain();
 let animationId;
   document.body.insertAdjacentHTML("beforeend", `
@@ -38,6 +39,10 @@ fetch('https://cdn.jsdelivr.net/gh/Subsussp/THE@gh-pages/music/mainsfx.mp3')
   .then(r => r.arrayBuffer())
   .then(data => sfx.decodeAudioData(data))
   .then(decoded => buffer2 = decoded);
+fetch('./music/Padsfx.mp3')
+  .then(r => r.arrayBuffer())
+  .then(data => sfx.decodeAudioData(data))
+  .then(decoded => buffer3 = decoded);
 const buttons = document.querySelectorAll('.sfxbtn');
 if(buttons){
   buttons.forEach((button)=>{
@@ -1160,6 +1165,8 @@ function origin(){
   }).start()
 }
 let scrollProgress = {progress: 0};
+let inject = true
+
 gsap.to(scrollProgress, {
   progress:1,
   ease: "power1.out",  
@@ -1197,18 +1204,84 @@ gsap.to(scrollProgress, {
               e.preventDefault();
             }, { passive: false });
             enteredfromstatue = false
+            gsap.set('.cont-cont', { opacity:1});
+            gsap.set('.cont-letters', { scale: 0.7});
+              gsap.to('.letters',{
+                  stagger: 0.2,
+                  opacity: 1,
+                  duration:4,
+                  onStart:()=>{
+                        const source = sfx.createBufferSource();
+                        source.buffer = buffer3;
+                        source.connect(sfx.destination);
+                        source.start();
+                  },
+                  onComplete:()=>{
+                    document.body.insertAdjacentHTML('afterbegin',`<div class="Warning" id="warnin" style="background-color: black;width:100%;height:100%;position:absolute;z-index:200" >
+                      <div style="position: absolute;top: 50%;padding-top:44px;left: 50%;transform: translate(-50%,-50%) scale(0.7);transform-origin: center ;display: flex;width: 750px;height: 400px;flex-direction:column;background-color: black;z-index:600;user-select:none">
+                      <div >
+                        <div style="color: white;text-align: center;" class="header">GPU REQUIRED</div>
+                        <svg width="100%" height="20">
+                        <line x1="224" y1="10" x2="528" y2="10" stroke="white"/>
+                        </svg>
+                      </div>
+                      <div class="content" style="color: white;width:100%;position: absolute;top: 58%;left: 50%;transform: translate(-50%,-50%);text-align: center;padding: 0 47px;">
+                        You need a GPU or at least an integrated one <br /> for the website to work properly, though <br /> integrated GPUs aren't recommended.
+                      </div>
+                      </div>
+                      </div>`)
+                    function handleClick() {
+                      const item = document.getElementById('warnin');
+
+                      if (inject && item) {
+                        inject = false;
+
+                        item.innerHTML = `
+                        <div style="position: absolute;top: 50%;padding-top:44px;left: 50%;transform: translate(-50%,-50%) scale(0.7);transform-origin: center ;display: flex;width: 750px;height: 400px;flex-direction:column;background-color: black;z-index:600;user-select:none">
+
+                          <div style="font-size: 46px;font-family: 'MyCustomFont1';color: azure;position: absolute;top: 25%;left: 50%;transform: translate(-50%,-50%);text-align: center;width: 100%;">
+                            If the website isn't working <span style="color: rgb(133, 23, 23);">properly</span>
+                          </div>
+
+                          <svg style="width: 100%;height:10%;position: absolute;top: 50%;left: 50%;transform: translate(-50%,-50%);">
+                            <line x1="32.5" y1="20" x2="718.5" y2="20" stroke="white"/>
+                          </svg>
+
+                          <div style="font-size: 48px;font-family: 'MyCustomFont1';color: azure;position: absolute;top: 70%;left: 50%;transform: translate(-50%,-50%);text-align: center;width: 100%;">
+                            check out the <a target="_blank" href="https://flavortown.hackclub.com/projects/4068" style="background-color: rgb(24, 20, 20);color: white;text-decoration: none;">\`Demo\`</a> in my repo
+                          </div>
+                          </div>
+                        `;
+                      } else if (item && !inject) {
+                        item.remove();
+                        document.removeEventListener('click', handleClick);
+                      }
+                    }
+
+                    document.addEventListener('click', handleClick);
+
+                    document.getElementsByClassName('cont-cont')[0].remove()
+                  }
+              })
+
+              gsap.to('.cont-letters',{
+                  scale:1,
+                  duration:5
+              })
             setTimeout(()=>{
               scene = null;
               renderer.dispose();
               renderer.domElement.remove(); 
               cancelAnimationFrame(animationId);
-              document.body.querySelectorAll('.disposable').forEach((node)=>node.remove())
-              ScrollTrigger.getAll().forEach(trigger => trigger.kill());
               let script = document.createElement('script')
               script.src = "./src/js/scripts.js"
               script.type = "module"  
-              audioCtx.close();
               document.body.appendChild(script)
+              document.body.querySelectorAll('.disposable').forEach((node)=>node.remove())
+              ScrollTrigger.getAll().forEach(trigger => trigger.kill());
+              audioCtx.close();
+  
+
             },2000)
           }
           }
