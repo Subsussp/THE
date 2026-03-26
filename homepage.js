@@ -8,6 +8,7 @@ import { ShaderPass } from "https://cdn.jsdelivr.net/npm/three@0.158.0/examples/
 import { VignetteShader } from "./src/jsm/shaders/VignetteShader.js";
 import { DRACOLoader } from 'https://cdn.jsdelivr.net/npm/three@0.158.0/examples/jsm/loaders/DRACOLoader.js';
 import { AfterimagePass } from './src/jsm/postprocessing/AfterimagePass.js';
+import { getAudiofiles } from './src/js/AudioFiles.js';
 gsap.registerPlugin(ScrollTrigger,ScrollSmoother,(gsap.plugins.ScrollToPlugin || ScrollToPlugin));
 const sfx = new (window.AudioContext || window.webkitAudioContext)();
 let buffer;
@@ -1365,6 +1366,7 @@ function animate(time){
         opacity:0,
         duration:2,
     },'<')
+    getAudiofiles()
 
 }else{
   Loadercanvas.remove()
@@ -1389,7 +1391,6 @@ function animate(time){
   updateAudio();
   previousTime = elapsedTime
   // camera.lookAt(new THREE.Vector3(0,activecamera.position.y ,0))
-
   if(config.transition){
     if(statue.position.x < -space){
       statue.position.x = space

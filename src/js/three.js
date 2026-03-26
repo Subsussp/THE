@@ -10,7 +10,8 @@ import { OrbitControls } from 'https://cdn.jsdelivr.net/npm/three@0.158.0/exampl
 import { GUI } from 'https://cdn.jsdelivr.net/npm/lil-gui@0.18/+esm';
 import { float, If, PI, color, cos, instanceIndex, Loop, mix,atan,vec2,length , mod, sin, instancedArray, Fn, uint, uniform, uniformArray, hash, vec3, vec4, ceil, min, time } from '../../build/three.tsl.js';
 import { listener, sound } from './var/threesound.js';
-let scene, camera, renderer, animationId, analyser, orbitControls ,gui;
+import { loadedSamples } from './AudioFiles.js';
+let scene, camera, renderer, animationId, analyser, orbitControls ,gui,Song;
 let minN = 0;
 let minh = 0;
 let maxN = 1;
@@ -75,24 +76,6 @@ function configaudio(buffer) {
 	sound.play()
 }
 // samples tab settings
-const sampleFiles = {
-  '1': 'https://cdn.jsdelivr.net/gh/Subsussp/THE@gh-pages/music/sample1.mp3',
-  '2': 'https://cdn.jsdelivr.net/gh/Subsussp/THE@gh-pages/music/sample2.mp3',
-  '3': 'https://cdn.jsdelivr.net/gh/Subsussp/THE@gh-pages/music/sample3.mp3',
-  '4': 'https://cdn.jsdelivr.net/gh/Subsussp/THE@gh-pages/music/Farfromanyroad.mp3',
-  '5': 'https://cdn.jsdelivr.net/gh/Subsussp/THE@gh-pages/music/sample5.mp3',
-  '6': 'https://cdn.jsdelivr.net/gh/Subsussp/THE@gh-pages/music/sample6.mp3',
-  '7': 'https://cdn.jsdelivr.net/gh/Subsussp/THE@gh-pages/music/sample7.mp3',
-};
-const loadedSamples = {};
-function loadSample(file) {
-  return new Promise(resolve => audioLoader.load(file, resolve));
-}
-Object.entries(sampleFiles).forEach(([key, path]) => {
-  loadSample(path).then(buffer => {
-    loadedSamples[key] = buffer;
-  });
-});
 const sampleActions = {
   '1': () => playSample('1'),
   '2': () => playSample('2'),
@@ -105,7 +88,32 @@ const sampleActions = {
 function playSample(key) {
   const buffer = loadedSamples[key];
   if (!buffer) {
-    return;
+	if(Song){
+	  const spinner = document.createElement('div');
+      spinner.classList.add('spinner');
+      // Add CSS styling for the spinner
+      const style = document.createElement('style');
+      style.textContent = `
+      .spinner {
+          margin:4px;
+          width: 28px;
+          height: 15px;
+          border: 2px solid #999;
+          border-top-color: #222;
+          border-radius: 50%;
+          animation: spin 0.8s linear infinite;
+          }
+          
+          @keyframes spin {
+              to { transform: rotate(360deg); }
+              }
+              `;
+		document.head.appendChild(style);
+	const controllerDom = Song.domElement;
+	controllerDom.querySelector('.controller').appendChild(spinner);
+	}
+    
+	return;
   }
   configaudio(buffer);
 }
@@ -155,7 +163,7 @@ gui.add(sceneController, 'currentScene', ['Sphere', 'Particles','Specturm','V4',
   .onChange(sceneController.swapScene);
 camera.position.set(6, 8, 14);
 camera.add(listener);
-const Song = gui.addFolder('Song');
+Song = gui.addFolder('Song');
 
 // audio url input
 // const urltab = Song.add(settings, 'value').onChange(function (value) {
