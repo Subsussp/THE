@@ -1248,7 +1248,7 @@ gsap.to(scrollProgress, {
                           </svg>
 
                           <div style="font-size: 48px;font-family: 'MyCustomFont1';color: azure;position: absolute;top: 70%;left: 50%;transform: translate(-50%,-50%);text-align: center;width: 100%;">
-                            check out the <a target="_blank" href="https://flavortown.hackclub.com/projects/4068" style="background-color: rgb(24, 20, 20);color: white;text-decoration: none;">\`Demo\`</a> in my repo
+                            check out the <a target="_blank" href="https://github.com/Subsussp/THE?tab=readme-ov-file#preview" style="background-color: rgb(24, 20, 20);color: white;text-decoration: none;">\`Demo\`</a> in my repo
                           </div>
                           </div>
                         `;
