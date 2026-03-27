@@ -50,12 +50,11 @@ some scenes may not work smoothly, or performance may be severely degraded.
   <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/javascript/javascript-original.svg" alt="JavaScript" width="60" height="60"/>
   <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/html5/html5-original.svg" alt="HTML5" width="60" height="60"/>
   <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/css3/css3-original.svg" alt="CSS3" width="60" height="60"/>
-<img 
-  src="https://raw.githubusercontent.com/mrdoob/three.js/9796ddd982480f662a73e5f16fff4c7e6f240ee1/files/icon.svg" 
+<img  
+  src="https://raw.githubusercontent.com/mrdoob/three.js/dev/icon.png" 
   alt="Three.js" 
-  width="55" 
-  height="55"
-  style="background-color:white; padding:2px;"
+  width="60" 
+  height="60"
 />
 <img src="https://static.cdnlogo.com/logos/g/31/gsap-greensock.svg" alt="GSAP" width="60" height="60" />
 
