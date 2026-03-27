@@ -1210,6 +1210,7 @@ gsap.to(scrollProgress, {
                   stagger: 0.2,
                   opacity: 1,
                   duration:4,
+                  overwrite: 'auto',
                   onStart:()=>{
                         const source = sfx.createBufferSource();
                         source.buffer = buffer3;
@@ -1260,13 +1261,15 @@ gsap.to(scrollProgress, {
 
                     document.addEventListener('click', handleClick);
 
-                    document.getElementsByClassName('cont-cont')[0].remove()
                   }
               })
 
               gsap.to('.cont-letters',{
                   scale:1,
-                  duration:5
+                  duration:5,
+                  onComplete:()=>{
+                       document.getElementsByClassName('cont-cont')[0].remove()
+                  }
               })
             setTimeout(()=>{
               scene = null;
