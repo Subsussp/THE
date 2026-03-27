@@ -13,7 +13,7 @@ some scenes may not work smoothly, or performance may be severely degraded.
 
 ---
 
-# Preview
+## Preview
 
 <p float="left">
   <img src="https://github.com/user-attachments/assets/0cecff4c-8b26-4332-a8a3-4e79cf70ff78" width="150" />
@@ -22,11 +22,18 @@ some scenes may not work smoothly, or performance may be severely degraded.
   <img src="https://github.com/user-attachments/assets/ebb56fb3-5edb-459d-a901-f09e127956df" width="150" />
   <img src="https://github.com/user-attachments/assets/6beaacbb-1840-4378-88fa-6b7164f88dbd" width="150" />
   <img src="https://github.com/user-attachments/assets/353bd1f3-722e-4b52-9926-d1e4fc0f9989" width="150" />
+  <img src="https://github.com/user-attachments/assets/77107c4c-2e83-4b06-9675-1fc13be28669" width="150" />
 </p>
 
 
 ---
 
+## Demo
+[![](https://img.shields.io/badge/YouTube%20Demo-Watch%20Now-red?style=for-the-badge&logo=youtube)](https://youtu.be/sb_W42D_J_w)
+
+
+
+---
 ## Features
 
 - **Audio Upload** — Upload local audio files (e.g., MP3, WAV) Or use my audio samples :).
